@@ -1,0 +1,358 @@
+.student-access-page {
+  background:
+    radial-gradient(circle at 82% 12%, rgba(191, 164, 106, 0.16), transparent 30rem),
+    radial-gradient(circle at 12% 25%, rgba(230, 211, 163, 0.08), transparent 22rem),
+    linear-gradient(180deg, #020202 0%, var(--black-rich) 50%, #030303 100%);
+}
+
+.student-access-main {
+  position: relative;
+  min-height: calc(100vh - 6rem);
+  overflow: hidden;
+  padding: clamp(2.7rem, 6vw, 6rem) 0 clamp(2.6rem, 5vw, 5.4rem);
+}
+
+.student-access-main::before {
+  position: absolute;
+  right: -18rem;
+  top: -18rem;
+  width: min(62rem, 88vw);
+  aspect-ratio: 1;
+  border: 1px solid rgba(230, 211, 163, 0.18);
+  border-radius: 50%;
+  box-shadow: inset 0 0 70px rgba(191, 164, 106, 0.08);
+  content: "";
+  pointer-events: none;
+}
+
+.student-login-shell {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(22rem, 0.72fr);
+  align-items: center;
+  gap: clamp(2rem, 6vw, 6rem);
+}
+
+.student-copy {
+  min-width: 0;
+}
+
+.student-eyebrow {
+  margin: 0;
+  color: var(--champagne);
+  font-size: 0.72rem;
+  font-weight: 850;
+  letter-spacing: 0.32em;
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+
+.student-copy h1,
+.workspace-hero h1 {
+  margin: 0.85rem 0 1rem;
+  color: var(--ivory);
+  font-family: "Cormorant Garamond", "Bodoni 72", Georgia, serif;
+  font-size: clamp(3.4rem, 6.1vw, 6.35rem);
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 0.95;
+}
+
+.student-copy p,
+.workspace-hero p {
+  max-width: 42rem;
+  margin: 0;
+  color: rgba(239, 231, 216, 0.78);
+  font-size: clamp(1rem, 1.25vw, 1.17rem);
+  line-height: 1.72;
+}
+
+.student-login-card,
+.workspace-card,
+.workspace-panel {
+  border: 1px solid rgba(230, 211, 163, 0.26);
+  border-radius: 8px;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(230, 211, 163, 0.09), transparent 12rem),
+    linear-gradient(180deg, rgba(20, 18, 15, 0.78), rgba(8, 8, 7, 0.94));
+  box-shadow:
+    0 24px 70px rgba(0, 0, 0, 0.45),
+    0 0 36px rgba(191, 164, 106, 0.12);
+}
+
+.student-login-card {
+  position: relative;
+  z-index: 1;
+  padding: clamp(1.25rem, 2.6vw, 2rem);
+}
+
+.student-login-card h2 {
+  margin: 0 0 0.35rem;
+  color: var(--ivory);
+  font-family: "Cormorant Garamond", "Bodoni 72", Georgia, serif;
+  font-size: clamp(2rem, 3vw, 3rem);
+  font-weight: 540;
+  line-height: 1.05;
+}
+
+.student-login-card > p {
+  margin: 0 0 1.4rem;
+  color: rgba(239, 231, 216, 0.7);
+  line-height: 1.6;
+}
+
+.student-field {
+  display: grid;
+  gap: 0.45rem;
+  margin-bottom: 1rem;
+}
+
+.student-field label {
+  color: var(--soft-white);
+  font-size: 0.86rem;
+  font-weight: 780;
+}
+
+.student-field input {
+  width: 100%;
+  min-height: 3.15rem;
+  border: 1px solid rgba(230, 211, 163, 0.35);
+  border-radius: 5px;
+  background:
+    linear-gradient(180deg, rgba(20, 18, 15, 0.88), rgba(8, 8, 7, 0.96));
+  color: var(--ivory);
+  font: inherit;
+  padding: 0.86rem 0.95rem;
+  outline: none;
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.student-field input:focus {
+  border-color: rgba(230, 211, 163, 0.86);
+  box-shadow:
+    0 0 0 3px rgba(230, 211, 163, 0.09),
+    0 0 24px rgba(191, 164, 106, 0.15);
+}
+
+.student-field input[aria-invalid="true"] {
+  border-color: rgba(230, 120, 110, 0.64);
+}
+
+.student-error {
+  min-height: 1rem;
+  margin: 0;
+  color: #e7a49c;
+  font-size: 0.77rem;
+  line-height: 1.35;
+}
+
+.student-status {
+  min-height: 1.25rem;
+  margin: 0.9rem 0 0;
+  color: rgba(239, 231, 216, 0.78);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.student-status.is-error {
+  color: #e7a49c;
+}
+
+.student-status.is-success {
+  color: var(--champagne);
+}
+
+.student-login-card .button {
+  width: 100%;
+  margin-top: 0.25rem;
+}
+
+.student-secondary {
+  display: grid;
+  gap: 0.85rem;
+  margin-top: 1.4rem;
+  border-top: 1px solid rgba(230, 211, 163, 0.14);
+  padding-top: 1.25rem;
+}
+
+.student-secondary p {
+  margin: 0;
+  color: rgba(239, 231, 216, 0.7);
+  font-size: 0.91rem;
+  line-height: 1.55;
+}
+
+.workspace-shell {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: clamp(1.1rem, 2vw, 1.7rem);
+}
+
+.workspace-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 1rem;
+}
+
+.workspace-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(230, 211, 163, 0.3);
+  border-radius: 999px;
+  background: rgba(20, 18, 15, 0.72);
+  color: var(--champagne);
+  font-size: 0.75rem;
+  font-weight: 850;
+  letter-spacing: 0.16em;
+  padding: 0.55rem 0.85rem;
+  text-transform: uppercase;
+}
+
+.workspace-card {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.8rem;
+  padding: clamp(1rem, 2vw, 1.35rem);
+}
+
+.workspace-stat {
+  min-width: 0;
+  border-left: 1px solid rgba(230, 211, 163, 0.2);
+  padding: 0.3rem 0.7rem;
+}
+
+.workspace-stat:first-child {
+  border-left: 0;
+}
+
+.workspace-stat span {
+  display: block;
+  color: var(--muted-warm);
+  font-size: 0.72rem;
+  font-weight: 820;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.workspace-stat strong {
+  display: block;
+  margin-top: 0.3rem;
+  color: var(--ivory);
+  font-family: "Cormorant Garamond", "Bodoni 72", Georgia, serif;
+  font-size: clamp(1.45rem, 2.4vw, 2.25rem);
+  font-weight: 600;
+  line-height: 1.05;
+  overflow-wrap: anywhere;
+}
+
+.workspace-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.workspace-panel {
+  min-width: 0;
+  padding: clamp(1rem, 2vw, 1.3rem);
+}
+
+.workspace-panel h2 {
+  margin: 0 0 0.65rem;
+  color: var(--champagne);
+  font-family: "Cormorant Garamond", "Bodoni 72", Georgia, serif;
+  font-size: clamp(1.6rem, 2.2vw, 2.15rem);
+  font-weight: 600;
+  line-height: 1.08;
+}
+
+.workspace-panel p {
+  margin: 0;
+  color: rgba(239, 231, 216, 0.76);
+  line-height: 1.6;
+}
+
+.weekly-path {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0.85rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.weekly-path li {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  border: 1px solid rgba(230, 211, 163, 0.16);
+  border-radius: 6px;
+  background: rgba(5, 5, 5, 0.24);
+  color: rgba(239, 231, 216, 0.8);
+  padding: 0.75rem;
+}
+
+.weekly-path span {
+  display: inline-grid;
+  width: 2rem;
+  height: 2rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid rgba(230, 211, 163, 0.36);
+  border-radius: 50%;
+  color: var(--champagne);
+  font-weight: 820;
+}
+
+.workspace-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.workspace-actions .button {
+  min-width: 10rem;
+}
+
+@media (max-width: 900px) {
+  .student-login-shell,
+  .workspace-hero,
+  .workspace-card,
+  .workspace-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .workspace-stat,
+  .workspace-stat:first-child {
+    border-left: 0;
+    border-top: 1px solid rgba(230, 211, 163, 0.14);
+    padding: 0.8rem 0 0;
+  }
+
+  .workspace-stat:first-child {
+    border-top: 0;
+    padding-top: 0;
+  }
+}
+
+@media (max-width: 620px) {
+  .student-access-main {
+    padding-top: 2rem;
+  }
+
+  .student-login-shell,
+  .workspace-shell {
+    width: calc(100vw - 1.35rem);
+    max-width: calc(100vw - 1.35rem);
+  }
+
+  .student-copy h1,
+  .workspace-hero h1 {
+    font-size: clamp(2.85rem, 13vw, 4.25rem);
+  }
+
+  .workspace-actions,
+  .workspace-actions .button {
+    width: 100%;
+  }
+}

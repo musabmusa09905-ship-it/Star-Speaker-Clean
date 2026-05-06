@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      name="description"
+      content="Take the Star Speaker speaking placement test for a manual speaking-level and Star Path recommendation within 1 hour."
+    >
+    <title>Speaking Placement Test | Star Speaker</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="level-test.css">
+  </head>
+  <body class="level-test-page">
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="site-header">
+      <nav class="nav-shell" aria-label="Primary navigation">
+        <a class="brand" href="index.html" aria-label="Star Speaker homepage">
+          <img
+            class="brand-logo"
+            src="public/images/star-speaker-logo.png"
+            alt="Star Speaker logo"
+            width="68"
+            height="68"
+          >
+          <span class="brand-text">
+            <span class="brand-name">Star Speaker</span>
+            <span class="brand-tagline">Speak confidently. Shine globally.</span>
+          </span>
+        </a>
+
+        <button
+          class="menu-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="primary-navigation"
+          aria-label="Open navigation menu"
+        >
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </button>
+
+        <div class="nav-menu" id="primary-navigation">
+          <ul class="nav-links" aria-label="Main links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="programs.html">Programs</a></li>
+            <li><a href="method.html">Method</a></li>
+            <li><a href="results.html">Results</a></li>
+            <li><a href="about.html">About</a></li>
+            <li>
+              <a href="resources.html">
+                Resources
+                <svg aria-hidden="true" viewBox="0 0 24 24">
+                  <path d="m6 9 6 6 6-6"></path>
+                </svg>
+              </a>
+            </li>
+            <li><a href="apply.html">Apply</a></li>
+          </ul>
+
+          <div class="nav-actions">
+            <a class="login-link" href="login.html">Login</a>
+            <div class="language-toggle" aria-label="Language selector">
+              <a class="active" href="level-test.html" hreflang="en">EN</a>
+              <span aria-hidden="true"></span>
+              <a href="level-test.html?lang=tr" hreflang="tr" lang="tr">TR</a>
+            </div>
+            <a class="button button-outline nav-button" href="apply.html">Book a Consultation</a>
+            <a class="button button-primary nav-button is-active" href="level-test.html">Take Level Test</a>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main id="main" class="level-main">
+      <section class="level-hero" aria-labelledby="level-title">
+        <div class="container level-hero-grid">
+          <div class="level-hero-copy">
+            <p class="eyebrow" data-level-i18n="hero.eyebrow">Speaking Placement Test</p>
+            <h1 id="level-title" data-level-i18n-html="hero.title">Find Your<br>Star Speaker Level</h1>
+            <p class="level-subtitle" data-level-i18n="hero.subtitle">
+              A short speaking-focused placement test designed to understand your confidence,
+              communication habits, and English goals.
+            </p>
+            <div class="level-trust-row" aria-label="Placement test details">
+              <span>
+                <svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
+                <span data-level-i18n="hero.trust.time">Takes 5-8 minutes</span>
+              </span>
+              <span>
+                <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 2 4 5v6c0 5 3.4 9.7 8 11 4.6-1.3 8-6 8-11V5l-8-3Z"></path><path d="M9 12l2 2 4-5"></path></svg>
+                <span data-level-i18n="hero.trust.pressure">No pressure</span>
+              </span>
+              <span>
+                <svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 6v6l4 2"></path></svg>
+                <span data-level-i18n="hero.trust.review">Reviewed within 1 hour</span>
+              </span>
+            </div>
+          </div>
+
+          <div class="level-hero-mark" aria-hidden="true">
+            <img src="public/images/star-speaker-logo.png" alt="">
+            <span></span>
+          </div>
+        </div>
+      </section>
+
+      <div class="container level-layout">
+        <form id="placement-test-form" class="test-stack" novalidate>
+          <section class="test-panel" aria-labelledby="basic-title">
+            <div class="panel-heading">
+              <span class="section-number">1</span>
+              <div>
+                <h2 id="basic-title" data-level-i18n="basic.title">Basic Information</h2>
+                <p data-level-i18n="basic.helper">Help us personalize your test and recommendation.</p>
+              </div>
+            </div>
+
+            <div class="level-fields">
+              <div class="level-field">
+                <label for="test-full-name" data-level-i18n="fields.fullName">Full Name</label>
+                <input id="test-full-name" name="fullName" type="text" autocomplete="name" required aria-describedby="test-full-name-error" placeholder="Enter your full name" data-level-placeholder="placeholders.fullName">
+                <p class="field-error" id="test-full-name-error"></p>
+              </div>
+
+              <div class="level-field">
+                <label for="test-whatsapp" data-level-i18n="fields.whatsapp">WhatsApp Number</label>
+                <input id="test-whatsapp" name="whatsapp" type="tel" autocomplete="tel" required aria-describedby="test-whatsapp-error" placeholder="+90 5XX XXX XX XX">
+                <p class="field-error" id="test-whatsapp-error"></p>
+              </div>
+
+              <div class="level-field">
+                <label for="test-current-level" data-level-i18n="fields.currentLevel">Current Level</label>
+                <select id="test-current-level" name="currentLevel" required aria-describedby="test-current-level-error">
+                  <option value="" data-level-i18n="options.level.placeholder">Select your level</option>
+                  <option value="A1 Beginner">A1 Beginner</option>
+                  <option value="A2 Elementary">A2 Elementary</option>
+                  <option value="B1 Intermediate">B1 Intermediate</option>
+                  <option value="B2 Upper-Intermediate">B2 Upper-Intermediate</option>
+                  <option value="C1 Advanced">C1 Advanced</option>
+                  <option value="Not sure" data-level-i18n="options.notSure">Not sure</option>
+                </select>
+                <p class="field-error" id="test-current-level-error"></p>
+              </div>
+
+              <div class="level-field">
+                <label for="test-goal" data-level-i18n="fields.goal">Goal</label>
+                <select id="test-goal" name="goal" required aria-describedby="test-goal-error">
+                  <option value="" data-level-i18n="options.goal.placeholder">Select your goal</option>
+                  <option value="Study abroad" data-level-i18n="options.goal.studyAbroad">Study abroad</option>
+                  <option value="University prep school" data-level-i18n="options.goal.prep">University prep school</option>
+                  <option value="Work / career growth" data-level-i18n="options.goal.work">Work / career growth</option>
+                  <option value="IELTS / PTE / TOEFL">IELTS / PTE / TOEFL</option>
+                  <option value="Speaking confidence" data-level-i18n="options.goal.confidence">Speaking confidence</option>
+                  <option value="Other" data-level-i18n="options.goal.other">Other</option>
+                </select>
+                <p class="field-error" id="test-goal-error"></p>
+              </div>
+
+              <div class="level-field">
+                <label for="test-consultation-language" data-level-i18n="fields.consultationLanguage">Preferred Consultation Language</label>
+                <select id="test-consultation-language" name="consultationLanguage" required aria-describedby="test-consultation-language-error">
+                  <option value="" data-level-i18n="options.language.placeholder">Select an option</option>
+                  <option value="turkish" data-level-i18n="options.language.turkish" data-level-description="options.language.turkishDescription">Turkish</option>
+                  <option value="english" data-level-i18n="options.language.english" data-level-description="options.language.englishDescription">English</option>
+                  <option value="hybrid" data-level-i18n="options.language.hybrid" data-level-description="options.language.hybridDescription" selected>Hybrid</option>
+                </select>
+                <p class="field-error" id="test-consultation-language-error"></p>
+              </div>
+            </div>
+          </section>
+
+          <section class="test-panel" aria-labelledby="quick-title">
+            <div class="panel-heading with-note">
+              <span class="section-number">2</span>
+              <div>
+                <h2 id="quick-title" data-level-i18n="quick.title">Quick English Check</h2>
+                <p data-level-i18n="quick.helper">5 randomized multiple-choice questions from our comprehensive question bank.</p>
+              </div>
+              <p class="random-note" data-level-i18n="quick.note">Questions are randomly selected.</p>
+            </div>
+            <div id="quick-questions" class="quick-grid"></div>
+            <p class="field-error panel-error" id="quick-check-error"></p>
+          </section>
+
+          <section class="test-panel" aria-labelledby="written-title">
+            <div class="panel-heading">
+              <span class="section-number">3</span>
+              <div>
+                <h2 id="written-title" data-level-i18n="written.title">Written Response</h2>
+                <p data-level-i18n="written.helper">Answer the following prompts in a few sentences.</p>
+              </div>
+            </div>
+            <div id="written-prompts" class="written-grid"></div>
+            <p class="field-error panel-error" id="written-error"></p>
+          </section>
+
+          <section class="test-panel voice-panel" aria-labelledby="voice-title">
+            <div class="panel-heading">
+              <span class="section-number">4</span>
+              <div>
+                <h2 id="voice-title" data-level-i18n="voice.title">Voice Recording</h2>
+                <p data-level-i18n="voice.helper">Record yourself speaking on the topic below for 1-2 minutes.</p>
+              </div>
+            </div>
+
+            <p class="voice-note" data-level-i18n="voice.note">
+              Voice is recommended for the most accurate speaking recommendation. If you are not ready,
+              complete the written section carefully.
+            </p>
+
+            <div class="voice-recorder">
+              <article class="voice-topic">
+                <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><path d="M12 19v3"></path></svg>
+                <div>
+                  <h3 data-level-i18n="voice.topic">Topic</h3>
+                  <p id="voice-prompt"></p>
+                </div>
+              </article>
+
+              <div class="recorder-surface">
+                <div class="recorder-meter">
+                  <span id="recording-timer">00:00 / 02:00</span>
+                  <div class="wave-bars" aria-hidden="true">
+                    <span></span><span></span><span></span><span></span><span></span><span></span>
+                    <span></span><span></span><span></span><span></span><span></span><span></span>
+                    <span></span><span></span><span></span><span></span><span></span><span></span>
+                  </div>
+                </div>
+
+                <div class="recorder-actions">
+                  <button class="button button-primary" id="start-recording" type="button">
+                    <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path></svg>
+                    <span data-level-i18n="voice.start">Start Recording</span>
+                  </button>
+                  <button class="button button-outline" id="stop-recording" type="button" disabled>
+                    <svg aria-hidden="true" viewBox="0 0 24 24"><rect x="7" y="7" width="10" height="10"></rect></svg>
+                    <span data-level-i18n="voice.stop">Stop</span>
+                  </button>
+                  <button class="button button-outline" id="play-recording" type="button" disabled>
+                    <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m8 5 11 7-11 7V5Z"></path></svg>
+                    <span data-level-i18n="voice.play">Play</span>
+                  </button>
+                  <button class="button button-outline" id="rerecord" type="button" disabled>
+                    <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M21 12a9 9 0 0 1-15.4 6.4L3 16"></path><path d="M3 21v-5h5"></path><path d="M3 12A9 9 0 0 1 18.4 5.6L21 8"></path><path d="M21 3v5h-5"></path></svg>
+                    <span data-level-i18n="voice.rerecord">Re-record</span>
+                  </button>
+                </div>
+
+                <audio id="recording-playback" controls hidden></audio>
+                <p class="recorder-status" id="recorder-status" role="status" aria-live="polite"></p>
+              </div>
+            </div>
+          </section>
+
+          <section class="submit-band" aria-labelledby="submit-title">
+            <h2 id="submit-title" data-level-i18n="submit.title">Submit Your Placement Test</h2>
+            <p data-level-i18n="submit.helper">Please review your answers before submitting.</p>
+            <button class="button button-primary submit-test-button" type="submit">
+              <span data-level-i18n="submit.button">Submit Placement Test</span>
+              <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg>
+            </button>
+            <p class="field-error panel-error" id="submit-error"></p>
+            <div class="test-status" id="test-status" role="status" aria-live="polite"></div>
+          </section>
+        </form>
+
+        <aside class="assessment-sidebar" aria-label="How Star Speaker assesses your placement test">
+          <section class="sidebar-card assess-card">
+            <h2 data-level-i18n="sidebar.assess.title">How We Assess You</h2>
+            <ol class="assessment-steps">
+              <li>
+                <span>1</span>
+                <div>
+                  <h3 data-level-i18n="sidebar.assess.step1Title">Self-Assessment</h3>
+                  <p data-level-i18n="sidebar.assess.step1Text">You share your goals, experience, and communication comfort.</p>
+                </div>
+              </li>
+              <li>
+                <span>2</span>
+                <div>
+                  <h3 data-level-i18n="sidebar.assess.step2Title">Quick English Check</h3>
+                  <p data-level-i18n="sidebar.assess.step2Text">5 randomized questions help us understand your real-time language use.</p>
+                </div>
+              </li>
+              <li>
+                <span>3</span>
+                <div>
+                  <h3 data-level-i18n="sidebar.assess.step3Title">Written Response</h3>
+                  <p data-level-i18n="sidebar.assess.step3Text">3 short prompts help us evaluate clarity, structure, and expression.</p>
+                </div>
+              </li>
+              <li>
+                <span>4</span>
+                <div>
+                  <h3 data-level-i18n="sidebar.assess.step4Title">Voice Sample</h3>
+                  <p data-level-i18n="sidebar.assess.step4Text">A 1-2 minute recording helps us assess fluency, pronunciation, and confidence.</p>
+                </div>
+              </li>
+            </ol>
+            <div class="review-block">
+              <h3 data-level-i18n="sidebar.assess.reviewTitle">Manual Review &amp; Recommendation within 1 hour</h3>
+              <p data-level-i18n="sidebar.assess.reviewText">Our team reviews your responses and recommends your Star Speaker level and Star Path.</p>
+            </div>
+          </section>
+
+          <section class="sidebar-card next-card">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m12 2 2.5 6.8L22 12l-7.5 3.2L12 22l-2.5-6.8L2 12l7.5-3.2L12 2Z"></path></svg>
+            <h2 data-level-i18n="sidebar.next.title">What Happens Next?</h2>
+            <p data-level-i18n="sidebar.next.text">Your test will be reviewed within 1 hour. You will receive:</p>
+            <ul>
+              <li data-level-i18n="sidebar.next.item1">Your Star Speaker Level</li>
+              <li data-level-i18n="sidebar.next.item2">Detailed feedback</li>
+              <li data-level-i18n="sidebar.next.item3">Personalized Star Path recommendation</li>
+            </ul>
+            <p class="whatsapp-note" data-level-i18n="sidebar.next.note">You'll get a WhatsApp message as soon as your results are ready.</p>
+          </section>
+        </aside>
+      </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script src="supabase-client.js"></script>
+    <script src="script.js"></script>
+    <script src="level-test.js"></script>
+    <script src="premium-selects.js"></script>
+  </body>
+</html>

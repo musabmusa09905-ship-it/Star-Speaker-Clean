@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      name="description"
+      content="Student login for accepted Star Speaker students."
+    >
+    <title>Student Login | Star Speaker</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="student-access.css">
+  </head>
+  <body class="student-access-page student-login-page">
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="site-header">
+      <nav class="nav-shell" aria-label="Primary navigation">
+        <a class="brand" href="index.html" aria-label="Star Speaker homepage">
+          <img
+            class="brand-logo"
+            src="public/images/star-speaker-logo.png"
+            alt="Star Speaker logo"
+            width="68"
+            height="68"
+          >
+          <span class="brand-text">
+            <span class="brand-name">Star Speaker</span>
+            <span class="brand-tagline">Speak confidently. Shine globally.</span>
+          </span>
+        </a>
+
+        <button
+          class="menu-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="primary-navigation"
+          aria-label="Open navigation menu"
+        >
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </button>
+
+        <div class="nav-menu" id="primary-navigation">
+          <ul class="nav-links" aria-label="Main links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="programs.html">Programs</a></li>
+            <li><a href="method.html">Method</a></li>
+            <li><a href="results.html">Results</a></li>
+            <li><a href="about.html">About</a></li>
+            <li>
+              <a href="resources.html">
+                Resources
+                <svg aria-hidden="true" viewBox="0 0 24 24">
+                  <path d="m6 9 6 6 6-6"></path>
+                </svg>
+              </a>
+            </li>
+            <li><a href="apply.html">Apply</a></li>
+          </ul>
+
+          <div class="nav-actions">
+            <a class="login-link active" href="login.html">Login</a>
+            <div class="language-toggle" aria-label="Language selector">
+              <a class="active" href="login.html" hreflang="en">EN</a>
+              <span aria-hidden="true"></span>
+              <a href="login.html?lang=tr" hreflang="tr" lang="tr">TR</a>
+            </div>
+            <a class="button button-outline nav-button" href="apply.html">Book a Consultation</a>
+            <a class="button button-primary nav-button" href="level-test.html">Take Level Test</a>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main id="main" class="student-access-main">
+      <section class="container student-login-shell" aria-labelledby="student-login-title">
+        <div class="student-copy">
+          <p class="student-eyebrow">Private Student Access</p>
+          <h1 id="student-login-title">Student Login</h1>
+          <p>Access is available only for accepted Star Speaker students.</p>
+        </div>
+
+        <form class="student-login-card" id="student-login-form" novalidate>
+          <h2>Student Login</h2>
+          <p>Use the email and password created for your Star Speaker student account.</p>
+
+          <div class="student-field">
+            <label for="student-email">Email</label>
+            <input id="student-email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
+            <p class="student-error" id="student-email-error"></p>
+          </div>
+
+          <div class="student-field">
+            <label for="student-password">Password</label>
+            <input id="student-password" name="password" type="password" autocomplete="current-password" placeholder="Enter your password" required>
+            <p class="student-error" id="student-password-error"></p>
+          </div>
+
+          <button class="button button-primary" id="student-login-button" type="submit">Login</button>
+          <p class="student-status" id="student-login-status" role="status" aria-live="polite"></p>
+
+          <div class="student-secondary">
+            <p>Not accepted yet? Apply for a consultation first.</p>
+            <a class="button button-outline" href="apply.html">Apply for Consultation</a>
+          </div>
+        </form>
+      </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script src="supabase-client.js"></script>
+    <script src="script.js"></script>
+    <script src="student-access.js"></script>
+  </body>
+</html>

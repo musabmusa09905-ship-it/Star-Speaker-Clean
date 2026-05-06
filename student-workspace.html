@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      name="description"
+      content="Private Star Speaker student workspace."
+    >
+    <title>Student Workspace | Star Speaker</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="student-access.css">
+  </head>
+  <body class="student-access-page student-workspace-page">
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="site-header">
+      <nav class="nav-shell" aria-label="Primary navigation">
+        <a class="brand" href="index.html" aria-label="Star Speaker homepage">
+          <img
+            class="brand-logo"
+            src="public/images/star-speaker-logo.png"
+            alt="Star Speaker logo"
+            width="68"
+            height="68"
+          >
+          <span class="brand-text">
+            <span class="brand-name">Star Speaker</span>
+            <span class="brand-tagline">Speak confidently. Shine globally.</span>
+          </span>
+        </a>
+
+        <button
+          class="menu-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="primary-navigation"
+          aria-label="Open navigation menu"
+        >
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </button>
+
+        <div class="nav-menu" id="primary-navigation">
+          <ul class="nav-links" aria-label="Main links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="programs.html">Programs</a></li>
+            <li><a href="method.html">Method</a></li>
+            <li><a href="results.html">Results</a></li>
+            <li><a href="about.html">About</a></li>
+            <li>
+              <a href="resources.html">
+                Resources
+                <svg aria-hidden="true" viewBox="0 0 24 24">
+                  <path d="m6 9 6 6 6-6"></path>
+                </svg>
+              </a>
+            </li>
+            <li><a href="apply.html">Apply</a></li>
+          </ul>
+
+          <div class="nav-actions">
+            <a class="login-link active" href="student-workspace.html">Workspace</a>
+            <div class="language-toggle" aria-label="Language selector">
+              <a class="active" href="student-workspace.html" hreflang="en">EN</a>
+              <span aria-hidden="true"></span>
+              <a href="student-workspace.html?lang=tr" hreflang="tr" lang="tr">TR</a>
+            </div>
+            <a class="button button-outline nav-button" href="apply.html">Book a Consultation</a>
+            <a class="button button-primary nav-button" href="level-test.html">Take Level Test</a>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main id="main" class="student-access-main">
+      <section class="container workspace-shell" aria-labelledby="workspace-title">
+        <div class="workspace-hero">
+          <div>
+            <p class="student-eyebrow">Student Workspace</p>
+            <h1 id="workspace-title">Welcome back.</h1>
+            <p id="workspace-subtitle">Checking your private Star Speaker access.</p>
+          </div>
+          <span class="workspace-status" id="workspace-status-pill">Checking</span>
+        </div>
+
+        <section class="workspace-card" aria-label="Student profile status">
+          <div class="workspace-stat">
+            <span>Program</span>
+            <strong id="workspace-program">-</strong>
+          </div>
+          <div class="workspace-stat">
+            <span>Current Week</span>
+            <strong id="workspace-week">-</strong>
+          </div>
+          <div class="workspace-stat">
+            <span>Focus</span>
+            <strong id="workspace-focus">-</strong>
+          </div>
+          <div class="workspace-stat">
+            <span>Status</span>
+            <strong id="workspace-access-status">-</strong>
+          </div>
+        </section>
+
+        <div class="workspace-grid">
+          <section class="workspace-panel">
+            <h2>Today's Voice Task</h2>
+            <p>Your next voice task will appear here after your coach assigns it.</p>
+          </section>
+
+          <section class="workspace-panel">
+            <h2>Weekly Path</h2>
+            <ul class="weekly-path">
+              <li><span>1</span>Week 1 Survival Mode</li>
+              <li><span>2</span>Week 2 Interaction Mode</li>
+              <li><span>3</span>Week 3 Expression Mode</li>
+              <li><span>4</span>Week 4 Real World Mode</li>
+            </ul>
+          </section>
+
+          <section class="workspace-panel">
+            <h2>Coach Feedback</h2>
+            <p>Your feedback will appear here after review.</p>
+          </section>
+
+          <section class="workspace-panel">
+            <h2>Upcoming Session</h2>
+            <p>Your next live session will appear here once scheduled.</p>
+          </section>
+
+          <section class="workspace-panel">
+            <h2>Resources for This Week</h2>
+            <p>Weekly resources will appear here after your program starts.</p>
+          </section>
+
+          <section class="workspace-panel">
+            <h2>Profile Status</h2>
+            <p id="workspace-profile-note">Your profile is being prepared.</p>
+          </section>
+        </div>
+
+        <div class="workspace-actions">
+          <button class="button button-outline" id="student-logout-button" type="button">Logout</button>
+        </div>
+      </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script src="supabase-client.js"></script>
+    <script src="script.js"></script>
+    <script src="student-access.js"></script>
+  </body>
+</html>
