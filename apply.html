@@ -206,12 +206,8 @@
 
               <section class="consultation-window-panel" aria-labelledby="consultation-window-title">
                 <div class="consultation-window-heading">
-                  <p class="eyebrow">Apply / Consultation</p>
                   <h3 id="consultation-window-title">Book Your Consultation</h3>
-                  <p>
-                    Choose your preferred consultation window. We will review your application
-                    and confirm the final time by WhatsApp.
-                  </p>
+                  <p>Choose your preferred consultation window.</p>
                 </div>
 
                 <fieldset class="form-field consultation-window-field" aria-describedby="consultation-window-error consultation-window-note">
@@ -286,7 +282,7 @@
                         </svg>
                         <span class="language-option-copy">
                           <strong>Turkish</strong>
-                          <small>Clear explanation and comfort</small>
+                          <small>Explanation in Turkish</small>
                         </span>
                       </label>
 
@@ -302,7 +298,7 @@
                         </svg>
                         <span class="language-option-copy">
                           <strong>English</strong>
-                          <small>Show your level directly</small>
+                          <small>Explanation in English</small>
                         </span>
                       </label>
 
@@ -316,7 +312,7 @@
                         </svg>
                         <span class="language-option-copy">
                           <strong>Hybrid</strong>
-                          <small>Turkish explanation + short English speaking check</small>
+                          <small>Both languages</small>
                         </span>
                       </label>
                     </div>
@@ -324,14 +320,9 @@
                   </fieldset>
                 </div>
 
-                <button class="button button-primary consultation-continue-button" type="button" data-consultation-continue>
-                  <span>Continue Application</span>
-                  <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg>
-                </button>
-
                 <p class="consultation-secure-note">
                   <svg aria-hidden="true" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path><path d="M12 14v2"></path></svg>
-                  Your information is private and secure.
+                  Your information is private and secure. We never share your data.
                 </p>
               </section>
 
@@ -340,7 +331,10 @@
                 <textarea id="short-message" name="message" placeholder="Anything else you would like to share with us?"></textarea>
               </div>
 
-              <button class="button button-primary submit-button" type="submit">Submit Application</button>
+              <button class="button button-primary submit-button" type="submit">
+                <span>Continue Application</span>
+                <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg>
+              </button>
               <p class="application-status" id="application-status" role="status" aria-live="polite"></p>
             </form>
           </aside>

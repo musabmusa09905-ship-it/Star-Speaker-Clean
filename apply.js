@@ -3,6 +3,7 @@ const applicationStatus = document.querySelector("#application-status");
 const applicationFocusLinks = document.querySelectorAll('a[href="#application-form"]');
 const applicationSubmitButton = applicationForm?.querySelector('button[type="submit"]');
 const preferredProgramField = document.querySelector("#preferred-program");
+const preferredDateField = document.querySelector("#preferred-consultation-date");
 const programPreselectNote = document.querySelector("#program-preselect-note");
 let preselectedProgramValue = "";
 
@@ -15,11 +16,13 @@ const fallbackFormMessages = {
     speakingProblem: "Please share the speaking challenge holding you back.",
     preferredProgram: "Please select a preferred program.",
     startTimeline: "Please select when you want to start.",
+    preferredConsultationWindow: "Please choose a preferred consultation window.",
+    preferredConsultationDate: "Please choose a preferred consultation date.",
     consultationLanguage: "Please choose a preferred consultation language.",
     default: "This field is required.",
   },
   email: "Please enter a valid email address or leave it blank.",
-  success: "Your application has been received. We will contact you soon with the next step.",
+  success: "Your application has been received. We will review your information and confirm your consultation time by WhatsApp.",
   loading: "Submitting your application...",
   error: "We could not submit this right now. Please try again or contact us directly.",
 };
@@ -47,11 +50,19 @@ function getFieldErrorElement(field) {
   if (field.type === "radio") {
     const group = field.closest("fieldset");
     const groupDescription = group?.getAttribute("aria-describedby");
-    return groupDescription ? document.getElementById(groupDescription) : null;
+    if (!groupDescription) return null;
+    return groupDescription
+      .split(/\s+/)
+      .map((id) => document.getElementById(id))
+      .find((element) => element?.classList.contains("field-error")) || null;
   }
 
   const describedBy = field.getAttribute("aria-describedby");
-  return describedBy ? document.getElementById(describedBy) : null;
+  if (!describedBy) return null;
+  return describedBy
+    .split(/\s+/)
+    .map((id) => document.getElementById(id))
+    .find((element) => element?.classList.contains("field-error")) || null;
 }
 
 function setFieldError(field, message) {
@@ -122,6 +133,36 @@ function getRadioValue(name) {
   return applicationForm?.querySelector(`input[type="radio"][name="${name}"]:checked`)?.value || "";
 }
 
+function formatDateForInput(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function configurePreferredDateLimits() {
+  if (!preferredDateField) return;
+
+  const today = new Date();
+  const maxDate = new Date();
+  maxDate.setDate(today.getDate() + 30);
+
+  preferredDateField.min = formatDateForInput(today);
+  preferredDateField.max = formatDateForInput(maxDate);
+}
+
+function focusInvalidField(field) {
+  if (field.type !== "radio") {
+    field.focus();
+    return;
+  }
+
+  const option = field.closest("label");
+  const group = field.closest("fieldset");
+  (option || group)?.scrollIntoView({ behavior: "smooth", block: "center" });
+  window.setTimeout(() => option?.focus?.() || field.focus(), 220);
+}
+
 function buildApplyPayload() {
   return {
     full_name: applicationForm.querySelector("#full-name").value.trim(),
@@ -132,6 +173,8 @@ function buildApplyPayload() {
     biggest_speaking_problem: applicationForm.querySelector("#speaking-problem").value.trim(),
     preferred_program: applicationForm.querySelector("#preferred-program").value,
     start_timeline: applicationForm.querySelector("#start-timeline").value,
+    preferred_consultation_window: getRadioValue("preferredConsultationWindow"),
+    preferred_consultation_date: applicationForm.querySelector("#preferred-consultation-date").value,
     preferred_consultation_language: getRadioValue("consultationLanguage"),
     short_message: applicationForm.querySelector("#short-message").value.trim() || null,
     source: "apply_page",
@@ -176,6 +219,7 @@ function applyProgramQueryPreselection() {
 }
 
 applyProgramQueryPreselection();
+configurePreferredDateLimits();
 
 applicationFocusLinks.forEach((link) => {
   link.addEventListener("click", (event) => {
@@ -219,7 +263,7 @@ applicationForm?.addEventListener("submit", async (event) => {
 
   if (invalidFields.length > 0) {
     applicationStatus?.classList.remove("is-visible");
-    invalidFields[0].focus();
+    focusInvalidField(invalidFields[0]);
     return;
   }
 
