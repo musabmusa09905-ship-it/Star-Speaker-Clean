@@ -21,32 +21,35 @@ const i18n = {
         speakingProblem: "Please share the speaking challenge holding you back.",
         preferredProgram: "Please select a preferred program.",
         startTimeline: "Please select when you want to start.",
+        preferredConsultationWindow: "Please choose a preferred consultation window.",
+        preferredConsultationDate: "Please choose a preferred consultation date.",
         consultationLanguage: "Please choose a preferred consultation language.",
       },
       email: "Please enter a valid email address or leave it blank.",
-      success: "Your application has been received. We will contact you soon with the next step.",
+      success: "Your application has been received. We will review your information and confirm your consultation time by WhatsApp.",
     },
   },
   tr: {
-    menuOpen: "Navigasyon menüsünü aç",
-    menuClose: "Navigasyon menüsünü kapat",
+    menuOpen: "Navigasyon men\u00fcs\u00fcn\u00fc a\u00e7",
+    menuClose: "Navigasyon men\u00fcs\u00fcn\u00fc kapat",
     form: {
       required: {
-        fullName: "Lütfen adınızı ve soyadınızı yazın.",
-        whatsapp: "Lütfen WhatsApp numaranızı yazın.",
-        englishLevel: "Lütfen mevcut İngilizce seviyenizi seçin.",
-        mainGoal: "Lütfen ana hedefinizi seçin.",
-        speakingProblem: "Lütfen sizi en çok zorlayan konuşma problemini paylaşın.",
-        preferredProgram: "Lütfen tercih ettiğiniz programı seçin.",
-        startTimeline: "Lütfen ne zaman başlamak istediğinizi seçin.",
-        consultationLanguage: "Lütfen bir görüşme dili seçin.",
+        fullName: "L\u00fctfen ad\u0131n\u0131z\u0131 ve soyad\u0131n\u0131z\u0131 yaz\u0131n.",
+        whatsapp: "L\u00fctfen WhatsApp numaran\u0131z\u0131 yaz\u0131n.",
+        englishLevel: "L\u00fctfen mevcut \u0130ngilizce seviyenizi se\u00e7in.",
+        mainGoal: "L\u00fctfen ana hedefinizi se\u00e7in.",
+        speakingProblem: "L\u00fctfen sizi en \u00e7ok zorlayan konu\u015fma problemini payla\u015f\u0131n.",
+        preferredProgram: "L\u00fctfen tercih etti\u011finiz program\u0131 se\u00e7in.",
+        startTimeline: "L\u00fctfen ne zaman ba\u015flamak istedi\u011finizi se\u00e7in.",
+        preferredConsultationWindow: "L\u00fctfen tercih etti\u011finiz g\u00f6r\u00fc\u015fme aral\u0131\u011f\u0131n\u0131 se\u00e7in.",
+        preferredConsultationDate: "L\u00fctfen tercih etti\u011finiz g\u00f6r\u00fc\u015fme tarihini se\u00e7in.",
+        consultationLanguage: "L\u00fctfen bir g\u00f6r\u00fc\u015fme dili se\u00e7in.",
       },
-      email: "Lütfen geçerli bir e-posta adresi girin veya bu alanı boş bırakın.",
-      success: "Başvurunuz alındı. Bir sonraki adım için sizinle kısa süre içinde iletişime geçeceğiz.",
+      email: "L\u00fctfen ge\u00e7erli bir e-posta adresi girin veya bu alan\u0131 bo\u015f b\u0131rak\u0131n.",
+      success: "Ba\u015fvurunuz al\u0131nd\u0131. Bilgilerinizi inceleyip g\u00f6r\u00fc\u015fme saatinizi WhatsApp \u00fczerinden onaylayaca\u011f\u0131z.",
     },
   },
 };
-
 const pageMetaTr = {
   home: {
     title: "Star Speaker | Güvenle konuş. Globalde parla.",
@@ -90,6 +93,11 @@ pageMetaTr.login = {
 pageMetaTr.workspace = {
   title: "Öğrenci Alanı | Star Speaker",
   description: "Aktif Star Speaker öğrencileri için özel çalışma alanı.",
+};
+
+pageMetaTr.resetPassword = {
+  title: "Şifre Yenileme | Star Speaker",
+  description: "Star Speaker öğrenci hesabınız için yeni şifre oluşturun.",
 };
 
 const selectorTranslationsTr = {
@@ -476,8 +484,17 @@ const textTr = {
   "Access is available only for accepted Star Speaker students.": "Erişim yalnızca kabul edilen Star Speaker öğrencileri içindir.",
   "Use the email and password created for your Star Speaker student account.": "Star Speaker öğrenci hesabınız için oluşturulan e-posta ve şifreyi kullanın.",
   "Password": "Şifre",
+  "Forgot password?": "Şifrenizi mi unuttunuz?",
   "Not accepted yet? Apply for a consultation first.": "Henüz kabul edilmediniz mi? Önce görüşme için başvurun.",
   "Apply for Consultation": "Görüşme İçin Başvur",
+  "Reset Your Password": "Şifrenizi Yenileyin",
+  "Create a new password for your Star Speaker student account.": "Star Speaker öğrenci hesabınız için yeni bir şifre oluşturun.",
+  "Checking recovery link...": "Şifre yenileme bağlantısı kontrol ediliyor...",
+  "New Password": "Yeni Şifre",
+  "Confirm New Password": "Yeni Şifreyi Onayla",
+  "Update Password": "Şifreyi Güncelle",
+  "This password recovery link is invalid or expired. Please request a new link from the login page.": "Bu şifre yenileme bağlantısı geçersiz veya süresi dolmuş. Lütfen giriş sayfasından yeni bir bağlantı talep edin.",
+  "Back to Login": "Giriş Sayfasına Dön",
   "Student Workspace": "Öğrenci Alanı",
   "Workspace": "Öğrenci Alanı",
   "Welcome back.": "Tekrar hoş geldin.",
@@ -543,6 +560,19 @@ const textTr = {
   "Within 1 week": "1 hafta içinde",
   "Within 2-4 weeks": "2–4 hafta içinde",
   "Later": "Daha sonra",
+  "Book Your Consultation": "Görüşme Saatinizi Seçin",
+  "Choose your preferred consultation window. We will review your application and confirm the final time by WhatsApp.": "Size uygun görüşme aralığını seçin. Başvurunuzu inceleyip son saati WhatsApp üzerinden onaylayacağız.",
+  "Preferred Consultation Window": "Tercih Edilen Görüşme Aralığı",
+  "Morning": "Sabah",
+  "Afternoon": "Öğleden Sonra",
+  "Evening": "Akşam",
+  "Selected times are preferred windows. Final confirmation will be sent after review.": "Seçilen saatler tercih edilen aralıklardır. Son onay incelemeden sonra gönderilecektir.",
+  "Preferred Date": "Tercih Edilen Tarih",
+  "You can select a date up to 30 days in advance.": "30 gün sonrasına kadar tarih seçebilirsiniz.",
+  "Consultation Language": "Görüşme Dili",
+  "Choose the language for your consultation.": "Görüşme dilinizi seçin.",
+  "Continue Application": "Başvuruya Devam Et",
+  "Your information is private and secure.": "Bilgileriniz gizli ve güvendedir.",
   "Preferred Consultation Language": "Görüşme Dili Tercihi",
   "Choose the language that helps us understand you best.": "Sizi en iyi şekilde anlayabilmemiz için görüşme dilinizi seçin.",
   "Turkish": "Türkçe",
@@ -587,6 +617,7 @@ const attrTr = {
   "Apply for a Star Speaker consultation and receive a clear recommendation for the right speaking transformation path.": "Star Speaker görüşmeniz için başvurun ve doğru konuşma dönüşümü yolu için net bir öneri alın.",
   "Student login for accepted Star Speaker students.": "Kabul edilen Star Speaker öğrencileri için öğrenci girişi.",
   "Private Star Speaker student workspace.": "Özel Star Speaker öğrenci çalışma alanı.",
+  "Reset your Star Speaker student account password.": "Star Speaker öğrenci hesabınızın şifresini yenileyin.",
   "Primary navigation": "Ana navigasyon",
   "Star Speaker homepage": "Star Speaker ana sayfası",
   "Open navigation menu": "Navigasyon menüsünü aç",
@@ -617,6 +648,8 @@ const attrTr = {
   "Enter your full name": "Ad soyadınızı yazın",
   "you@example.com": "ornek@eposta.com",
   "Enter your password": "Şifrenizi yazın",
+  "Enter new password": "Yeni şifrenizi yazın",
+  "Confirm new password": "Yeni şifrenizi onaylayın",
   "What is the biggest challenge holding you back?": "Sizi en çok zorlayan konuşma problemi nedir?",
   "Anything else you would like to share with us?": "Bizimle paylaşmak istediğiniz başka bir şey var mı?",
 };
@@ -640,6 +673,7 @@ function getPageKey() {
   if (name === "level-test.html") return "levelTest";
   if (name === "login.html") return "login";
   if (name === "student-workspace.html") return "workspace";
+  if (name === "reset-password.html") return "resetPassword";
   return "home";
 }
 
@@ -854,6 +888,7 @@ const transitionPages = new Set([
   "level-test.html",
   "login.html",
   "student-workspace.html",
+  "reset-password.html",
 ]);
 const transitionKey = "starSpeakerPageTransition";
 const transitionAsset = "public/images/star-transition-emblem.png";

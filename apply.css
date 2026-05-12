@@ -251,13 +251,15 @@
 
 .form-field-wide,
 .language-field,
+.consultation-window-panel,
 .submit-button,
 .application-status {
   grid-column: 1 / -1;
 }
 
 .form-field label,
-.language-field legend {
+.language-field legend,
+.consultation-window-field legend {
   color: rgba(247, 241, 228, 0.93);
   font-size: 0.82rem;
   font-weight: 750;
@@ -267,6 +269,313 @@
 .form-field label span {
   color: var(--muted-warm);
   font-weight: 600;
+}
+
+.consultation-window-panel {
+  position: relative;
+  display: grid;
+  gap: 1.15rem;
+  margin-top: 0.2rem;
+  overflow: hidden;
+  border: 1px solid rgba(230, 211, 163, 0.56);
+  border-radius: 10px;
+  background:
+    radial-gradient(circle at 52% 0%, rgba(230, 211, 163, 0.13), transparent 17rem),
+    linear-gradient(145deg, rgba(20, 18, 15, 0.94), rgba(8, 8, 7, 0.96));
+  box-shadow:
+    0 22px 62px rgba(0, 0, 0, 0.42),
+    0 0 48px rgba(191, 164, 106, 0.13),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  padding: clamp(1rem, 1.8vw, 1.35rem);
+}
+
+.consultation-window-panel::before {
+  position: absolute;
+  inset: -1px;
+  z-index: 0;
+  content: "";
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, transparent, rgba(230, 211, 163, 0.08), transparent),
+    radial-gradient(circle at 92% 8%, rgba(230, 211, 163, 0.14), transparent 12rem);
+}
+
+.consultation-window-panel > * {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+}
+
+.consultation-window-heading {
+  display: grid;
+  gap: 0.38rem;
+  text-align: center;
+}
+
+.consultation-window-heading .eyebrow {
+  margin-bottom: 0.1rem;
+}
+
+.consultation-window-heading h3 {
+  margin: 0;
+  color: var(--ivory);
+  font-family: "Cormorant Garamond", "Bodoni 72", Georgia, serif;
+  font-size: clamp(2.1rem, 3.4vw, 3.05rem);
+  font-weight: 500;
+  line-height: 0.98;
+}
+
+.consultation-window-heading p {
+  max-width: 38rem;
+  margin: 0 auto;
+  color: rgba(239, 231, 216, 0.82);
+  font-size: 0.94rem;
+  line-height: 1.55;
+}
+
+.consultation-window-field {
+  display: grid;
+  gap: 0.8rem;
+  margin: 0;
+  border: 0;
+  padding: 0;
+}
+
+.window-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.window-option {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.9rem;
+  min-height: 7.8rem;
+  overflow: hidden;
+  border: 1px solid rgba(230, 211, 163, 0.42);
+  border-radius: 8px;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(230, 211, 163, 0.07), transparent 8rem),
+    rgba(9, 9, 8, 0.72);
+  color: rgba(239, 231, 216, 0.88);
+  cursor: pointer;
+  padding: 1.1rem;
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    background 180ms ease,
+    color 180ms ease,
+    transform 180ms ease;
+}
+
+.window-option:hover {
+  border-color: rgba(230, 211, 163, 0.72);
+  background:
+    radial-gradient(circle at 50% 0%, rgba(230, 211, 163, 0.11), transparent 8rem),
+    rgba(20, 18, 15, 0.88);
+  box-shadow: 0 0 26px rgba(191, 164, 106, 0.15);
+  transform: translateY(-1px);
+}
+
+.window-option input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.window-icon {
+  display: grid;
+  place-items: center;
+  width: 3.65rem;
+  height: 3.65rem;
+  border: 1px solid rgba(230, 211, 163, 0.76);
+  border-radius: 50%;
+  color: var(--champagne);
+}
+
+.window-icon svg,
+.window-check svg,
+.consultation-secure-note svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.window-icon svg {
+  width: 2.05rem;
+  height: 2.05rem;
+  stroke-width: 1.35;
+}
+
+.window-copy {
+  display: grid;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.window-copy strong {
+  color: var(--ivory);
+  font-family: "Cormorant Garamond", "Bodoni 72", Georgia, serif;
+  font-size: clamp(1.38rem, 2vw, 1.8rem);
+  font-weight: 500;
+  line-height: 1;
+}
+
+.window-copy small {
+  color: rgba(239, 231, 216, 0.8);
+  font-size: 1rem;
+  line-height: 1.2;
+}
+
+.window-check {
+  position: absolute;
+  top: 0.72rem;
+  right: 0.72rem;
+  display: grid;
+  place-items: center;
+  width: 1.35rem;
+  height: 1.35rem;
+  border-radius: 50%;
+  background: #050505;
+  color: var(--champagne);
+  opacity: 0;
+  transform: scale(0.75);
+  transition:
+    opacity 160ms ease,
+    transform 160ms ease;
+}
+
+.window-check svg {
+  width: 0.84rem;
+  height: 0.84rem;
+  stroke-width: 2.6;
+}
+
+.window-option:has(input:checked) {
+  border-color: rgba(230, 211, 163, 0.95);
+  background:
+    linear-gradient(135deg, rgba(230, 211, 163, 0.95), rgba(191, 164, 106, 0.82));
+  color: #080807;
+  box-shadow:
+    0 0 30px rgba(191, 164, 106, 0.26),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.window-option:has(input:checked) .window-icon {
+  border-color: rgba(8, 8, 7, 0.68);
+  color: #080807;
+}
+
+.window-option:has(input:checked) .window-copy strong,
+.window-option:has(input:checked) .window-copy small {
+  color: #080807;
+}
+
+.window-option:has(input:checked) .window-check {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.window-option:has(input:focus-visible) {
+  outline: 2px solid rgba(230, 211, 163, 0.74);
+  outline-offset: 3px;
+}
+
+.window-note,
+.date-helper,
+.consultation-secure-note {
+  margin: 0;
+  color: rgba(167, 159, 144, 0.9);
+  font-size: 0.78rem;
+  line-height: 1.42;
+}
+
+.window-note {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.window-note::before {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 1.15rem;
+  height: 1.15rem;
+  border: 1px solid rgba(230, 211, 163, 0.72);
+  border-radius: 50%;
+  color: var(--champagne);
+  content: "i";
+  font-family: "Cormorant Garamond", "Bodoni 72", Georgia, serif;
+  font-size: 0.85rem;
+  line-height: 1;
+}
+
+.consultation-detail-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.2fr);
+  gap: 0.9rem;
+  border-top: 1px solid rgba(230, 211, 163, 0.22);
+  padding-top: 1.05rem;
+}
+
+.consultation-date-field input[type="date"] {
+  min-height: 3.25rem;
+  color-scheme: dark;
+}
+
+.consultation-date-field input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  filter: invert(87%) sepia(24%) saturate(399%) hue-rotate(4deg) brightness(96%);
+  opacity: 0.9;
+}
+
+.consultation-secure-note {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  text-align: center;
+}
+
+.consultation-continue-button {
+  justify-self: center;
+  width: min(100%, 26rem);
+  min-height: 3.35rem;
+  margin-top: 0.2rem;
+}
+
+.consultation-continue-button svg,
+.consultation-secure-note svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.consultation-continue-button svg {
+  width: 1.1rem;
+  height: 1.1rem;
+  stroke-width: 1.65;
+}
+
+.consultation-secure-note svg {
+  width: 1rem;
+  height: 1rem;
+  color: var(--champagne-dark);
+  stroke-width: 1.55;
+}
+
+.consultation-window-field.has-error .window-options {
+  border-radius: 10px;
+  box-shadow: 0 0 0 3px rgba(230, 120, 110, 0.08);
 }
 
 .language-field {
@@ -392,11 +701,17 @@
 .language-option:has(input:checked) {
   border-color: rgba(230, 211, 163, 0.82);
   background:
-    radial-gradient(circle at 50% 0%, rgba(230, 211, 163, 0.12), transparent 6rem),
-    rgba(20, 18, 15, 0.9);
+    linear-gradient(135deg, rgba(230, 211, 163, 0.95), rgba(191, 164, 106, 0.82));
+  color: #080807;
   box-shadow:
     0 0 30px rgba(191, 164, 106, 0.2),
     inset 0 0 0 1px rgba(230, 211, 163, 0.1);
+}
+
+.language-option:has(input:checked) svg,
+.language-option:has(input:checked) .language-option-copy strong,
+.language-option:has(input:checked) .language-option-copy small {
+  color: #080807;
 }
 
 .language-option:has(input:checked) .language-radio::after {
@@ -765,6 +1080,38 @@
 
   .language-options {
     grid-template-columns: 1fr;
+  }
+
+  .consultation-window-panel {
+    padding: 1rem;
+  }
+
+  .consultation-window-heading {
+    text-align: left;
+  }
+
+  .consultation-window-heading p {
+    margin-inline: 0;
+  }
+
+  .window-options,
+  .consultation-detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .window-option {
+    min-height: auto;
+    padding: 0.95rem;
+  }
+
+  .window-icon {
+    width: 3.1rem;
+    height: 3.1rem;
+  }
+
+  .window-icon svg {
+    width: 1.75rem;
+    height: 1.75rem;
   }
 
   .language-option {
