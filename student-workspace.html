@@ -230,6 +230,25 @@
               <p id="workspace-profile-note">Your profile is being prepared.</p>
             </section>
           </div>
+
+          <section class="workspace-card workspace-history-card" id="voice-history" aria-labelledby="voice-history-title">
+            <div class="workspace-card-heading">
+              <span class="workspace-card-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M4 12v2M8 8v8M12 5v14M16 8v8M20 12v2"></path></svg>
+              </span>
+              <div>
+                <h2 id="voice-history-title">Voice History</h2>
+                <p id="voice-history-subtitle">Your submitted speaking practices and reviewed feedback.</p>
+              </div>
+            </div>
+            <div class="voice-history-list" id="voice-history-list">
+              <div class="workspace-empty-state">
+                <strong>No voice history yet.</strong>
+                <p>Your submitted recordings will appear here after your first voice practice.</p>
+              </div>
+            </div>
+            <button class="button button-outline voice-history-toggle" id="voice-history-toggle" type="button" hidden>Show more</button>
+          </section>
         </section>
 
         <nav class="workspace-bottom-nav" aria-label="Mobile workspace navigation">

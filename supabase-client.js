@@ -387,6 +387,20 @@
     return Array.isArray(data) ? data : [];
   }
 
+  async function getVoiceSubmissionSignedUrl(storagePath, expiresIn = 3600) {
+    const supabaseClient = getClient();
+    if (!supabaseClient || !storagePath) {
+      return null;
+    }
+
+    const { data, error } = await supabaseClient.storage
+      .from("voice-submissions")
+      .createSignedUrl(storagePath, expiresIn);
+
+    if (error) throw error;
+    return data?.signedUrl || null;
+  }
+
   window.starSpeakerSupabase = {
     isConfigured,
     getClient,
@@ -408,5 +422,6 @@
     uploadVoiceSubmissionAudio,
     insertVoiceSubmission,
     getVoiceSubmissions,
+    getVoiceSubmissionSignedUrl,
   };
 })();

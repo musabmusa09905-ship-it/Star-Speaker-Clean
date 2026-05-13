@@ -978,6 +978,123 @@
   line-height: 1.45;
 }
 
+.workspace-history-card {
+  display: grid;
+  gap: 1rem;
+}
+
+.voice-history-list {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.voice-history-item {
+  display: grid;
+  gap: 0.8rem;
+  min-width: 0;
+  border: 1px solid rgba(230, 211, 163, 0.16);
+  border-radius: 10px;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(230, 211, 163, 0.08), transparent 10rem),
+    rgba(5, 5, 5, 0.28);
+  padding: 0.95rem;
+}
+
+.voice-history-item-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.8rem;
+  min-width: 0;
+}
+
+.voice-history-item-header strong,
+.voice-history-item-header small {
+  display: block;
+}
+
+.voice-history-item-header strong {
+  color: var(--ivory);
+  font-size: 1rem;
+}
+
+.voice-history-item-header small {
+  margin-top: 0.2rem;
+  color: rgba(167, 159, 144, 0.92);
+  font-size: 0.78rem;
+}
+
+.voice-history-status {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  border: 1px solid rgba(230, 211, 163, 0.24);
+  border-radius: 999px;
+  color: rgba(239, 231, 216, 0.8);
+  font-size: 0.7rem;
+  font-weight: 820;
+  letter-spacing: 0.08em;
+  padding: 0.3rem 0.52rem;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.voice-history-status.is-pending {
+  border-color: rgba(230, 211, 163, 0.34);
+  color: var(--champagne);
+}
+
+.voice-history-status.is-reviewed {
+  border-color: rgba(230, 211, 163, 0.52);
+  background: rgba(230, 211, 163, 0.08);
+  color: var(--champagne);
+}
+
+.voice-history-audio {
+  width: 100%;
+  max-width: 100%;
+  min-height: 2.6rem;
+  border: 1px solid rgba(230, 211, 163, 0.14);
+  border-radius: 999px;
+  background: rgba(8, 8, 7, 0.62);
+}
+
+.voice-history-unavailable {
+  margin: 0;
+  color: rgba(239, 231, 216, 0.68);
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+.voice-history-feedback-wrap {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.voice-history-feedback {
+  display: grid;
+  gap: 0.22rem;
+}
+
+.voice-history-feedback span {
+  color: var(--champagne);
+  font-size: 0.7rem;
+  font-weight: 850;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.voice-history-feedback p {
+  margin: 0;
+  color: rgba(247, 241, 228, 0.84);
+  line-height: 1.5;
+}
+
+.voice-history-toggle {
+  justify-self: start;
+  min-width: 9rem;
+}
+
 .workspace-feature-card .button {
   justify-self: start;
   min-width: 9.5rem;
@@ -1250,6 +1367,18 @@
   .voice-log-actions .button {
     width: 100%;
     min-width: 0;
+  }
+
+  .voice-history-item-header {
+    display: grid;
+  }
+
+  .voice-history-status {
+    width: fit-content;
+  }
+
+  .voice-history-toggle {
+    width: 100%;
   }
 }
 

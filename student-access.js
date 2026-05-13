@@ -74,6 +74,19 @@
       feedbackConfidence: "Confidence",
       feedbackReviewedBy: "Reviewed by",
       feedbackDefaultCoach: "Star Speaker Coach",
+      historyTitle: "Voice History",
+      historySubtitle: "Your submitted speaking practices and reviewed feedback.",
+      historyEmptyTitle: "No voice history yet.",
+      historyEmptyBody: "Your submitted recordings will appear here after your first voice practice.",
+      historySubmitted: "Submitted",
+      historyPendingReview: "Pending Review",
+      historyReviewed: "Reviewed",
+      historyPlaybackUnavailable: "Recording saved. Playback is unavailable right now.",
+      historyFeedbackPending: "Feedback pending.",
+      historyCoachPending: "Your coach will review this submission soon.",
+      historyShowMore: "Show more",
+      historyShowLess: "Show less",
+      historyLoadError: "We could not load your voice history right now.",
     },
     tr: {
       checking: "Özel Star Speaker erişiminiz kontrol ediliyor.",
@@ -144,6 +157,19 @@
       feedbackConfidence: "Özgüven",
       feedbackReviewedBy: "İnceleyen",
       feedbackDefaultCoach: "Star Speaker Koçu",
+      historyTitle: "Ses Geçmişi",
+      historySubtitle: "Gönderdiğin konuşma pratikleri ve incelenen geri bildirimler.",
+      historyEmptyTitle: "Henüz ses geçmişi yok.",
+      historyEmptyBody: "İlk ses pratiğini gönderdikten sonra kayıtların burada görünecek.",
+      historySubmitted: "Gönderildi",
+      historyPendingReview: "İnceleme Bekliyor",
+      historyReviewed: "İncelendi",
+      historyPlaybackUnavailable: "Kayıt kaydedildi. Şu anda oynatma kullanılamıyor.",
+      historyFeedbackPending: "Geri bildirim bekleniyor.",
+      historyCoachPending: "Koçun bu gönderiyi yakında inceleyecek.",
+      historyShowMore: "Daha fazla göster",
+      historyShowLess: "Daha az göster",
+      historyLoadError: "Ses geçmişin şu anda yüklenemedi.",
     },
   };
 
@@ -585,10 +611,14 @@
   let voiceSubmittedToday = false;
   let cachedVoiceSubmissions = [];
   let currentVoiceState = "idle";
+  let voiceHistoryExpanded = false;
+  let voiceHistoryLoadFailed = false;
+  const voicePlaybackUrls = new Map();
 
   const maxVoiceUploadBytes = 20 * 1024 * 1024;
   const maxRecordingSeconds = 120;
   const dayKeys = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  const initialHistoryLimit = 5;
 
   function getDisplayName(profile) {
     return String(profile?.full_name || "").trim();
@@ -729,6 +759,149 @@
       day: "numeric",
       year: "numeric",
     }).format(date);
+  }
+
+  function getSubmissionDateValue(submission) {
+    return Date.parse(submission?.created_at || submission?.submission_date || "") || 0;
+  }
+
+  function getSortedVoiceSubmissions(submissions = []) {
+    return [...submissions].sort((a, b) => getSubmissionDateValue(b) - getSubmissionDateValue(a));
+  }
+
+  function isReviewedSubmission(submission) {
+    return (
+      String(submission?.review_status || "").toLowerCase() === "reviewed" ||
+      hasText(submission?.reviewed_at) ||
+      hasText(submission?.coach_feedback)
+    );
+  }
+
+  function getHistoryStatus(submission) {
+    if (isReviewedSubmission(submission)) {
+      return { className: "is-reviewed", label: t("historyReviewed") };
+    }
+
+    if (hasText(submission?.storage_path) || hasText(submission?.audio_url) || hasText(submission?.created_at)) {
+      return { className: "is-pending", label: t("historyPendingReview") };
+    }
+
+    return { className: "", label: t("historySubmitted") };
+  }
+
+  function getSubmissionId(submission, index = 0) {
+    return String(
+      submission?.id ||
+      submission?.storage_path ||
+      `${submission?.submission_date || "voice"}-${submission?.created_at || index}`,
+    );
+  }
+
+  async function prepareVoicePlaybackUrls(submissions = []) {
+    const visible = getSortedVoiceSubmissions(submissions)
+      .slice(0, voiceHistoryExpanded ? submissions.length : initialHistoryLimit);
+
+    await Promise.all(visible.map(async (submission, index) => {
+      const key = getSubmissionId(submission, index);
+      if (voicePlaybackUrls.has(key)) return;
+
+      if (hasText(submission?.audio_url)) {
+        voicePlaybackUrls.set(key, submission.audio_url);
+        return;
+      }
+
+      if (!hasText(submission?.storage_path)) {
+        voicePlaybackUrls.set(key, "");
+        return;
+      }
+
+      try {
+        const signedUrl = await window.starSpeakerSupabase.getVoiceSubmissionSignedUrl?.(
+          submission.storage_path,
+          3600,
+        );
+        voicePlaybackUrls.set(key, signedUrl || "");
+      } catch (error) {
+        console.warn("Voice history signed URL failed:", error);
+        voicePlaybackUrls.set(key, "");
+      }
+    }));
+  }
+
+  function renderVoiceHistoryItem(submission, index) {
+    const key = getSubmissionId(submission, index);
+    const playbackUrl = voicePlaybackUrls.get(key) || "";
+    const status = getHistoryStatus(submission);
+    const reviewed = isReviewedSubmission(submission);
+    const dateLabel = formatFeedbackDate(submission?.submission_date || submission?.created_at);
+    const coachNote = hasText(submission?.coach_feedback)
+      ? `<div class="voice-history-feedback"><span>${escapeHtml(t("feedbackCoachNote"))}</span><p>${escapeHtml(submission.coach_feedback)}</p></div>`
+      : "";
+    const nextFocus = hasText(submission?.coach_next_focus)
+      ? `<div class="voice-history-feedback"><span>${escapeHtml(t("feedbackNextFocus"))}</span><p>${escapeHtml(submission.coach_next_focus)}</p></div>`
+      : "";
+
+    return `
+      <article class="voice-history-item">
+        <div class="voice-history-item-header">
+          <div>
+            <strong>${escapeHtml(dateLabel || t("historySubmitted"))}</strong>
+            <small>${escapeHtml(t("historySubmitted"))}</small>
+          </div>
+          <span class="voice-history-status ${status.className}">${escapeHtml(status.label)}</span>
+        </div>
+        ${playbackUrl
+          ? `<audio class="voice-history-audio" controls src="${escapeHtml(playbackUrl)}"></audio>`
+          : `<p class="voice-history-unavailable">${escapeHtml(t("historyPlaybackUnavailable"))}</p>`
+        }
+        <div class="voice-history-feedback-wrap">
+          ${reviewed && (coachNote || nextFocus)
+            ? `${coachNote}${nextFocus}`
+            : `<div class="voice-history-feedback"><span>${escapeHtml(t("historyFeedbackPending"))}</span><p>${escapeHtml(t("historyCoachPending"))}</p></div>`
+          }
+        </div>
+      </article>
+    `;
+  }
+
+  function renderVoiceHistory(submissions = cachedVoiceSubmissions) {
+    const title = document.querySelector("#voice-history-title");
+    const subtitle = document.querySelector("#voice-history-subtitle");
+    const list = document.querySelector("#voice-history-list");
+    const toggle = document.querySelector("#voice-history-toggle");
+    if (title) title.textContent = t("historyTitle");
+    if (subtitle) subtitle.textContent = t("historySubtitle");
+    if (!list) return;
+
+    const sorted = getSortedVoiceSubmissions(submissions);
+    if (voiceHistoryLoadFailed) {
+      list.innerHTML = `
+        <div class="workspace-empty-state">
+          <strong>${escapeHtml(t("historyLoadError"))}</strong>
+          <p>${escapeHtml(t("voiceQueryFailed"))}</p>
+        </div>
+      `;
+      if (toggle) toggle.hidden = true;
+      return;
+    }
+
+    if (!sorted.length) {
+      list.innerHTML = `
+        <div class="workspace-empty-state">
+          <strong>${escapeHtml(t("historyEmptyTitle"))}</strong>
+          <p>${escapeHtml(t("historyEmptyBody"))}</p>
+        </div>
+      `;
+      if (toggle) toggle.hidden = true;
+      return;
+    }
+
+    const visible = voiceHistoryExpanded ? sorted : sorted.slice(0, initialHistoryLimit);
+    list.innerHTML = visible.map(renderVoiceHistoryItem).join("");
+    if (toggle) {
+      toggle.hidden = sorted.length <= initialHistoryLimit;
+      toggle.textContent = voiceHistoryExpanded ? t("historyShowLess") : t("historyShowMore");
+    }
   }
 
   function renderFeedbackField(labelKey, value) {
@@ -1065,19 +1238,24 @@
       cachedVoiceSubmissions = await window.starSpeakerSupabase.getVoiceSubmissions?.(
         user.id,
       ) || [];
+      voiceHistoryLoadFailed = false;
+      await prepareVoicePlaybackUrls(cachedVoiceSubmissions);
       const today = getLocalDateString();
       voiceSubmittedToday = cachedVoiceSubmissions.some((submission) => (
         String(submission?.submission_date || "").slice(0, 10) === today
       ));
       renderWeeklyPractice(cachedVoiceSubmissions);
       renderTeacherFeedback(cachedVoiceSubmissions);
+      renderVoiceHistory(cachedVoiceSubmissions);
       renderVoiceState(voiceSubmittedToday ? "submitted" : "idle");
     } catch (error) {
       console.warn("Voice submission status load failed:", error);
       cachedVoiceSubmissions = [];
       voiceSubmittedToday = false;
+      voiceHistoryLoadFailed = true;
       renderWeeklyPractice([]);
       renderTeacherFeedback([]);
+      renderVoiceHistory([]);
       renderVoiceState("idle");
       setVoiceMessage(t("voiceQueryFailed"), "error");
     }
@@ -1095,6 +1273,12 @@
     elements.uploadButton?.addEventListener("click", () => elements.uploadInput?.click());
     elements.uploadInput?.addEventListener("change", () => {
       handleVoiceUploadFile(elements.uploadInput.files?.[0]);
+    });
+
+    document.querySelector("#voice-history-toggle")?.addEventListener("click", async () => {
+      voiceHistoryExpanded = !voiceHistoryExpanded;
+      await prepareVoicePlaybackUrls(cachedVoiceSubmissions);
+      renderVoiceHistory(cachedVoiceSubmissions);
     });
   }
 
@@ -1129,6 +1313,7 @@
     renderVoiceLabels();
     renderWeeklyPractice(cachedVoiceSubmissions);
     renderTeacherFeedback(cachedVoiceSubmissions);
+    renderVoiceHistory(cachedVoiceSubmissions);
     renderVoiceState(currentVoiceState || (voiceSubmittedToday ? "submitted" : "idle"));
   }
 
@@ -1142,6 +1327,7 @@
     bindVoiceLogControls();
     renderWeeklyPractice([]);
     renderTeacherFeedback([]);
+    renderVoiceHistory([]);
     renderVoiceState("idle");
 
     if (!window.starSpeakerSupabase?.isConfigured?.()) {
