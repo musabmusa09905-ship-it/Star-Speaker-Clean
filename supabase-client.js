@@ -14,7 +14,7 @@
       auth: {
         persistSession: true,
         autoRefreshToken: true,
-        detectSessionInUrl: false,
+        detectSessionInUrl: true,
       },
     });
 
@@ -125,6 +125,47 @@
     return data?.session || null;
   }
 
+  async function exchangeRecoveryCode(code) {
+    const supabaseClient = getClient();
+    if (!supabaseClient || !code) {
+      return null;
+    }
+
+    const { data, error } = await supabaseClient.auth.exchangeCodeForSession(code);
+    if (error) throw error;
+    return data?.session || null;
+  }
+
+  async function verifyRecoveryToken(tokenHash) {
+    const supabaseClient = getClient();
+    if (!supabaseClient || !tokenHash) {
+      return null;
+    }
+
+    const { data, error } = await supabaseClient.auth.verifyOtp({
+      token_hash: tokenHash,
+      type: "recovery",
+    });
+
+    if (error) throw error;
+    return data?.session || null;
+  }
+
+  async function setRecoverySession(accessToken, refreshToken) {
+    const supabaseClient = getClient();
+    if (!supabaseClient || !accessToken || !refreshToken) {
+      return null;
+    }
+
+    const { data, error } = await supabaseClient.auth.setSession({
+      access_token: accessToken,
+      refresh_token: refreshToken,
+    });
+
+    if (error) throw error;
+    return data?.session || null;
+  }
+
   async function signInStudent(email, password) {
     const supabaseClient = getClient();
     if (!supabaseClient) {
@@ -149,6 +190,31 @@
     const { error } = await supabaseClient.auth.signOut();
     if (error) throw error;
     return { ok: true };
+  }
+
+  async function sendPasswordReset(email, redirectTo) {
+    const supabaseClient = getClient();
+    if (!supabaseClient) {
+      throw new Error("Supabase is not configured.");
+    }
+
+    const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+      redirectTo,
+    });
+
+    if (error) throw error;
+    return { ok: true };
+  }
+
+  async function updateStudentPassword(password) {
+    const supabaseClient = getClient();
+    if (!supabaseClient) {
+      throw new Error("Supabase is not configured.");
+    }
+
+    const { data, error } = await supabaseClient.auth.updateUser({ password });
+    if (error) throw error;
+    return data;
   }
 
   async function getStudentProfile(user) {
@@ -234,6 +300,93 @@
     return { ok: true };
   }
 
+  function getAudioExtension(fileOrBlob) {
+    const type = String(fileOrBlob?.type || "").toLowerCase();
+    const name = String(fileOrBlob?.name || "").toLowerCase();
+
+    if (name.match(/\.(webm|mp3|mpeg|mp4|m4a|wav|ogg)$/)) {
+      return name.split(".").pop().replace("mpeg", "mp3");
+    }
+
+    if (type.includes("mpeg") || type.includes("mp3")) return "mp3";
+    if (type.includes("mp4")) return "mp4";
+    if (type.includes("m4a")) return "m4a";
+    if (type.includes("wav")) return "wav";
+    if (type.includes("ogg")) return "ogg";
+    return "webm";
+  }
+
+  function makeVoiceSubmissionPath(userId, submissionDate, fileOrBlob) {
+    const safeUserId = String(userId || "student")
+      .trim()
+      .replace(/[^a-zA-Z0-9-]/g, "")
+      .slice(0, 80) || "student";
+    const safeDate = String(submissionDate || new Date().toISOString().slice(0, 10))
+      .replace(/[^0-9-]/g, "")
+      .slice(0, 10);
+    const extension = getAudioExtension(fileOrBlob);
+    return `${safeUserId}/${safeDate}/voice-${Date.now()}-${makeRandomId()}.${extension}`;
+  }
+
+  async function uploadVoiceSubmissionAudio(fileOrBlob, userId, submissionDate) {
+    const supabaseClient = getClient();
+    if (!supabaseClient || !fileOrBlob || !userId) {
+      throw new Error("Voice submission upload is not configured.");
+    }
+
+    const storagePath = makeVoiceSubmissionPath(userId, submissionDate, fileOrBlob);
+    const contentType = fileOrBlob.type || "audio/webm";
+    const uploadFile = typeof File === "function" && !(fileOrBlob instanceof File)
+      ? new File([fileOrBlob], storagePath.split("/").pop(), { type: contentType })
+      : fileOrBlob;
+
+    const { data, error } = await supabaseClient.storage
+      .from("voice-submissions")
+      .upload(storagePath, uploadFile, {
+        contentType,
+        upsert: false,
+      });
+
+    if (error) throw error;
+    return { path: data?.path || storagePath, publicUrl: null };
+  }
+
+  async function insertVoiceSubmission(payload) {
+    const supabaseClient = getClient();
+    if (!supabaseClient) {
+      throw new Error("Supabase is not configured.");
+    }
+
+    const { data, error } = await supabaseClient
+      .from("voice_submissions")
+      .insert(payload)
+      .select("*")
+      .single();
+
+    if (error) throw error;
+    return data;
+  }
+
+  async function getVoiceSubmissions(userId, startDate, endDate) {
+    const supabaseClient = getClient();
+    if (!supabaseClient || !userId) {
+      return [];
+    }
+
+    let query = supabaseClient
+      .from("voice_submissions")
+      .select("*")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false });
+
+    if (startDate) query = query.gte("submission_date", startDate);
+    if (endDate) query = query.lte("submission_date", endDate);
+
+    const { data, error } = await query;
+    if (error) throw error;
+    return Array.isArray(data) ? data : [];
+  }
+
   window.starSpeakerSupabase = {
     isConfigured,
     getClient,
@@ -242,10 +395,18 @@
     uploadLevelTestRecording,
     insertLevelTestSubmission,
     getSession,
+    exchangeRecoveryCode,
+    verifyRecoveryToken,
+    setRecoverySession,
     signInStudent,
     signOutStudent,
+    sendPasswordReset,
+    updateStudentPassword,
     getStudentProfile,
     updateStudentLoginTimestamps,
     insertPortalEvent,
+    uploadVoiceSubmissionAudio,
+    insertVoiceSubmission,
+    getVoiceSubmissions,
   };
 })();

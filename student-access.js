@@ -35,6 +35,31 @@
       resetUpdating: "Updating your password...",
       resetSuccess: "Your password has been updated. Redirecting to login...",
       resetError: "We could not update your password. Please request a new link and try again.",
+      voiceHelper: "Record your speaking practice for today.",
+      voiceNotSubmitted: "Today: Not submitted",
+      voiceSubmitted: "Today: Submitted",
+      voiceIdleMessage: "No voice submission yet.",
+      voiceSubmittedMessage: "Your voice practice has been received. Your coach will review it soon.",
+      voiceStart: "Start Recording",
+      voiceStop: "Stop Recording",
+      voiceSubmit: "Submit Voice",
+      voiceAgain: "Record Again",
+      voiceUpload: "Upload Audio",
+      voiceRecording: "Recording...",
+      voiceUploading: "Uploading your voice practice...",
+      voicePreview: "Preview Recording",
+      voiceMicDenied: "Microphone access was blocked. Please allow microphone permission and try again.",
+      voiceUnsupported: "Voice recording is not available on this device. You can still upload an audio file.",
+      voiceUploadFailed: "We could not submit your voice practice. Please try again.",
+      voiceNoRecording: "Please record or upload a voice file before submitting.",
+      voiceTooLarge: "Please upload an audio file under 20MB.",
+      voiceTooShort: "Please record a little longer before previewing.",
+      voiceQueryFailed: "Voice status could not be loaded right now.",
+      taskSubmitted: "Submitted",
+      taskNotSubmitted: "Not submitted",
+      oneTaskComplete: "1 / 1 Task",
+      zeroTaskComplete: "0 / 1 Task",
+      weeklySummary: (count) => `${count} / 7 tasks completed`,
     },
     tr: {
       checking: "Özel Star Speaker erişiminiz kontrol ediliyor.",
@@ -66,6 +91,31 @@
       resetUpdating: "Şifreniz güncelleniyor...",
       resetSuccess: "Şifreniz güncellendi. Giriş sayfasına yönlendiriliyorsunuz...",
       resetError: "Şifreniz güncellenemedi. Lütfen yeni bir bağlantı talep edip tekrar deneyin.",
+      voiceHelper: "Bugünkü konuşma pratiğini kaydet.",
+      voiceNotSubmitted: "Bugün: Gönderilmedi",
+      voiceSubmitted: "Bugün: Gönderildi",
+      voiceIdleMessage: "Henüz ses kaydı yok.",
+      voiceSubmittedMessage: "Ses pratiğin alındı. Koçun yakında inceleyecek.",
+      voiceStart: "Kaydı Başlat",
+      voiceStop: "Kaydı Durdur",
+      voiceSubmit: "Sesi Gönder",
+      voiceAgain: "Tekrar Kaydet",
+      voiceUpload: "Ses Yükle",
+      voiceRecording: "Kaydediliyor...",
+      voiceUploading: "Ses pratiğin yükleniyor...",
+      voicePreview: "Kaydı Önizle",
+      voiceMicDenied: "Mikrofon erişimi engellendi. Lütfen mikrofon izni verip tekrar dene.",
+      voiceUnsupported: "Bu cihazda ses kaydı kullanılamıyor. Yine de bir ses dosyası yükleyebilirsin.",
+      voiceUploadFailed: "Ses pratiğini gönderemedik. Lütfen tekrar dene.",
+      voiceNoRecording: "Lütfen göndermeden önce ses kaydet veya bir ses dosyası yükle.",
+      voiceTooLarge: "Lütfen 20MB altında bir ses dosyası yükle.",
+      voiceTooShort: "Lütfen önizlemeden önce biraz daha uzun kaydet.",
+      voiceQueryFailed: "Ses durumu şu anda yüklenemedi.",
+      taskSubmitted: "Gönderildi",
+      taskNotSubmitted: "Gönderilmedi",
+      oneTaskComplete: "1 / 1 Görev",
+      zeroTaskComplete: "0 / 1 Görev",
+      weeklySummary: (count) => `${count} / 7 görev tamamlandı`,
     },
   };
 
@@ -495,6 +545,22 @@
   }
 
   let activeWorkspaceProfile = null;
+  let activeWorkspaceUser = null;
+  let voiceMediaRecorder = null;
+  let voiceMediaStream = null;
+  let voiceChunks = [];
+  let voiceTimerId = null;
+  let voiceStartTime = 0;
+  let voiceObjectUrl = "";
+  let voiceFile = null;
+  let voiceDurationSeconds = null;
+  let voiceSubmittedToday = false;
+  let cachedVoiceSubmissions = [];
+  let currentVoiceState = "idle";
+
+  const maxVoiceUploadBytes = 20 * 1024 * 1024;
+  const maxRecordingSeconds = 120;
+  const dayKeys = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
   function getDisplayName(profile) {
     return String(profile?.full_name || "").trim();
@@ -521,6 +587,393 @@
     }
 
     return focus;
+  }
+
+  function padTime(value) {
+    return String(value).padStart(2, "0");
+  }
+
+  function formatDuration(totalSeconds) {
+    const seconds = Math.max(0, Math.floor(totalSeconds || 0));
+    return `${padTime(Math.floor(seconds / 60))}:${padTime(seconds % 60)}`;
+  }
+
+  function getLocalDateString(date = new Date()) {
+    const year = date.getFullYear();
+    const month = padTime(date.getMonth() + 1);
+    const day = padTime(date.getDate());
+    return `${year}-${month}-${day}`;
+  }
+
+  function getStartOfWeek(date = new Date()) {
+    const current = new Date(date);
+    current.setHours(0, 0, 0, 0);
+    const day = current.getDay();
+    const diff = day === 0 ? -6 : 1 - day;
+    current.setDate(current.getDate() + diff);
+    return current;
+  }
+
+  function getCurrentWeekRange() {
+    const start = getStartOfWeek();
+    const end = new Date(start);
+    end.setDate(start.getDate() + 6);
+    return {
+      start,
+      end,
+      startDate: getLocalDateString(start),
+      endDate: getLocalDateString(end),
+    };
+  }
+
+  function getSubmittedDateSet(submissions = []) {
+    return new Set(
+      submissions
+        .map((submission) => String(submission?.submission_date || "").slice(0, 10))
+        .filter(Boolean),
+    );
+  }
+
+  function renderWeeklyPractice(submissions = cachedVoiceSubmissions) {
+    const row = document.querySelector("#weekly-practice-row");
+    const summary = document.querySelector("#weekly-practice-summary");
+    if (!row) return;
+
+    const { start } = getCurrentWeekRange();
+    const submittedDates = getSubmittedDateSet(submissions);
+    let completedCount = 0;
+
+    row.innerHTML = dayKeys
+      .map((dayKey, index) => {
+        const date = new Date(start);
+        date.setDate(start.getDate() + index);
+        const dateKey = getLocalDateString(date);
+        const submitted = submittedDates.has(dateKey);
+        if (submitted) completedCount += 1;
+
+        return `
+          <article class="practice-day${submitted ? " is-submitted" : ""}">
+            <strong>${dayKey}</strong>
+            <span>${submitted ? t("oneTaskComplete") : t("zeroTaskComplete")}</span>
+            <small>${submitted ? t("taskSubmitted") : t("taskNotSubmitted")}</small>
+          </article>
+        `;
+      })
+      .join("");
+
+    if (summary) summary.textContent = t("weeklySummary", completedCount);
+  }
+
+  function getVoiceElements() {
+    return {
+      helper: document.querySelector("#voice-log-helper"),
+      panel: document.querySelector(".voice-log-panel"),
+      statusPill: document.querySelector("#voice-status-pill"),
+      meter: document.querySelector("#voice-recorder-meter"),
+      timer: document.querySelector("#voice-recorder-timer"),
+      audio: document.querySelector("#voice-audio-preview"),
+      message: document.querySelector("#voice-log-message"),
+      startButton: document.querySelector("#voice-start-button"),
+      stopButton: document.querySelector("#voice-stop-button"),
+      submitButton: document.querySelector("#voice-submit-button"),
+      againButton: document.querySelector("#voice-again-button"),
+      uploadButton: document.querySelector("#voice-upload-button"),
+      uploadInput: document.querySelector("#voice-upload-input"),
+    };
+  }
+
+  function setVoiceMessage(message, type = "") {
+    const { message: messageElement } = getVoiceElements();
+    if (!messageElement) return;
+    messageElement.textContent = message || "";
+    messageElement.classList.toggle("is-success", type === "success");
+    messageElement.classList.toggle("is-error", type === "error");
+  }
+
+  function setVoiceButtonsDisabled(disabled) {
+    const elements = getVoiceElements();
+    [
+      elements.startButton,
+      elements.stopButton,
+      elements.submitButton,
+      elements.againButton,
+      elements.uploadButton,
+    ].forEach((button) => {
+      if (!button) return;
+      button.toggleAttribute("disabled", disabled);
+    });
+  }
+
+  function renderVoiceLabels() {
+    const elements = getVoiceElements();
+    if (elements.helper) elements.helper.textContent = t("voiceHelper");
+    if (elements.startButton) elements.startButton.textContent = t("voiceStart");
+    if (elements.stopButton) elements.stopButton.textContent = t("voiceStop");
+    if (elements.submitButton) elements.submitButton.textContent = t("voiceSubmit");
+    if (elements.againButton) elements.againButton.textContent = t("voiceAgain");
+    if (elements.uploadButton) elements.uploadButton.textContent = t("voiceUpload");
+  }
+
+  function setVoiceStatus(submitted) {
+    const { statusPill } = getVoiceElements();
+    if (!statusPill) return;
+    statusPill.classList.toggle("is-submitted", submitted);
+    statusPill.innerHTML = `<span aria-hidden="true"></span><strong>${submitted ? t("voiceSubmitted") : t("voiceNotSubmitted")}</strong>`;
+  }
+
+  function clearVoiceObjectUrl() {
+    if (voiceObjectUrl) {
+      URL.revokeObjectURL(voiceObjectUrl);
+      voiceObjectUrl = "";
+    }
+  }
+
+  function stopVoiceStream() {
+    if (voiceMediaStream) {
+      voiceMediaStream.getTracks().forEach((track) => track.stop());
+      voiceMediaStream = null;
+    }
+  }
+
+  function clearVoiceTimer() {
+    window.clearInterval(voiceTimerId);
+    voiceTimerId = null;
+  }
+
+  function resetVoiceRecordingState() {
+    clearVoiceTimer();
+    stopVoiceStream();
+    clearVoiceObjectUrl();
+    voiceChunks = [];
+    voiceFile = null;
+    voiceDurationSeconds = null;
+    voiceMediaRecorder = null;
+    const { audio, timer, uploadInput } = getVoiceElements();
+    if (audio) {
+      audio.hidden = true;
+      audio.removeAttribute("src");
+    }
+    if (timer) timer.textContent = "00:00";
+    if (uploadInput) uploadInput.value = "";
+  }
+
+  function renderVoiceState(state = "idle") {
+    const elements = getVoiceElements();
+    if (!elements.panel) return;
+
+    currentVoiceState = state;
+    renderVoiceLabels();
+    elements.panel.dataset.voiceState = state;
+    setVoiceStatus(voiceSubmittedToday);
+
+    const isRecording = state === "recording";
+    const isPreview = state === "preview";
+    const isUploading = state === "uploading";
+    const isSubmitted = state === "submitted" || voiceSubmittedToday;
+
+    if (elements.meter) elements.meter.hidden = !isRecording;
+    if (elements.startButton) elements.startButton.hidden = isRecording || isPreview || isSubmitted;
+    if (elements.stopButton) elements.stopButton.hidden = !isRecording;
+    if (elements.submitButton) elements.submitButton.hidden = !isPreview || isSubmitted;
+    if (elements.againButton) elements.againButton.hidden = !isPreview || isSubmitted;
+    if (elements.uploadButton) elements.uploadButton.hidden = isRecording || isPreview || isSubmitted;
+
+    setVoiceButtonsDisabled(isUploading);
+
+    if (isRecording) {
+      setVoiceMessage(t("voiceRecording"), "success");
+    } else if (isUploading) {
+      setVoiceMessage(t("voiceUploading"), "success");
+    } else if (isSubmitted) {
+      setVoiceMessage(t("voiceSubmittedMessage"), "success");
+    } else if (isPreview) {
+      setVoiceMessage(t("voicePreview"), "success");
+    } else {
+      setVoiceMessage(t("voiceIdleMessage"));
+    }
+  }
+
+  function getBestRecorderMimeType() {
+    const candidates = [
+      "audio/webm;codecs=opus",
+      "audio/webm",
+      "audio/ogg;codecs=opus",
+      "audio/mp4",
+    ];
+
+    return candidates.find((type) => window.MediaRecorder?.isTypeSupported?.(type)) || "";
+  }
+
+  async function startVoiceRecording() {
+    if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder !== "function") {
+      setVoiceMessage(t("voiceUnsupported"), "error");
+      return;
+    }
+
+    try {
+      resetVoiceRecordingState();
+      voiceMediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mimeType = getBestRecorderMimeType();
+      voiceMediaRecorder = new MediaRecorder(
+        voiceMediaStream,
+        mimeType ? { mimeType } : undefined,
+      );
+      voiceChunks = [];
+      voiceStartTime = Date.now();
+
+      voiceMediaRecorder.addEventListener("dataavailable", (event) => {
+        if (event.data?.size) {
+          voiceChunks.push(event.data);
+        }
+      });
+
+      voiceMediaRecorder.addEventListener("stop", () => {
+        clearVoiceTimer();
+        stopVoiceStream();
+        voiceDurationSeconds = Math.max(0, Math.round((Date.now() - voiceStartTime) / 1000));
+
+        if (voiceDurationSeconds < 1 || !voiceChunks.length) {
+          resetVoiceRecordingState();
+          renderVoiceState("idle");
+          setVoiceMessage(t("voiceTooShort"), "error");
+          return;
+        }
+
+        const type = voiceMediaRecorder?.mimeType || "audio/webm";
+        voiceFile = new Blob(voiceChunks, { type });
+        clearVoiceObjectUrl();
+        voiceObjectUrl = URL.createObjectURL(voiceFile);
+        const { audio } = getVoiceElements();
+        if (audio) {
+          audio.src = voiceObjectUrl;
+          audio.hidden = false;
+        }
+        renderVoiceState("preview");
+      });
+
+      voiceMediaRecorder.start();
+      renderVoiceState("recording");
+      const { timer } = getVoiceElements();
+      voiceTimerId = window.setInterval(() => {
+        const elapsed = Math.floor((Date.now() - voiceStartTime) / 1000);
+        if (timer) timer.textContent = formatDuration(elapsed);
+        if (elapsed >= maxRecordingSeconds && voiceMediaRecorder?.state === "recording") {
+          voiceMediaRecorder.stop();
+        }
+      }, 250);
+    } catch (error) {
+      console.warn("Voice recording failed:", error);
+      resetVoiceRecordingState();
+      renderVoiceState("idle");
+      setVoiceMessage(t("voiceMicDenied"), "error");
+    }
+  }
+
+  function stopVoiceRecording() {
+    if (voiceMediaRecorder?.state === "recording") {
+      voiceMediaRecorder.stop();
+    }
+  }
+
+  function handleVoiceUploadFile(file) {
+    if (!file) return;
+    if (file.size > maxVoiceUploadBytes) {
+      setVoiceMessage(t("voiceTooLarge"), "error");
+      return;
+    }
+
+    resetVoiceRecordingState();
+    voiceFile = file;
+    voiceDurationSeconds = null;
+    voiceObjectUrl = URL.createObjectURL(file);
+    const { audio } = getVoiceElements();
+    if (audio) {
+      audio.src = voiceObjectUrl;
+      audio.hidden = false;
+    }
+    renderVoiceState("preview");
+  }
+
+  async function submitVoicePractice() {
+    if (!activeWorkspaceUser?.id) {
+      setVoiceMessage(t("denied"), "error");
+      return;
+    }
+
+    if (!voiceFile) {
+      setVoiceMessage(t("voiceNoRecording"), "error");
+      return;
+    }
+
+    const submissionDate = getLocalDateString();
+
+    try {
+      renderVoiceState("uploading");
+      const upload = await window.starSpeakerSupabase.uploadVoiceSubmissionAudio(
+        voiceFile,
+        activeWorkspaceUser.id,
+        submissionDate,
+      );
+
+      await window.starSpeakerSupabase.insertVoiceSubmission({
+        user_id: activeWorkspaceUser.id,
+        student_email: activeWorkspaceUser.email || activeWorkspaceProfile?.email || null,
+        storage_path: upload.path,
+        audio_url: upload.publicUrl || null,
+        duration_seconds: voiceDurationSeconds,
+        submission_date: submissionDate,
+        status: "submitted",
+      });
+
+      voiceSubmittedToday = true;
+      resetVoiceRecordingState();
+      await hydrateVoiceSubmissions(activeWorkspaceUser);
+      renderVoiceState("submitted");
+    } catch (error) {
+      console.warn("Voice submission failed:", error);
+      renderVoiceState(voiceFile ? "preview" : "idle");
+      setVoiceMessage(t("voiceUploadFailed"), "error");
+    }
+  }
+
+  async function hydrateVoiceSubmissions(user) {
+    if (!user?.id) return;
+    try {
+      const { startDate, endDate } = getCurrentWeekRange();
+      cachedVoiceSubmissions = await window.starSpeakerSupabase.getVoiceSubmissions?.(
+        user.id,
+        startDate,
+        endDate,
+      ) || [];
+      const today = getLocalDateString();
+      voiceSubmittedToday = cachedVoiceSubmissions.some((submission) => (
+        String(submission?.submission_date || "").slice(0, 10) === today
+      ));
+      renderWeeklyPractice(cachedVoiceSubmissions);
+      renderVoiceState(voiceSubmittedToday ? "submitted" : "idle");
+    } catch (error) {
+      console.warn("Voice submission status load failed:", error);
+      cachedVoiceSubmissions = [];
+      voiceSubmittedToday = false;
+      renderWeeklyPractice([]);
+      renderVoiceState("idle");
+      setVoiceMessage(t("voiceQueryFailed"), "error");
+    }
+  }
+
+  function bindVoiceLogControls() {
+    const elements = getVoiceElements();
+    elements.startButton?.addEventListener("click", startVoiceRecording);
+    elements.stopButton?.addEventListener("click", stopVoiceRecording);
+    elements.submitButton?.addEventListener("click", submitVoicePractice);
+    elements.againButton?.addEventListener("click", () => {
+      resetVoiceRecordingState();
+      renderVoiceState("idle");
+    });
+    elements.uploadButton?.addEventListener("click", () => elements.uploadInput?.click());
+    elements.uploadInput?.addEventListener("change", () => {
+      handleVoiceUploadFile(elements.uploadInput.files?.[0]);
+    });
   }
 
   function renderWorkspace(profile) {
@@ -551,6 +1004,9 @@
     if (note) note.textContent = profile?.full_name ? t("workspaceSubtitle") : t("profilePreparing");
     if (avatar) avatar.textContent = getInitials(name, profile?.email);
     if (userName) userName.textContent = name || "Student";
+    renderVoiceLabels();
+    renderWeeklyPractice(cachedVoiceSubmissions);
+    renderVoiceState(currentVoiceState || (voiceSubmittedToday ? "submitted" : "idle"));
   }
 
   function initWorkspacePage() {
@@ -560,6 +1016,9 @@
 
     if (subtitle) subtitle.textContent = t("checking");
     if (pill) pill.textContent = t("checkingPill");
+    bindVoiceLogControls();
+    renderWeeklyPractice([]);
+    renderVoiceState("idle");
 
     if (!window.starSpeakerSupabase?.isConfigured?.()) {
       window.location.replace(getRelativeUrl(loginPage, { access: "denied" }));
@@ -581,7 +1040,9 @@
         }
 
         await window.starSpeakerSupabase?.updateStudentLoginTimestamps?.(profile, user);
+        activeWorkspaceUser = user;
         renderWorkspace(profile);
+        await hydrateVoiceSubmissions(user);
       })
       .catch(async (error) => {
         console.warn("Student workspace guard failed:", error);
@@ -597,6 +1058,7 @@
         logoutButton.setAttribute("disabled", "true");
         if (subtitle) subtitle.textContent = t("loggingOut");
         const user = await getSessionUser();
+        resetVoiceRecordingState();
         await window.starSpeakerSupabase?.insertPortalEvent?.(user, "logout", {});
         await window.starSpeakerSupabase?.signOutStudent?.();
         window.location.href = getRelativeUrl(loginPage);

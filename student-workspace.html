@@ -162,13 +162,36 @@
                 <span class="workspace-card-icon" aria-hidden="true">
                   <svg viewBox="0 0 24 24"><path d="M4 12v2M8 8v8M12 5v14M16 8v8M20 12v2"></path></svg>
                 </span>
-                <h2 id="voice-log-title">Daily Voice Log</h2>
+                <div>
+                  <h2 id="voice-log-title">Daily Voice Log</h2>
+                  <p id="voice-log-helper">Record your speaking practice for today.</p>
+                </div>
               </div>
-              <div class="workspace-empty-state">
-                <strong>No voice submission yet.</strong>
-                <p>Your recordings will appear here after you submit practice.</p>
+              <div class="voice-log-panel" data-voice-state="idle">
+                <p class="voice-status-pill" id="voice-status-pill">
+                  <span aria-hidden="true"></span>
+                  <strong>Today: Not submitted</strong>
+                </p>
+                <div class="voice-recorder-meter" id="voice-recorder-meter" hidden>
+                  <span class="voice-recorder-dot" aria-hidden="true"></span>
+                  <span id="voice-recorder-timer">00:00</span>
+                </div>
+                <audio id="voice-audio-preview" class="voice-audio-preview" controls hidden></audio>
+                <p class="voice-log-message" id="voice-log-message">No voice submission yet.</p>
+                <div class="voice-log-actions">
+                  <button class="button button-primary" id="voice-start-button" type="button">Start Recording</button>
+                  <button class="button button-primary" id="voice-stop-button" type="button" hidden>Stop Recording</button>
+                  <button class="button button-primary" id="voice-submit-button" type="button" hidden>Submit Voice</button>
+                  <button class="button button-outline" id="voice-again-button" type="button" hidden>Record Again</button>
+                  <button class="button button-outline" id="voice-upload-button" type="button">Upload Audio</button>
+                  <input
+                    id="voice-upload-input"
+                    type="file"
+                    accept="audio/webm,audio/mp3,audio/mpeg,audio/mp4,audio/m4a,audio/wav,audio/ogg"
+                    hidden
+                  >
+                </div>
               </div>
-              <button class="button button-outline" type="button" disabled>Record</button>
             </section>
 
             <section class="workspace-card workspace-feature-card" id="sessions" aria-labelledby="sessions-title">

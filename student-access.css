@@ -852,6 +852,18 @@
   line-height: 1.25;
 }
 
+.practice-day.is-submitted {
+  border-color: rgba(230, 211, 163, 0.48);
+  background:
+    radial-gradient(circle at 100% 0%, rgba(230, 211, 163, 0.14), transparent 5rem),
+    rgba(20, 18, 15, 0.72);
+}
+
+.practice-day.is-submitted small,
+.practice-day.is-submitted span {
+  color: var(--champagne);
+}
+
 .workspace-content-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -868,6 +880,14 @@
 
 .workspace-feature-card .workspace-card-heading {
   margin-bottom: 0;
+}
+
+#voice-log {
+  border-color: rgba(230, 211, 163, 0.42);
+  box-shadow:
+    0 22px 62px rgba(0, 0, 0, 0.36),
+    0 0 24px rgba(230, 211, 163, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.035);
 }
 
 .workspace-empty-state {
@@ -896,6 +916,111 @@
   cursor: not-allowed;
   filter: grayscale(0.45);
   opacity: 0.52;
+}
+
+.voice-log-panel {
+  display: grid;
+  gap: 0.85rem;
+  align-self: stretch;
+}
+
+.voice-status-pill {
+  display: inline-flex;
+  width: fit-content;
+  max-width: 100%;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  border: 1px solid rgba(230, 211, 163, 0.2);
+  border-radius: 999px;
+  background: rgba(230, 211, 163, 0.06);
+  color: rgba(247, 241, 228, 0.88);
+  font-size: 0.88rem;
+  line-height: 1.25;
+  padding: 0.42rem 0.68rem;
+}
+
+.voice-status-pill span {
+  width: 0.48rem;
+  height: 0.48rem;
+  border-radius: 50%;
+  background: var(--champagne);
+  box-shadow: 0 0 12px rgba(230, 211, 163, 0.42);
+}
+
+.voice-status-pill.is-submitted {
+  border-color: rgba(230, 211, 163, 0.46);
+  color: var(--champagne);
+}
+
+.voice-recorder-meter {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  gap: 0.6rem;
+  border: 1px solid rgba(230, 211, 163, 0.2);
+  border-radius: 999px;
+  background: rgba(8, 8, 7, 0.56);
+  color: var(--champagne);
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  padding: 0.55rem 0.85rem;
+}
+
+.voice-recorder-dot {
+  width: 0.58rem;
+  height: 0.58rem;
+  border-radius: 50%;
+  background: #e7a49c;
+  box-shadow: 0 0 0 0 rgba(231, 164, 156, 0.48);
+  animation: voiceRecordingPulse 1200ms ease-in-out infinite;
+}
+
+.voice-audio-preview {
+  width: 100%;
+  max-width: 100%;
+  min-height: 2.6rem;
+  border: 1px solid rgba(230, 211, 163, 0.18);
+  border-radius: 999px;
+  background: rgba(5, 5, 5, 0.45);
+}
+
+.voice-log-message {
+  min-height: 1.35rem;
+  margin: 0;
+  color: rgba(239, 231, 216, 0.74);
+  line-height: 1.5;
+}
+
+.voice-log-message.is-success {
+  color: var(--champagne);
+}
+
+.voice-log-message.is-error {
+  color: #e7a49c;
+}
+
+.voice-log-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-top: auto;
+}
+
+.voice-log-actions .button {
+  min-width: min(100%, 10.5rem);
+}
+
+@keyframes voiceRecordingPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(231, 164, 156, 0.46);
+  }
+  70% {
+    box-shadow: 0 0 0 0.7rem rgba(231, 164, 156, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(231, 164, 156, 0);
+  }
 }
 
 .workspace-profile-card {
@@ -1043,6 +1168,16 @@
     width: 1.35rem;
     height: 1.35rem;
     stroke-width: 1.75;
+  }
+
+  .voice-log-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .voice-log-actions .button {
+    width: 100%;
+    min-width: 0;
   }
 }
 
