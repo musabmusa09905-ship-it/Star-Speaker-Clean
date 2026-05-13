@@ -106,6 +106,7 @@
       profileNeedHelp: "Need help?",
       profileContact: "Contact Star Speaker",
       profileLogout: "Logout",
+      backToDashboard: "Back to Dashboard",
       notAvailable: "Not available",
       dayDetailsTitle: "Day Details",
       dayDetailsSubmitted: "Submitted",
@@ -216,6 +217,7 @@
       profileNeedHelp: "Yardıma mı ihtiyacın var?",
       profileContact: "Star Speaker ile iletişime geç",
       profileLogout: "Çıkış",
+      backToDashboard: "Panele Dön",
       notAvailable: "Mevcut değil",
       dayDetailsTitle: "Gün Detayları",
       dayDetailsSubmitted: "Gönderildi",
@@ -946,9 +948,60 @@
           <p>${escapeHtml(t("profileContact"))}</p>
           <a href="mailto:support@starspeakerstudio.com">support@starspeakerstudio.com</a>
         </div>
-        <button class="button button-outline" type="button" data-profile-logout>${escapeHtml(t("profileLogout"))}</button>
+        <div class="workspace-profile-actions">
+          <button class="button button-outline" type="button" data-workspace-view="dashboard">${escapeHtml(t("backToDashboard"))}</button>
+          <button class="button button-outline" type="button" data-profile-logout>${escapeHtml(t("profileLogout"))}</button>
+        </div>
       </div>
     `;
+  }
+
+  function updateWorkspaceNavState(view) {
+    const activeHash = view === "profile" ? "#profile" : "#dashboard";
+    document.querySelectorAll(".workspace-nav a, .workspace-bottom-nav a").forEach((link) => {
+      link.classList.toggle("is-active", link.getAttribute("href") === activeHash);
+    });
+  }
+
+  function setWorkspaceView(view = "dashboard") {
+    const normalizedView = view === "profile" ? "profile" : "dashboard";
+    document.body.classList.toggle("is-profile-view", normalizedView === "profile");
+    document.body.dataset.workspaceView = normalizedView;
+    updateWorkspaceNavState(normalizedView);
+
+    const target = document.querySelector(normalizedView === "profile" ? "#profile" : "#dashboard");
+    target?.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (normalizedView === "profile") {
+      document.querySelector("#profile-title")?.focus?.();
+    } else {
+      document.querySelector("#main")?.focus?.();
+    }
+  }
+
+  function bindWorkspaceNavigation() {
+    document.querySelectorAll(".workspace-nav a, .workspace-bottom-nav a").forEach((link) => {
+      link.addEventListener("click", (event) => {
+        const hash = link.getAttribute("href");
+        if (hash === "#profile") {
+          event.preventDefault();
+          setWorkspaceView("profile");
+          return;
+        }
+
+        if (hash === "#dashboard") {
+          event.preventDefault();
+          setWorkspaceView("dashboard");
+        } else {
+          setWorkspaceView("dashboard");
+        }
+      });
+    });
+
+    document.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-workspace-view]");
+      if (!button) return;
+      setWorkspaceView(button.dataset.workspaceView);
+    });
   }
 
   function isReviewedSubmission(submission) {
@@ -1639,6 +1692,7 @@
 
     if (subtitle) subtitle.textContent = t("checking");
     if (pill) pill.textContent = t("checkingPill");
+    bindWorkspaceNavigation();
     bindVoiceLogControls();
     renderWeeklyPractice([]);
     renderTeacherFeedback([]);

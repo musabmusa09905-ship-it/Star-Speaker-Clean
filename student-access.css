@@ -1331,6 +1331,28 @@
   font-weight: 760;
 }
 
+.workspace-profile-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  justify-content: flex-end;
+}
+
+.student-workspace-page.is-profile-view .workspace-summary-grid,
+.student-workspace-page.is-profile-view .workspace-weekly-card,
+.student-workspace-page.is-profile-view .workspace-content-grid > :not(.workspace-profile-card),
+.student-workspace-page.is-profile-view .workspace-history-card {
+  display: none;
+}
+
+.student-workspace-page.is-profile-view .workspace-content-grid {
+  grid-template-columns: 1fr;
+}
+
+.student-workspace-page.is-profile-view .workspace-profile-card {
+  display: grid;
+}
+
 .workspace-modal[hidden] {
   display: none;
 }
@@ -1588,6 +1610,11 @@
 
   .workspace-profile-support .button {
     width: 100%;
+  }
+
+  .workspace-profile-actions {
+    display: grid;
+    justify-content: stretch;
   }
 
   .weekly-practice-row {
