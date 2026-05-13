@@ -59,7 +59,15 @@
       taskNotSubmitted: "Not submitted",
       oneTaskComplete: "1 / 1 Task",
       zeroTaskComplete: "0 / 1 Task",
+      dayMon: "Mon",
+      dayTue: "Tue",
+      dayWed: "Wed",
+      dayThu: "Thu",
+      dayFri: "Fri",
+      daySat: "Sat",
+      daySun: "Sun",
       weeklySummary: (count) => `${count} / 7 tasks completed`,
+      weeklyLoadError: "We could not load your weekly practice right now.",
       feedbackEmptyTitle: "No feedback yet.",
       feedbackEmptyBody: "Your feedback will appear after your first voice submission is reviewed.",
       feedbackPendingTitle: "Your voice practice has been received.",
@@ -142,7 +150,15 @@
       taskNotSubmitted: "Gönderilmedi",
       oneTaskComplete: "1 / 1 Görev",
       zeroTaskComplete: "0 / 1 Görev",
+      dayMon: "Pzt",
+      dayTue: "Sal",
+      dayWed: "Çar",
+      dayThu: "Per",
+      dayFri: "Cum",
+      daySat: "Cmt",
+      daySun: "Paz",
       weeklySummary: (count) => `${count} / 7 görev tamamlandı`,
+      weeklyLoadError: "Haftalık pratiğin şu anda yüklenemedi.",
       feedbackEmptyTitle: "Henüz geri bildirim yok.",
       feedbackEmptyBody: "İlk ses gönderin incelendikten sonra geri bildirimin burada görünecek.",
       feedbackPendingTitle: "Ses pratiğin alındı.",
@@ -617,7 +633,7 @@
 
   const maxVoiceUploadBytes = 20 * 1024 * 1024;
   const maxRecordingSeconds = 120;
-  const dayKeys = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  const dayKeys = ["dayMon", "dayTue", "dayWed", "dayThu", "dayFri", "daySat", "daySun"];
   const initialHistoryLimit = 5;
 
   function getDisplayName(profile) {
@@ -684,18 +700,46 @@
     };
   }
 
+  function getSubmissionDateKey(submission) {
+    const submissionDate = String(submission?.submission_date || "").trim();
+    if (/^\d{4}-\d{2}-\d{2}$/.test(submissionDate)) {
+      return submissionDate;
+    }
+
+    const createdAt = submission?.created_at ? new Date(submission.created_at) : null;
+    if (createdAt && !Number.isNaN(createdAt.getTime())) {
+      return getLocalDateString(createdAt);
+    }
+
+    return "";
+  }
+
   function getSubmittedDateSet(submissions = []) {
     return new Set(
       submissions
-        .map((submission) => String(submission?.submission_date || "").slice(0, 10))
+        .map(getSubmissionDateKey)
         .filter(Boolean),
     );
   }
 
-  function renderWeeklyPractice(submissions = cachedVoiceSubmissions) {
+  function renderWeeklyPractice(submissions = cachedVoiceSubmissions, options = {}) {
     const row = document.querySelector("#weekly-practice-row");
     const summary = document.querySelector("#weekly-practice-summary");
     if (!row) return;
+
+    if (options.error) {
+      if (summary) summary.textContent = t("weeklyLoadError");
+      row.innerHTML = dayKeys
+        .map((dayKey) => `
+          <article class="practice-day">
+            <strong>${t(dayKey)}</strong>
+            <span><i aria-hidden="true"></i>${t("zeroTaskComplete")}</span>
+            <small>${t("taskNotSubmitted")}</small>
+          </article>
+        `)
+        .join("");
+      return;
+    }
 
     const { start } = getCurrentWeekRange();
     const submittedDates = getSubmittedDateSet(submissions);
@@ -711,8 +755,8 @@
 
         return `
           <article class="practice-day${submitted ? " is-submitted" : ""}">
-            <strong>${dayKey}</strong>
-            <span>${submitted ? t("oneTaskComplete") : t("zeroTaskComplete")}</span>
+            <strong>${t(dayKey)}</strong>
+            <span><i aria-hidden="true"></i>${submitted ? t("oneTaskComplete") : t("zeroTaskComplete")}</span>
             <small>${submitted ? t("taskSubmitted") : t("taskNotSubmitted")}</small>
           </article>
         `;
@@ -1235,14 +1279,17 @@
   async function hydrateVoiceSubmissions(user) {
     if (!user?.id) return;
     try {
-      cachedVoiceSubmissions = await window.starSpeakerSupabase.getVoiceSubmissions?.(
+      const submissions = await window.starSpeakerSupabase.getVoiceSubmissions?.(
         user.id,
       ) || [];
+      cachedVoiceSubmissions = submissions.filter((submission) => (
+        !submission?.user_id || submission.user_id === user.id
+      ));
       voiceHistoryLoadFailed = false;
       await prepareVoicePlaybackUrls(cachedVoiceSubmissions);
       const today = getLocalDateString();
       voiceSubmittedToday = cachedVoiceSubmissions.some((submission) => (
-        String(submission?.submission_date || "").slice(0, 10) === today
+        getSubmissionDateKey(submission) === today
       ));
       renderWeeklyPractice(cachedVoiceSubmissions);
       renderTeacherFeedback(cachedVoiceSubmissions);
@@ -1253,7 +1300,7 @@
       cachedVoiceSubmissions = [];
       voiceSubmittedToday = false;
       voiceHistoryLoadFailed = true;
-      renderWeeklyPractice([]);
+      renderWeeklyPractice([], { error: true });
       renderTeacherFeedback([]);
       renderVoiceHistory([]);
       renderVoiceState("idle");

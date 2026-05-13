@@ -842,8 +842,40 @@
 }
 
 .practice-day span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.38rem;
   color: rgba(239, 231, 216, 0.82);
   font-size: 0.86rem;
+}
+
+.practice-day span i {
+  display: inline-block;
+  width: 0.58rem;
+  height: 0.58rem;
+  flex: 0 0 auto;
+  border: 1px solid rgba(230, 211, 163, 0.26);
+  border-radius: 50%;
+  background: rgba(167, 159, 144, 0.22);
+}
+
+.practice-day.is-submitted span i {
+  position: relative;
+  border-color: rgba(230, 211, 163, 0.76);
+  background: var(--champagne);
+  box-shadow: 0 0 12px rgba(230, 211, 163, 0.24);
+}
+
+.practice-day.is-submitted span i::after {
+  position: absolute;
+  left: 50%;
+  top: 48%;
+  width: 0.28rem;
+  height: 0.15rem;
+  border-bottom: 1.5px solid #050505;
+  border-left: 1.5px solid #050505;
+  content: "";
+  transform: translate(-50%, -50%) rotate(-45deg);
 }
 
 .practice-day small {
