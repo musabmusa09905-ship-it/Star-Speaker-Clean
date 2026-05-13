@@ -20,138 +20,215 @@
   <body class="student-access-page student-workspace-page">
     <a class="skip-link" href="#main">Skip to content</a>
 
-    <header class="site-header">
-      <nav class="nav-shell" aria-label="Primary navigation">
-        <a class="brand" href="index.html" aria-label="Star Speaker homepage">
+    <div class="workspace-app-shell">
+      <aside class="workspace-sidebar" aria-label="Student workspace navigation">
+        <a class="workspace-sidebar-logo" href="student-workspace.html" aria-label="Star Speaker student workspace">
           <img
-            class="brand-logo"
             src="public/images/star-speaker-logo.png"
-            alt="Star Speaker logo"
-            width="68"
-            height="68"
+            alt="Star Speaker"
+            width="132"
+            height="132"
           >
-          <span class="brand-text">
-            <span class="brand-name">Star Speaker</span>
-            <span class="brand-tagline">Speak confidently. Shine globally.</span>
-          </span>
         </a>
 
-        <button
-          class="menu-toggle"
-          type="button"
-          aria-expanded="false"
-          aria-controls="primary-navigation"
-          aria-label="Open navigation menu"
-        >
-          <span aria-hidden="true"></span>
-          <span aria-hidden="true"></span>
-          <span aria-hidden="true"></span>
-        </button>
+        <nav class="workspace-nav" aria-label="Workspace sections">
+          <a class="is-active" href="#dashboard">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7"></path><path d="M5 10v10h14V10"></path><path d="M9 20v-6h6v6"></path></svg>
+            <span>Dashboard</span>
+          </a>
+          <a href="#sessions">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M8 2v4M16 2v4M4 8h16"></path><rect x="4" y="4" width="16" height="18" rx="2"></rect></svg>
+            <span>My Sessions</span>
+          </a>
+          <a href="#voice-log">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3Z"></path><path d="M19 11a7 7 0 0 1-14 0"></path><path d="M12 18v4"></path></svg>
+            <span>Voice Log</span>
+          </a>
+          <a href="#notes">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 3h7l5 5v13H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"></path><path d="M14 3v5h5M9 13h6M9 17h6"></path></svg>
+            <span>Notes</span>
+          </a>
+          <a href="#profile">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"></circle><path d="M4 21a8 8 0 0 1 16 0"></path></svg>
+            <span>Profile</span>
+          </a>
+        </nav>
 
-        <div class="nav-menu" id="primary-navigation">
-          <ul class="nav-links" aria-label="Main links">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="programs.html">Programs</a></li>
-            <li><a href="method.html">Method</a></li>
-            <li><a href="results.html">Results</a></li>
-            <li><a href="about.html">About</a></li>
-            <li>
-              <a href="resources.html">
-                Resources
-                <svg aria-hidden="true" viewBox="0 0 24 24">
-                  <path d="m6 9 6 6 6-6"></path>
-                </svg>
-              </a>
-            </li>
-            <li><a href="apply.html">Apply</a></li>
-          </ul>
+        <div class="workspace-sidebar-bottom">
+          <article class="workspace-streak-card" aria-label="Student streak">
+            <span class="workspace-streak-value" id="workspace-streak-value">0</span>
+            <strong>Day Streak</strong>
+            <p>Start with your first speaking practice.</p>
+          </article>
+          <div class="workspace-help">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 14v-2a8 8 0 0 1 16 0v2"></path><path d="M4 14a2 2 0 0 0 2 2h1v-6H6a2 2 0 0 0-2 2v2ZM20 14a2 2 0 0 1-2 2h-1v-6h1a2 2 0 0 1 2 2v2Z"></path><path d="M18 16c0 2-2 4-5 4h-1"></path></svg>
+            <span>Need Help?</span>
+            <a href="mailto:support@starspeakerstudio.com">support@starspeakerstudio.com</a>
+          </div>
+        </div>
+      </aside>
 
-          <div class="nav-actions">
-            <a class="login-link active" href="student-workspace.html">Workspace</a>
-            <div class="language-toggle" aria-label="Language selector">
+      <main id="main" class="workspace-main" tabindex="-1">
+        <header class="workspace-topbar">
+          <a class="workspace-mobile-brand" href="student-workspace.html" aria-label="Star Speaker student workspace">
+            <img src="public/images/star-speaker-logo.png" alt="Star Speaker" width="176" height="64">
+          </a>
+          <div class="workspace-top-actions">
+            <div class="language-toggle workspace-language-toggle" aria-label="Language selector">
               <a class="active" href="student-workspace.html" hreflang="en">EN</a>
               <span aria-hidden="true"></span>
               <a href="student-workspace.html?lang=tr" hreflang="tr" lang="tr">TR</a>
             </div>
-            <a class="button button-outline nav-button" href="apply.html">Book a Consultation</a>
-            <a class="button button-primary nav-button" href="level-test.html">Take Level Test</a>
+            <button class="workspace-icon-button" type="button" aria-label="Notifications">
+              <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path><path d="M10 21h4"></path></svg>
+            </button>
+            <div class="workspace-user">
+              <span class="workspace-avatar" id="workspace-avatar">S</span>
+              <span class="workspace-user-name" id="workspace-user-name">Student</span>
+            </div>
+            <button class="workspace-logout" id="student-logout-button" type="button">Logout</button>
           </div>
-        </div>
-      </nav>
-    </header>
+        </header>
 
-    <main id="main" class="student-access-main">
-      <section class="container workspace-shell" aria-labelledby="workspace-title">
-        <div class="workspace-hero">
-          <div>
-            <p class="student-eyebrow">Student Workspace</p>
-            <h1 id="workspace-title">Welcome back.</h1>
-            <p id="workspace-subtitle">Checking your private Star Speaker access.</p>
+        <section class="workspace-dashboard" id="dashboard" aria-labelledby="workspace-title">
+          <div class="workspace-hero">
+            <div>
+              <p class="student-eyebrow">Student Workspace</p>
+              <h1 id="workspace-title">Welcome back.</h1>
+              <p id="workspace-subtitle">Checking your private Star Speaker access.</p>
+            </div>
+            <span class="workspace-status" id="workspace-status-pill">Checking</span>
           </div>
-          <span class="workspace-status" id="workspace-status-pill">Checking</span>
-        </div>
 
-        <section class="workspace-card" aria-label="Student profile status">
-          <div class="workspace-stat">
-            <span>Program</span>
-            <strong id="workspace-program">-</strong>
-          </div>
-          <div class="workspace-stat">
-            <span>Current Week</span>
-            <strong id="workspace-week">-</strong>
-          </div>
-          <div class="workspace-stat">
-            <span>Focus</span>
-            <strong id="workspace-focus">-</strong>
-          </div>
-          <div class="workspace-stat">
-            <span>Status</span>
-            <strong id="workspace-access-status">-</strong>
+          <section class="workspace-summary-grid" aria-label="Student profile status">
+            <article class="workspace-stat-card">
+              <span>Program</span>
+              <strong id="workspace-program">-</strong>
+            </article>
+            <article class="workspace-stat-card">
+              <span>Current Week</span>
+              <strong id="workspace-week">-</strong>
+            </article>
+            <article class="workspace-stat-card">
+              <span>Focus</span>
+              <strong id="workspace-focus">-</strong>
+            </article>
+            <article class="workspace-stat-card">
+              <span>Status</span>
+              <strong id="workspace-access-status">-</strong>
+            </article>
+          </section>
+
+          <section class="workspace-card workspace-weekly-card" aria-labelledby="weekly-practice-title">
+            <div class="workspace-card-heading">
+              <span class="workspace-card-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M8 2v4M16 2v4M4 8h16"></path><rect x="4" y="4" width="16" height="18" rx="2"></rect></svg>
+              </span>
+              <div>
+                <h2 id="weekly-practice-title">Your Weekly Practice</h2>
+                <p id="weekly-practice-summary">0 / 7 tasks completed</p>
+                <small>Complete one speaking practice each day.</small>
+              </div>
+            </div>
+
+            <div class="weekly-practice-row" id="weekly-practice-row" aria-label="Weekly practice days">
+              <article class="practice-day"><strong>Mon</strong><span>0 / 1 Task</span><small>Not submitted</small></article>
+              <article class="practice-day"><strong>Tue</strong><span>0 / 1 Task</span><small>Not submitted</small></article>
+              <article class="practice-day"><strong>Wed</strong><span>0 / 1 Task</span><small>Not submitted</small></article>
+              <article class="practice-day"><strong>Thu</strong><span>0 / 1 Task</span><small>Not submitted</small></article>
+              <article class="practice-day"><strong>Fri</strong><span>0 / 1 Task</span><small>Not submitted</small></article>
+              <article class="practice-day"><strong>Sat</strong><span>0 / 1 Task</span><small>Not submitted</small></article>
+              <article class="practice-day"><strong>Sun</strong><span>0 / 1 Task</span><small>Not submitted</small></article>
+            </div>
+          </section>
+
+          <div class="workspace-content-grid">
+            <section class="workspace-card workspace-feature-card" id="today-task" aria-labelledby="today-task-title">
+              <div class="workspace-card-heading">
+                <span class="workspace-card-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><path d="M8 2v4M16 2v4M4 8h16"></path><rect x="4" y="4" width="16" height="18" rx="2"></rect></svg>
+                </span>
+                <h2 id="today-task-title">Today's Task</h2>
+              </div>
+              <div class="workspace-empty-state">
+                <strong>No task assigned yet.</strong>
+                <p>Your coach will assign your first speaking task soon.</p>
+              </div>
+              <button class="button button-primary" type="button" disabled>Start Task</button>
+            </section>
+
+            <section class="workspace-card workspace-feature-card" id="voice-log" aria-labelledby="voice-log-title">
+              <div class="workspace-card-heading">
+                <span class="workspace-card-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><path d="M4 12v2M8 8v8M12 5v14M16 8v8M20 12v2"></path></svg>
+                </span>
+                <h2 id="voice-log-title">Daily Voice Log</h2>
+              </div>
+              <div class="workspace-empty-state">
+                <strong>No voice submission yet.</strong>
+                <p>Your recordings will appear here after you submit practice.</p>
+              </div>
+              <button class="button button-outline" type="button" disabled>Record</button>
+            </section>
+
+            <section class="workspace-card workspace-feature-card" id="sessions" aria-labelledby="sessions-title">
+              <div class="workspace-card-heading">
+                <span class="workspace-card-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><path d="M8 2v4M16 2v4M4 8h16"></path><rect x="4" y="4" width="16" height="18" rx="2"></rect></svg>
+                </span>
+                <h2 id="sessions-title">Upcoming Session</h2>
+              </div>
+              <div class="workspace-empty-state">
+                <strong>No session scheduled yet.</strong>
+                <p>Your coach will confirm your next session soon.</p>
+              </div>
+            </section>
+
+            <section class="workspace-card workspace-feature-card" id="notes" aria-labelledby="feedback-title">
+              <div class="workspace-card-heading">
+                <span class="workspace-card-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><path d="m12 2 2.6 6.7 7.1.4-5.5 4.5 1.8 6.9-6-3.8-6 3.8 1.8-6.9-5.5-4.5 7.1-.4L12 2Z"></path></svg>
+                </span>
+                <h2 id="feedback-title">Teacher Feedback</h2>
+              </div>
+              <div class="workspace-empty-state">
+                <strong>No feedback yet.</strong>
+                <p>Your feedback will appear after your first submission is reviewed.</p>
+              </div>
+            </section>
+
+            <section class="workspace-card workspace-feature-card workspace-profile-card" id="profile" aria-labelledby="profile-title">
+              <div class="workspace-card-heading">
+                <span class="workspace-card-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"></circle><path d="M4 21a8 8 0 0 1 16 0"></path></svg>
+                </span>
+                <h2 id="profile-title">Profile</h2>
+              </div>
+              <p id="workspace-profile-note">Your profile is being prepared.</p>
+            </section>
           </div>
         </section>
 
-        <div class="workspace-grid">
-          <section class="workspace-panel">
-            <h2>Today's Voice Task</h2>
-            <p>Your next voice task will appear here after your coach assigns it.</p>
-          </section>
-
-          <section class="workspace-panel">
-            <h2>Weekly Path</h2>
-            <ul class="weekly-path">
-              <li><span>1</span>Week 1 Survival Mode</li>
-              <li><span>2</span>Week 2 Interaction Mode</li>
-              <li><span>3</span>Week 3 Expression Mode</li>
-              <li><span>4</span>Week 4 Real World Mode</li>
-            </ul>
-          </section>
-
-          <section class="workspace-panel">
-            <h2>Coach Feedback</h2>
-            <p>Your feedback will appear here after review.</p>
-          </section>
-
-          <section class="workspace-panel">
-            <h2>Upcoming Session</h2>
-            <p>Your next live session will appear here once scheduled.</p>
-          </section>
-
-          <section class="workspace-panel">
-            <h2>Resources for This Week</h2>
-            <p>Weekly resources will appear here after your program starts.</p>
-          </section>
-
-          <section class="workspace-panel">
-            <h2>Profile Status</h2>
-            <p id="workspace-profile-note">Your profile is being prepared.</p>
-          </section>
-        </div>
-
-        <div class="workspace-actions">
-          <button class="button button-outline" id="student-logout-button" type="button">Logout</button>
-        </div>
-      </section>
-    </main>
+        <nav class="workspace-bottom-nav" aria-label="Mobile workspace navigation">
+          <a class="is-active" href="#dashboard">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7"></path><path d="M5 10v10h14V10"></path><path d="M9 20v-6h6v6"></path></svg>
+            <span>Home</span>
+          </a>
+          <a href="#sessions">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M8 2v4M16 2v4M4 8h16"></path><rect x="4" y="4" width="16" height="18" rx="2"></rect></svg>
+            <span>Sessions</span>
+          </a>
+          <a href="#voice-log">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3Z"></path><path d="M19 11a7 7 0 0 1-14 0"></path><path d="M12 18v4"></path></svg>
+            <span>Voice</span>
+          </a>
+          <a href="#profile">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"></circle><path d="M4 21a8 8 0 0 1 16 0"></path></svg>
+            <span>Profile</span>
+          </a>
+        </nav>
+      </main>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase-config.js"></script>
