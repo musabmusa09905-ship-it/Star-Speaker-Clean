@@ -95,6 +95,25 @@
       historyShowMore: "Show more",
       historyShowLess: "Show less",
       historyLoadError: "We could not load your voice history right now.",
+      profileTitle: "Student Profile",
+      profileSubtitle: "Your Star Speaker access and program information.",
+      profileFullName: "Full Name",
+      profileEmail: "Email",
+      profileProgram: "Program",
+      profileStatus: "Status",
+      profileCurrentWeek: "Current Week",
+      profileMemberSince: "Member Since",
+      profileNeedHelp: "Need help?",
+      profileContact: "Contact Star Speaker",
+      profileLogout: "Logout",
+      notAvailable: "Not available",
+      dayDetailsTitle: "Day Details",
+      dayDetailsSubmitted: "Submitted",
+      dayDetailsNotSubmitted: "Not submitted",
+      dayDetailsNoSubmission: "No voice practice submitted for this day.",
+      dayDetailsSubmittedAt: "Submitted at",
+      dayDetailsLatestSubmission: "Latest submission for this day.",
+      dayDetailsClose: "Close",
     },
     tr: {
       checking: "Özel Star Speaker erişiminiz kontrol ediliyor.",
@@ -186,6 +205,25 @@
       historyShowMore: "Daha fazla göster",
       historyShowLess: "Daha az göster",
       historyLoadError: "Ses geçmişin şu anda yüklenemedi.",
+      profileTitle: "Öğrenci Profili",
+      profileSubtitle: "Star Speaker erişim ve program bilgilerin.",
+      profileFullName: "Ad Soyad",
+      profileEmail: "E-posta",
+      profileProgram: "Program",
+      profileStatus: "Durum",
+      profileCurrentWeek: "Mevcut Hafta",
+      profileMemberSince: "Üyelik Başlangıcı",
+      profileNeedHelp: "Yardıma mı ihtiyacın var?",
+      profileContact: "Star Speaker ile iletişime geç",
+      profileLogout: "Çıkış",
+      notAvailable: "Mevcut değil",
+      dayDetailsTitle: "Gün Detayları",
+      dayDetailsSubmitted: "Gönderildi",
+      dayDetailsNotSubmitted: "Gönderilmedi",
+      dayDetailsNoSubmission: "Bu gün için ses pratiği gönderilmedi.",
+      dayDetailsSubmittedAt: "Gönderim saati",
+      dayDetailsLatestSubmission: "Bu gün için son gönderim.",
+      dayDetailsClose: "Kapat",
     },
   };
 
@@ -629,6 +667,7 @@
   let currentVoiceState = "idle";
   let voiceHistoryExpanded = false;
   let voiceHistoryLoadFailed = false;
+  let activeDayDetailDateKey = "";
   const voicePlaybackUrls = new Map();
 
   const maxVoiceUploadBytes = 20 * 1024 * 1024;
@@ -730,12 +769,12 @@
     if (options.error) {
       if (summary) summary.textContent = t("weeklyLoadError");
       row.innerHTML = dayKeys
-        .map((dayKey) => `
-          <article class="practice-day">
+        .map((dayKey, index) => `
+          <button class="practice-day" type="button" data-date-key="" aria-label="${escapeHtml(t(dayKey))}">
             <strong>${t(dayKey)}</strong>
             <span><i aria-hidden="true"></i>${t("zeroTaskComplete")}</span>
             <small>${t("taskNotSubmitted")}</small>
-          </article>
+          </button>
         `)
         .join("");
       return;
@@ -754,11 +793,16 @@
         if (submitted) completedCount += 1;
 
         return `
-          <article class="practice-day${submitted ? " is-submitted" : ""}">
+          <button
+            class="practice-day${submitted ? " is-submitted" : ""}"
+            type="button"
+            data-date-key="${escapeHtml(dateKey)}"
+            aria-label="${escapeHtml(`${t(dayKey)}: ${submitted ? t("taskSubmitted") : t("taskNotSubmitted")}`)}"
+          >
             <strong>${t(dayKey)}</strong>
             <span><i aria-hidden="true"></i>${submitted ? t("oneTaskComplete") : t("zeroTaskComplete")}</span>
             <small>${submitted ? t("taskSubmitted") : t("taskNotSubmitted")}</small>
-          </article>
+          </button>
         `;
       })
       .join("");
@@ -813,6 +857,100 @@
     return [...submissions].sort((a, b) => getSubmissionDateValue(b) - getSubmissionDateValue(a));
   }
 
+  function getDateFromKey(dateKey) {
+    const parts = String(dateKey || "").split("-").map(Number);
+    if (parts.length !== 3 || parts.some(Number.isNaN)) {
+      return null;
+    }
+
+    return new Date(parts[0], parts[1] - 1, parts[2]);
+  }
+
+  function formatLongDateKey(dateKey) {
+    const date = getDateFromKey(dateKey);
+    if (!date || Number.isNaN(date.getTime())) return dateKey || "";
+
+    return new Intl.DateTimeFormat(getLanguage() === "tr" ? "tr-TR" : "en", {
+      weekday: "long",
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    }).format(date);
+  }
+
+  function formatProfileDate(value) {
+    if (!value) return t("notAvailable");
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return t("notAvailable");
+
+    return new Intl.DateTimeFormat(getLanguage() === "tr" ? "tr-TR" : "en", {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    }).format(date);
+  }
+
+  function formatSubmissionTime(value) {
+    if (!value) return "";
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return "";
+
+    return new Intl.DateTimeFormat(getLanguage() === "tr" ? "tr-TR" : "en", {
+      hour: "2-digit",
+      minute: "2-digit",
+    }).format(date);
+  }
+
+  function getProfileDisplayValue(value) {
+    const text = String(value || "").trim();
+    return text || t("notAvailable");
+  }
+
+  function getProfileStatusValue(profile) {
+    const status = String(profile?.access_status || "").trim();
+    if (!status) return t("notAvailable");
+    return status.toLowerCase() === "active" ? t("active") : status;
+  }
+
+  function getProfileRows(profile) {
+    return [
+      [t("profileFullName"), getProfileDisplayValue(profile?.full_name)],
+      [t("profileEmail"), getProfileDisplayValue(profile?.email || activeWorkspaceUser?.email)],
+      [t("profileProgram"), getProfileDisplayValue(profile?.program)],
+      [t("profileStatus"), getProfileStatusValue(profile)],
+      [t("profileCurrentWeek"), profile?.current_week ? t("currentWeek", profile.current_week) : t("notAvailable")],
+      [t("profileMemberSince"), formatProfileDate(profile?.created_at)],
+    ];
+  }
+
+  function renderProfileView(profile) {
+    const title = document.querySelector("#profile-title");
+    const panel = document.querySelector("#workspace-profile-panel");
+    if (title) title.textContent = t("profileTitle");
+    if (!panel) return;
+
+    const rows = getProfileRows(profile);
+    panel.innerHTML = `
+      <p class="workspace-profile-intro">${escapeHtml(t("profileSubtitle"))}</p>
+      <div class="workspace-profile-grid">
+        ${rows.map(([label, value]) => `
+          <div class="workspace-profile-row">
+            <span>${escapeHtml(label)}</span>
+            <strong>${escapeHtml(value)}</strong>
+          </div>
+        `).join("")}
+      </div>
+      <div class="workspace-profile-support">
+        <div>
+          <strong>${escapeHtml(t("profileNeedHelp"))}</strong>
+          <p>${escapeHtml(t("profileContact"))}</p>
+          <a href="mailto:support@starspeakerstudio.com">support@starspeakerstudio.com</a>
+        </div>
+        <button class="button button-outline" type="button" data-profile-logout>${escapeHtml(t("profileLogout"))}</button>
+      </div>
+    `;
+  }
+
   function isReviewedSubmission(submission) {
     return (
       String(submission?.review_status || "").toLowerCase() === "reviewed" ||
@@ -846,30 +984,36 @@
       .slice(0, voiceHistoryExpanded ? submissions.length : initialHistoryLimit);
 
     await Promise.all(visible.map(async (submission, index) => {
-      const key = getSubmissionId(submission, index);
-      if (voicePlaybackUrls.has(key)) return;
-
-      if (hasText(submission?.audio_url)) {
-        voicePlaybackUrls.set(key, submission.audio_url);
-        return;
-      }
-
-      if (!hasText(submission?.storage_path)) {
-        voicePlaybackUrls.set(key, "");
-        return;
-      }
-
-      try {
-        const signedUrl = await window.starSpeakerSupabase.getVoiceSubmissionSignedUrl?.(
-          submission.storage_path,
-          3600,
-        );
-        voicePlaybackUrls.set(key, signedUrl || "");
-      } catch (error) {
-        console.warn("Voice history signed URL failed:", error);
-        voicePlaybackUrls.set(key, "");
-      }
+      await getVoicePlaybackUrl(submission, index);
     }));
+  }
+
+  async function getVoicePlaybackUrl(submission, index = 0) {
+    const key = getSubmissionId(submission, index);
+    if (voicePlaybackUrls.has(key)) return voicePlaybackUrls.get(key) || "";
+
+    if (hasText(submission?.audio_url)) {
+      voicePlaybackUrls.set(key, submission.audio_url);
+      return submission.audio_url;
+    }
+
+    if (!hasText(submission?.storage_path)) {
+      voicePlaybackUrls.set(key, "");
+      return "";
+    }
+
+    try {
+      const signedUrl = await window.starSpeakerSupabase.getVoiceSubmissionSignedUrl?.(
+        submission.storage_path,
+        3600,
+      );
+      voicePlaybackUrls.set(key, signedUrl || "");
+      return signedUrl || "";
+    } catch (error) {
+      console.warn("Voice signed URL failed:", error);
+      voicePlaybackUrls.set(key, "");
+      return "";
+    }
   }
 
   function renderVoiceHistoryItem(submission, index) {
@@ -946,6 +1090,90 @@
       toggle.hidden = sorted.length <= initialHistoryLimit;
       toggle.textContent = voiceHistoryExpanded ? t("historyShowLess") : t("historyShowMore");
     }
+  }
+
+  function getSubmissionsForDate(dateKey) {
+    return getSortedVoiceSubmissions(cachedVoiceSubmissions)
+      .filter((submission) => getSubmissionDateKey(submission) === dateKey);
+  }
+
+  function getDayDetailElements() {
+    return {
+      modal: document.querySelector("#day-detail-modal"),
+      card: document.querySelector("#day-detail-modal .workspace-modal-card"),
+      title: document.querySelector("#day-detail-title"),
+      date: document.querySelector("#day-detail-date"),
+      body: document.querySelector("#day-detail-body"),
+      close: document.querySelector("#day-detail-modal .workspace-modal-close"),
+    };
+  }
+
+  function closeDayDetail() {
+    const { modal } = getDayDetailElements();
+    activeDayDetailDateKey = "";
+    if (modal) modal.hidden = true;
+    document.body.classList.remove("workspace-modal-open");
+  }
+
+  async function renderDayDetails(dateKey) {
+    const elements = getDayDetailElements();
+    if (!elements.modal || !elements.body) return;
+
+    activeDayDetailDateKey = dateKey;
+    elements.modal.hidden = false;
+    document.body.classList.add("workspace-modal-open");
+    if (elements.title) elements.title.textContent = t("dayDetailsTitle");
+    if (elements.date) elements.date.textContent = formatLongDateKey(dateKey);
+    if (elements.close) elements.close.setAttribute("aria-label", t("dayDetailsClose"));
+
+    const submissions = getSubmissionsForDate(dateKey);
+    if (!submissions.length) {
+      elements.body.innerHTML = `
+        <div class="day-detail-status is-empty">
+          <span>${escapeHtml(t("dayDetailsNotSubmitted"))}</span>
+        </div>
+        <div class="workspace-empty-state">
+          <strong>${escapeHtml(t("dayDetailsNoSubmission"))}</strong>
+        </div>
+      `;
+      elements.card?.focus();
+      return;
+    }
+
+    const latest = submissions[0];
+    const playbackUrl = await getVoicePlaybackUrl(latest, 0);
+    if (activeDayDetailDateKey !== dateKey) return;
+
+    const status = getHistoryStatus(latest);
+    const reviewed = isReviewedSubmission(latest);
+    const submittedTime = formatSubmissionTime(latest.created_at);
+    const coachNote = hasText(latest.coach_feedback)
+      ? `<div class="day-detail-feedback"><span>${escapeHtml(t("feedbackCoachNote"))}</span><p>${escapeHtml(latest.coach_feedback)}</p></div>`
+      : "";
+    const nextFocus = hasText(latest.coach_next_focus)
+      ? `<div class="day-detail-feedback"><span>${escapeHtml(t("feedbackNextFocus"))}</span><p>${escapeHtml(latest.coach_next_focus)}</p></div>`
+      : "";
+
+    elements.body.innerHTML = `
+      <div class="day-detail-status ${status.className}">
+        <span>${escapeHtml(status.label)}</span>
+      </div>
+      <div class="day-detail-meta">
+        <strong>${escapeHtml(t("dayDetailsLatestSubmission"))}</strong>
+        ${submittedTime ? `<p>${escapeHtml(t("dayDetailsSubmittedAt"))}: ${escapeHtml(submittedTime)}</p>` : ""}
+      </div>
+      ${playbackUrl
+        ? `<audio class="voice-history-audio" controls src="${escapeHtml(playbackUrl)}"></audio>`
+        : `<p class="voice-history-unavailable">${escapeHtml(t("historyPlaybackUnavailable"))}</p>`
+      }
+      <div class="day-detail-feedback-wrap">
+        ${reviewed && (coachNote || nextFocus)
+          ? `${coachNote}${nextFocus}`
+          : `<div class="day-detail-feedback"><span>${escapeHtml(t("historyFeedbackPending"))}</span><p>${escapeHtml(t("historyCoachPending"))}</p></div>`
+        }
+      </div>
+    `;
+    elements.card?.focus();
   }
 
   function renderFeedbackField(labelKey, value) {
@@ -1308,6 +1536,22 @@
     }
   }
 
+  async function handleWorkspaceLogout(button = null) {
+    const subtitle = document.querySelector("#workspace-subtitle");
+    try {
+      button?.setAttribute("disabled", "true");
+      if (subtitle) subtitle.textContent = t("loggingOut");
+      const user = await getSessionUser();
+      resetVoiceRecordingState();
+      await window.starSpeakerSupabase?.insertPortalEvent?.(user, "logout", {});
+      await window.starSpeakerSupabase?.signOutStudent?.();
+      window.location.href = getRelativeUrl(loginPage);
+    } catch (error) {
+      console.warn("Student logout failed:", error);
+      window.location.href = getRelativeUrl(loginPage);
+    }
+  }
+
   function bindVoiceLogControls() {
     const elements = getVoiceElements();
     elements.startButton?.addEventListener("click", startVoiceRecording);
@@ -1326,6 +1570,29 @@
       voiceHistoryExpanded = !voiceHistoryExpanded;
       await prepareVoicePlaybackUrls(cachedVoiceSubmissions);
       renderVoiceHistory(cachedVoiceSubmissions);
+    });
+
+    document.querySelector("#weekly-practice-row")?.addEventListener("click", (event) => {
+      const card = event.target.closest("[data-date-key]");
+      const dateKey = card?.dataset?.dateKey;
+      if (dateKey) renderDayDetails(dateKey);
+    });
+
+    document.querySelectorAll("[data-day-detail-close]").forEach((element) => {
+      element.addEventListener("click", closeDayDetail);
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && activeDayDetailDateKey) {
+        closeDayDetail();
+      }
+    });
+
+    document.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-profile-logout]");
+      if (button) {
+        handleWorkspaceLogout(button);
+      }
     });
   }
 
@@ -1357,6 +1624,7 @@
     if (note) note.textContent = profile?.full_name ? t("workspaceSubtitle") : t("profilePreparing");
     if (avatar) avatar.textContent = getInitials(name, profile?.email);
     if (userName) userName.textContent = name || "Student";
+    renderProfileView(profile);
     renderVoiceLabels();
     renderWeeklyPractice(cachedVoiceSubmissions);
     renderTeacherFeedback(cachedVoiceSubmissions);
@@ -1410,24 +1678,14 @@
         }
       });
 
-    logoutButton?.addEventListener("click", async () => {
-      try {
-        logoutButton.setAttribute("disabled", "true");
-        if (subtitle) subtitle.textContent = t("loggingOut");
-        const user = await getSessionUser();
-        resetVoiceRecordingState();
-        await window.starSpeakerSupabase?.insertPortalEvent?.(user, "logout", {});
-        await window.starSpeakerSupabase?.signOutStudent?.();
-        window.location.href = getRelativeUrl(loginPage);
-      } catch (error) {
-        console.warn("Student logout failed:", error);
-        window.location.href = getRelativeUrl(loginPage);
-      }
-    });
+    logoutButton?.addEventListener("click", () => handleWorkspaceLogout(logoutButton));
 
     window.addEventListener("starSpeakerLanguageChange", () => {
       if (activeWorkspaceProfile) {
         renderWorkspace(activeWorkspaceProfile);
+        if (activeDayDetailDateKey) {
+          renderDayDetails(activeDayDetailDateKey);
+        }
       } else {
         if (subtitle) subtitle.textContent = t("checking");
         if (pill) pill.textContent = t("checkingPill");

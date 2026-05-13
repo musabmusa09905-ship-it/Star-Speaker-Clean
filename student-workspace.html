@@ -227,7 +227,9 @@
                 </span>
                 <h2 id="profile-title">Profile</h2>
               </div>
-              <p id="workspace-profile-note">Your profile is being prepared.</p>
+              <div class="workspace-profile-panel" id="workspace-profile-panel">
+                <p id="workspace-profile-note">Your profile is being prepared.</p>
+              </div>
             </section>
           </div>
 
@@ -270,6 +272,22 @@
           </a>
         </nav>
       </main>
+    </div>
+
+    <div class="workspace-modal" id="day-detail-modal" hidden>
+      <div class="workspace-modal-backdrop" data-day-detail-close></div>
+      <section
+        class="workspace-modal-card"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="day-detail-title"
+        tabindex="-1"
+      >
+        <button class="workspace-modal-close" type="button" data-day-detail-close aria-label="Close">&times;</button>
+        <p class="student-eyebrow" id="day-detail-date"></p>
+        <h2 id="day-detail-title">Day Details</h2>
+        <div class="day-detail-body" id="day-detail-body"></div>
+      </section>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
