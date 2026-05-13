@@ -60,6 +60,20 @@
       oneTaskComplete: "1 / 1 Task",
       zeroTaskComplete: "0 / 1 Task",
       weeklySummary: (count) => `${count} / 7 tasks completed`,
+      feedbackEmptyTitle: "No feedback yet.",
+      feedbackEmptyBody: "Your feedback will appear after your first voice submission is reviewed.",
+      feedbackPendingTitle: "Your voice practice has been received.",
+      feedbackPendingBody: "Feedback will appear here after your coach reviews it.",
+      feedbackLatestTitle: "Latest Teacher Feedback",
+      feedbackReviewed: "Reviewed",
+      feedbackCoachNote: "Coach Note",
+      feedbackNextFocus: "Next Focus",
+      feedbackPronunciation: "Pronunciation",
+      feedbackFluency: "Fluency",
+      feedbackGrammar: "Grammar",
+      feedbackConfidence: "Confidence",
+      feedbackReviewedBy: "Reviewed by",
+      feedbackDefaultCoach: "Star Speaker Coach",
     },
     tr: {
       checking: "Özel Star Speaker erişiminiz kontrol ediliyor.",
@@ -116,6 +130,20 @@
       oneTaskComplete: "1 / 1 Görev",
       zeroTaskComplete: "0 / 1 Görev",
       weeklySummary: (count) => `${count} / 7 görev tamamlandı`,
+      feedbackEmptyTitle: "Henüz geri bildirim yok.",
+      feedbackEmptyBody: "İlk ses gönderin incelendikten sonra geri bildirimin burada görünecek.",
+      feedbackPendingTitle: "Ses pratiğin alındı.",
+      feedbackPendingBody: "Koçun inceledikten sonra geri bildirimin burada görünecek.",
+      feedbackLatestTitle: "Son Öğretmen Geri Bildirimi",
+      feedbackReviewed: "İncelendi",
+      feedbackCoachNote: "Koç Notu",
+      feedbackNextFocus: "Sonraki Odak",
+      feedbackPronunciation: "Telaffuz",
+      feedbackFluency: "Akıcılık",
+      feedbackGrammar: "Dil Bilgisi",
+      feedbackConfidence: "Özgüven",
+      feedbackReviewedBy: "İnceleyen",
+      feedbackDefaultCoach: "Star Speaker Koçu",
     },
   };
 
@@ -664,6 +692,101 @@
     if (summary) summary.textContent = t("weeklySummary", completedCount);
   }
 
+  function escapeHtml(value) {
+    return String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  function hasText(value) {
+    return String(value || "").trim().length > 0;
+  }
+
+  function getFeedbackDateValue(submission) {
+    return Date.parse(submission?.reviewed_at || submission?.created_at || "") || 0;
+  }
+
+  function getLatestReviewedSubmission(submissions = []) {
+    return [...submissions]
+      .filter((submission) => (
+        String(submission?.review_status || "").toLowerCase() === "reviewed" ||
+        hasText(submission?.reviewed_at) ||
+        hasText(submission?.coach_feedback)
+      ))
+      .sort((a, b) => getFeedbackDateValue(b) - getFeedbackDateValue(a))[0] || null;
+  }
+
+  function formatFeedbackDate(value) {
+    if (!value) return "";
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return "";
+
+    return new Intl.DateTimeFormat(getLanguage() === "tr" ? "tr-TR" : "en", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    }).format(date);
+  }
+
+  function renderFeedbackField(labelKey, value) {
+    if (!hasText(value)) return "";
+
+    return `
+      <div class="teacher-feedback-field">
+        <span>${escapeHtml(t(labelKey))}</span>
+        <p>${escapeHtml(value)}</p>
+      </div>
+    `;
+  }
+
+  function renderTeacherFeedback(submissions = cachedVoiceSubmissions) {
+    const panel = document.querySelector("#feedback-panel");
+    if (!panel) return;
+
+    const reviewed = getLatestReviewedSubmission(submissions);
+    const hasSubmissions = Array.isArray(submissions) && submissions.length > 0;
+
+    panel.classList.remove("teacher-feedback-reviewed", "teacher-feedback-pending");
+
+    if (!reviewed) {
+      panel.classList.toggle("teacher-feedback-pending", hasSubmissions);
+      panel.innerHTML = `
+        <strong>${escapeHtml(hasSubmissions ? t("feedbackPendingTitle") : t("feedbackEmptyTitle"))}</strong>
+        <p>${escapeHtml(hasSubmissions ? t("feedbackPendingBody") : t("feedbackEmptyBody"))}</p>
+      `;
+      return;
+    }
+
+    panel.classList.add("teacher-feedback-reviewed");
+    const reviewedBy = hasText(reviewed.reviewed_by) ? reviewed.reviewed_by : t("feedbackDefaultCoach");
+    const reviewedDate = formatFeedbackDate(reviewed.reviewed_at || reviewed.created_at);
+    const fields = [
+      renderFeedbackField("feedbackCoachNote", reviewed.coach_feedback),
+      renderFeedbackField("feedbackNextFocus", reviewed.coach_next_focus),
+      renderFeedbackField("feedbackPronunciation", reviewed.pronunciation_feedback),
+      renderFeedbackField("feedbackFluency", reviewed.fluency_feedback),
+      renderFeedbackField("feedbackGrammar", reviewed.grammar_feedback),
+      renderFeedbackField("feedbackConfidence", reviewed.confidence_feedback),
+    ].join("");
+
+    panel.innerHTML = `
+      <div class="teacher-feedback-topline">
+        <strong>${escapeHtml(t("feedbackLatestTitle"))}</strong>
+        <span>${escapeHtml(t("feedbackReviewed"))}</span>
+      </div>
+      <div class="teacher-feedback-fields">
+        ${fields || renderFeedbackField("feedbackCoachNote", reviewed.coach_feedback)}
+      </div>
+      <p class="teacher-feedback-meta">
+        ${escapeHtml(t("feedbackReviewedBy"))} ${escapeHtml(reviewedBy)}
+        ${reviewedDate ? ` · ${escapeHtml(reviewedDate)}` : ""}
+      </p>
+    `;
+  }
+
   function getVoiceElements() {
     return {
       helper: document.querySelector("#voice-log-helper"),
@@ -939,23 +1062,22 @@
   async function hydrateVoiceSubmissions(user) {
     if (!user?.id) return;
     try {
-      const { startDate, endDate } = getCurrentWeekRange();
       cachedVoiceSubmissions = await window.starSpeakerSupabase.getVoiceSubmissions?.(
         user.id,
-        startDate,
-        endDate,
       ) || [];
       const today = getLocalDateString();
       voiceSubmittedToday = cachedVoiceSubmissions.some((submission) => (
         String(submission?.submission_date || "").slice(0, 10) === today
       ));
       renderWeeklyPractice(cachedVoiceSubmissions);
+      renderTeacherFeedback(cachedVoiceSubmissions);
       renderVoiceState(voiceSubmittedToday ? "submitted" : "idle");
     } catch (error) {
       console.warn("Voice submission status load failed:", error);
       cachedVoiceSubmissions = [];
       voiceSubmittedToday = false;
       renderWeeklyPractice([]);
+      renderTeacherFeedback([]);
       renderVoiceState("idle");
       setVoiceMessage(t("voiceQueryFailed"), "error");
     }
@@ -1006,6 +1128,7 @@
     if (userName) userName.textContent = name || "Student";
     renderVoiceLabels();
     renderWeeklyPractice(cachedVoiceSubmissions);
+    renderTeacherFeedback(cachedVoiceSubmissions);
     renderVoiceState(currentVoiceState || (voiceSubmittedToday ? "submitted" : "idle"));
   }
 
@@ -1018,6 +1141,7 @@
     if (pill) pill.textContent = t("checkingPill");
     bindVoiceLogControls();
     renderWeeklyPractice([]);
+    renderTeacherFeedback([]);
     renderVoiceState("idle");
 
     if (!window.starSpeakerSupabase?.isConfigured?.()) {
