@@ -407,13 +407,19 @@
       return [];
     }
 
+    console.log("Upcoming Session: auth user id", userId);
+
     const { data, error } = await supabaseClient
       .from("student_sessions")
       .select("*")
       .eq("user_id", userId)
+      .eq("status", "scheduled")
       .order("session_date", { ascending: true })
       .order("session_time", { ascending: true })
       .limit(20);
+
+    console.log("Upcoming Session: query data", data);
+    console.log("Upcoming Session: query error", error);
 
     if (error) throw error;
     return Array.isArray(data) ? data : [];

@@ -1732,7 +1732,15 @@
     if (!user?.id) return;
 
     try {
-      const sessions = await window.starSpeakerSupabase.getStudentSessions?.(user.id) || [];
+      console.log("Upcoming Session: function started");
+      console.log("Upcoming Session: auth user id", user.id);
+      if (typeof window.starSpeakerSupabase?.getStudentSessions !== "function") {
+        console.warn("Upcoming Session: getStudentSessions helper is not loaded.");
+      }
+
+      const sessions = typeof window.starSpeakerSupabase?.getStudentSessions === "function"
+        ? await window.starSpeakerSupabase.getStudentSessions(user.id)
+        : [];
       const debugRows = sessions.map((session) => ({
         id: session.id || null,
         user_id: session.user_id || null,
@@ -1746,7 +1754,11 @@
         sessions_returned: sessions.length,
         sessions: debugRows,
       });
+      if (!sessions.length) {
+        console.warn("Upcoming Session: no scheduled rows returned for this auth user. Check RLS, exact user_id, and status = scheduled.");
+      }
       cachedUpcomingSession = getNextUpcomingSession(sessions);
+      console.log("Upcoming Session: selected session", cachedUpcomingSession);
       upcomingSessionLoadFailed = false;
       renderUpcomingSession(cachedUpcomingSession);
     } catch (error) {
