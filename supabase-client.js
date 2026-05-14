@@ -425,6 +425,24 @@
     return Array.isArray(data) ? data : [];
   }
 
+  async function getStudentSessionRows(userId) {
+    const supabaseClient = getClient();
+    if (!supabaseClient || !userId) {
+      return [];
+    }
+
+    const { data, error } = await supabaseClient
+      .from("student_sessions")
+      .select("*")
+      .eq("user_id", userId)
+      .order("session_date", { ascending: false })
+      .order("session_time", { ascending: false })
+      .limit(50);
+
+    if (error) throw error;
+    return Array.isArray(data) ? data : [];
+  }
+
   window.starSpeakerSupabase = {
     isConfigured,
     getClient,
@@ -448,5 +466,6 @@
     getVoiceSubmissions,
     getVoiceSubmissionSignedUrl,
     getStudentSessions,
+    getStudentSessionRows,
   };
 })();

@@ -44,7 +44,7 @@
             <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3Z"></path><path d="M19 11a7 7 0 0 1-14 0"></path><path d="M12 18v4"></path></svg>
             <span>Voice Log</span>
           </a>
-          <a href="#notes">
+          <a href="#session-notes">
             <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 3h7l5 5v13H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"></path><path d="M14 3v5h5M9 13h6M9 17h6"></path></svg>
             <span>Notes</span>
           </a>
@@ -207,6 +207,22 @@
               </div>
             </section>
 
+            <section class="workspace-card workspace-feature-card" id="session-notes" aria-labelledby="session-notes-title">
+              <div class="workspace-card-heading">
+                <span class="workspace-card-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><path d="M7 3h7l5 5v13H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"></path><path d="M14 3v5h5M9 13h6M9 17h6"></path></svg>
+                </span>
+                <div>
+                  <h2 id="session-notes-title">Session Notes</h2>
+                  <p id="session-notes-subtitle">Your latest coaching notes and next actions.</p>
+                </div>
+              </div>
+              <div class="workspace-empty-state" id="session-notes-panel">
+                <strong>No session notes yet.</strong>
+                <p>Your coach will add notes after your session.</p>
+              </div>
+            </section>
+
             <section class="workspace-card workspace-feature-card" id="notes" aria-labelledby="feedback-title">
               <div class="workspace-card-heading">
                 <span class="workspace-card-icon" aria-hidden="true">
@@ -292,8 +308,8 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase-config.js"></script>
-    <script src="supabase-client.js?v=20260514-session-debug"></script>
+    <script src="supabase-client.js?v=20260514-session-notes"></script>
     <script src="script.js"></script>
-    <script src="student-access.js?v=20260514-session-debug"></script>
+    <script src="student-access.js?v=20260514-session-notes"></script>
   </body>
 </html>

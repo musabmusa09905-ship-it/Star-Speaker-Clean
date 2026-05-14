@@ -142,6 +142,21 @@
       sessionJoin: "Join Session",
       sessionLinkPending: "Meeting link will appear here before your session.",
       sessionLoadError: "We could not load your upcoming session right now.",
+      sessionNotesTitle: "Session Notes",
+      sessionNotesSubtitle: "Your latest coaching notes and next actions.",
+      sessionNotesEmptyTitle: "No session notes yet.",
+      sessionNotesEmptyBody: "Your coach will add notes after your session.",
+      sessionNotesLatestTitle: "Latest Session Notes",
+      sessionNotesSession: "Session",
+      sessionNotesDate: "Date",
+      sessionNotesPractice: "What we practiced",
+      sessionNotesMistake: "Mistake pattern",
+      sessionNotesHomework: "Homework",
+      sessionNotesNextFocus: "Next focus",
+      sessionNotesAdditional: "Additional notes",
+      sessionNotesAddedBy: "Added by",
+      sessionNotesDefaultCoach: "Star Speaker Coach",
+      sessionNotesLoadError: "We could not load your session notes right now.",
     },
     tr: {
       checking: "Özel Star Speaker erişiminiz kontrol ediliyor.",
@@ -280,6 +295,21 @@
       sessionJoin: "G\u00f6r\u00fc\u015fmeye Kat\u0131l",
       sessionLinkPending: "G\u00f6r\u00fc\u015fme ba\u011flant\u0131s\u0131 seans\u0131ndan \u00f6nce burada g\u00f6r\u00fcnecek.",
       sessionLoadError: "Yakla\u015fan g\u00f6r\u00fc\u015fmeni \u015fu anda y\u00fckleyemedik.",
+      sessionNotesTitle: "Seans Notlar\u0131",
+      sessionNotesSubtitle: "Son ko\u00e7luk notlar\u0131n ve sonraki ad\u0131mlar\u0131n.",
+      sessionNotesEmptyTitle: "Hen\u00fcz seans notu yok.",
+      sessionNotesEmptyBody: "Ko\u00e7un seans\u0131ndan sonra notlar\u0131n\u0131 ekleyecek.",
+      sessionNotesLatestTitle: "Son Seans Notlar\u0131",
+      sessionNotesSession: "Seans",
+      sessionNotesDate: "Tarih",
+      sessionNotesPractice: "\u00c7al\u0131\u015ft\u0131klar\u0131m\u0131z",
+      sessionNotesMistake: "Hata kal\u0131b\u0131",
+      sessionNotesHomework: "\u00d6dev",
+      sessionNotesNextFocus: "Sonraki odak",
+      sessionNotesAdditional: "Ek notlar",
+      sessionNotesAddedBy: "Ekleyen",
+      sessionNotesDefaultCoach: "Star Speaker Ko\u00e7u",
+      sessionNotesLoadError: "Seans notlar\u0131n\u0131 \u015fu anda y\u00fckleyemedik.",
     },
   };
 
@@ -736,6 +766,8 @@
   let dayPracticeSuccessDateKey = "";
   let cachedUpcomingSession = null;
   let upcomingSessionLoadFailed = false;
+  let cachedSessionNote = null;
+  let sessionNotesLoadFailed = false;
   const voicePlaybackUrls = new Map();
 
   const maxVoiceUploadBytes = 20 * 1024 * 1024;
@@ -1728,6 +1760,116 @@
     `;
   }
 
+  function sessionHasNotes(session) {
+    return [
+      session?.notes,
+      session?.practice_summary,
+      session?.mistake_pattern,
+      session?.homework,
+      session?.next_focus,
+    ].some(hasText);
+  }
+
+  function getSessionNotesSortTime(session) {
+    const addedAt = Date.parse(session?.notes_added_at || "");
+    if (Number.isFinite(addedAt)) return addedAt;
+
+    const dateTime = getSessionDateTime(session);
+    return dateTime ? dateTime.getTime() : 0;
+  }
+
+  function getLatestSessionWithNotes(sessions = []) {
+    return [...sessions]
+      .filter(sessionHasNotes)
+      .sort((a, b) => getSessionNotesSortTime(b) - getSessionNotesSortTime(a))[0] || null;
+  }
+
+  function formatSessionNotesAddedAt(session) {
+    const rawValue = String(session?.notes_added_at || "").trim();
+    if (!rawValue) return "";
+
+    const date = new Date(rawValue);
+    if (Number.isNaN(date.getTime())) return "";
+
+    return new Intl.DateTimeFormat(getLanguage() === "tr" ? "tr-TR" : "en", {
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    }).format(date);
+  }
+
+  function renderSessionNoteField(labelKey, value) {
+    if (!hasText(value)) return "";
+
+    return `
+      <div class="session-notes-field">
+        <span>${escapeHtml(t(labelKey))}</span>
+        <p>${escapeHtml(value)}</p>
+      </div>
+    `;
+  }
+
+  function renderSessionNotes(session = cachedSessionNote) {
+    const title = document.querySelector("#session-notes-title");
+    const subtitle = document.querySelector("#session-notes-subtitle");
+    const panel = document.querySelector("#session-notes-panel");
+    if (title) title.textContent = t("sessionNotesTitle");
+    if (subtitle) subtitle.textContent = t("sessionNotesSubtitle");
+    if (!panel) return;
+
+    panel.classList.remove("session-notes-panel");
+
+    if (sessionNotesLoadFailed) {
+      panel.className = "workspace-empty-state";
+      panel.innerHTML = `
+        <strong>${escapeHtml(t("sessionNotesLoadError"))}</strong>
+        <p>${escapeHtml(t("sessionNotesEmptyBody"))}</p>
+      `;
+      return;
+    }
+
+    if (!session) {
+      panel.className = "workspace-empty-state";
+      panel.innerHTML = `
+        <strong>${escapeHtml(t("sessionNotesEmptyTitle"))}</strong>
+        <p>${escapeHtml(t("sessionNotesEmptyBody"))}</p>
+      `;
+      return;
+    }
+
+    const fields = [
+      renderSessionNoteField("sessionNotesPractice", session.practice_summary),
+      renderSessionNoteField("sessionNotesMistake", session.mistake_pattern),
+      renderSessionNoteField("sessionNotesHomework", session.homework),
+      renderSessionNoteField("sessionNotesNextFocus", session.next_focus),
+      renderSessionNoteField("sessionNotesAdditional", session.notes),
+    ].join("");
+    const addedBy = hasText(session.notes_added_by)
+      ? session.notes_added_by
+      : t("sessionNotesDefaultCoach");
+    const addedAt = formatSessionNotesAddedAt(session);
+
+    panel.className = "session-notes-panel";
+    panel.innerHTML = `
+      <div class="session-notes-topline">
+        <strong>${escapeHtml(t("sessionNotesLatestTitle"))}</strong>
+      </div>
+      <div class="session-notes-meta-grid">
+        ${renderSessionDetail("sessionNotesSession", session.session_title || t("sessionTitle"))}
+        ${renderSessionDetail("sessionNotesDate", formatSessionDate(session))}
+      </div>
+      <div class="session-notes-fields">
+        ${fields}
+      </div>
+      <p class="session-notes-footer">
+        ${escapeHtml(t("sessionNotesAddedBy"))} ${escapeHtml(addedBy)}
+        ${addedAt ? ` Â· ${escapeHtml(addedAt)}` : ""}
+      </p>
+    `;
+  }
+
   async function hydrateUpcomingSession(user) {
     if (!user?.id) return;
 
@@ -1766,6 +1908,24 @@
       cachedUpcomingSession = null;
       upcomingSessionLoadFailed = true;
       renderUpcomingSession(null);
+    }
+  }
+
+  async function hydrateSessionNotes(user) {
+    if (!user?.id) return;
+
+    try {
+      const sessions = typeof window.starSpeakerSupabase?.getStudentSessionRows === "function"
+        ? await window.starSpeakerSupabase.getStudentSessionRows(user.id)
+        : [];
+      cachedSessionNote = getLatestSessionWithNotes(sessions);
+      sessionNotesLoadFailed = false;
+      renderSessionNotes(cachedSessionNote);
+    } catch (error) {
+      console.warn("Session notes load failed:", error);
+      cachedSessionNote = null;
+      sessionNotesLoadFailed = true;
+      renderSessionNotes(null);
     }
   }
 
@@ -2346,6 +2506,7 @@
     renderTeacherFeedback(cachedVoiceSubmissions);
     renderVoiceHistory(cachedVoiceSubmissions);
     renderUpcomingSession(cachedUpcomingSession);
+    renderSessionNotes(cachedSessionNote);
     renderVoiceState(currentVoiceState || (voiceSubmittedToday ? "submitted" : "idle"));
   }
 
@@ -2362,6 +2523,7 @@
     renderTeacherFeedback([]);
     renderVoiceHistory([]);
     renderUpcomingSession(null);
+    renderSessionNotes(null);
     renderVoiceState("idle");
 
     if (!window.starSpeakerSupabase?.isConfigured?.()) {
@@ -2388,6 +2550,7 @@
         renderWorkspace(profile);
         await hydrateVoiceSubmissions(user);
         await hydrateUpcomingSession(user);
+        await hydrateSessionNotes(user);
       })
       .catch(async (error) => {
         console.warn("Student workspace guard failed:", error);
@@ -2407,6 +2570,7 @@
           renderDayDetails(activeDayDetailDateKey);
         }
         renderUpcomingSession(cachedUpcomingSession);
+        renderSessionNotes(cachedSessionNote);
       } else {
         if (subtitle) subtitle.textContent = t("checking");
         if (pill) pill.textContent = t("checkingPill");
