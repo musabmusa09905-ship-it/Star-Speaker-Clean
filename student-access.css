@@ -905,6 +905,10 @@
     rgba(20, 18, 15, 0.72);
 }
 
+.practice-day.is-late {
+  border-color: rgba(216, 192, 138, 0.44);
+}
+
 .practice-day.is-submitted small,
 .practice-day.is-submitted span {
   color: var(--champagne);
@@ -1093,6 +1097,13 @@
 .voice-history-status.is-reviewed {
   border-color: rgba(230, 211, 163, 0.52);
   background: rgba(230, 211, 163, 0.08);
+  color: var(--champagne);
+}
+
+.voice-history-status.is-late {
+  width: fit-content;
+  border-color: rgba(216, 192, 138, 0.48);
+  background: rgba(216, 192, 138, 0.08);
   color: var(--champagne);
 }
 
@@ -1449,10 +1460,22 @@
 }
 
 .day-detail-status.is-pending,
-.day-detail-status.is-reviewed {
+.day-detail-status.is-reviewed,
+.day-detail-status.is-submitted {
   border-color: rgba(230, 211, 163, 0.48);
   background: rgba(230, 211, 163, 0.08);
   color: var(--champagne);
+}
+
+.day-detail-status.is-late {
+  border-color: rgba(216, 192, 138, 0.48);
+  background: rgba(216, 192, 138, 0.08);
+  color: var(--champagne);
+}
+
+.day-detail-status.is-locked {
+  border-color: rgba(167, 159, 144, 0.24);
+  color: rgba(167, 159, 144, 0.94);
 }
 
 .day-detail-status.is-empty {
@@ -1501,6 +1524,57 @@
   margin: 0;
   color: rgba(247, 241, 228, 0.86);
   line-height: 1.55;
+}
+
+.day-detail-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.day-practice-task,
+.day-practice-recorder {
+  display: grid;
+  gap: 0.7rem;
+  border: 1px solid rgba(230, 211, 163, 0.14);
+  border-radius: 10px;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(230, 211, 163, 0.07), transparent 9rem),
+    rgba(5, 5, 5, 0.28);
+  padding: 0.9rem;
+}
+
+.day-practice-task strong {
+  color: var(--ivory);
+}
+
+.day-practice-task p,
+.day-practice-task small,
+.day-practice-message {
+  margin: 0;
+  color: rgba(239, 231, 216, 0.74);
+  line-height: 1.5;
+}
+
+.day-practice-task small {
+  color: var(--champagne);
+}
+
+.day-practice-message.is-success {
+  color: var(--champagne);
+}
+
+.day-practice-message.is-error {
+  color: #e7a49c;
+}
+
+.day-practice-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.day-practice-actions .button {
+  min-width: min(100%, 10rem);
 }
 
 .workspace-modal-open {
@@ -1697,6 +1771,16 @@
     width: 100%;
     max-height: 86vh;
     border-radius: 16px;
+  }
+
+  .day-practice-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .day-practice-actions .button {
+    width: 100%;
+    min-width: 0;
   }
 }
 

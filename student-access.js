@@ -109,12 +109,27 @@
       backToDashboard: "Back to Dashboard",
       notAvailable: "Not available",
       dayDetailsTitle: "Day Details",
+      dayPracticeTitle: "Day Practice",
       dayDetailsSubmitted: "Submitted",
       dayDetailsNotSubmitted: "Not submitted",
+      dayMissedPractice: "Missed Practice",
+      dayLateSubmission: "Late Submission",
+      dayLocked: "Locked",
+      dayFutureLocked: "This practice day is not available yet.",
+      dayWindowClosed: "This practice window has closed.",
       dayDetailsNoSubmission: "No voice practice submitted for this day.",
       dayDetailsSubmittedAt: "Submitted at",
       dayDetailsLatestSubmission: "Latest submission for this day.",
       dayDetailsClose: "Close",
+      dayPracticeDefaultTask: "Record a short speaking practice for this day.",
+      dayPracticeInstruction: "Speak for 60-90 seconds. Keep going even if you make mistakes.",
+      dayPracticeAvailableToday: "Today's practice is available.",
+      dayPracticeLateAvailable: "You can still submit this practice as a late submission.",
+      dayPracticeLateSaved: "This will be saved as a late submission.",
+      dayPracticePreview: "Preview",
+      dayPracticeSubmit: "Submit Practice",
+      dayPracticeSuccess: "Your practice has been submitted.",
+      dayPracticeFailed: "We could not submit your practice. Please try again.",
     },
     tr: {
       checking: "Özel Star Speaker erişiminiz kontrol ediliyor.",
@@ -220,12 +235,27 @@
       backToDashboard: "Panele Dön",
       notAvailable: "Mevcut değil",
       dayDetailsTitle: "Gün Detayları",
+      dayPracticeTitle: "Gün Pratiği",
       dayDetailsSubmitted: "Gönderildi",
       dayDetailsNotSubmitted: "Gönderilmedi",
+      dayMissedPractice: "Kaçırılan Pratik",
+      dayLateSubmission: "Geç Gönderim",
+      dayLocked: "Kilitli",
+      dayFutureLocked: "Bu pratik günü henüz kullanılamaz.",
+      dayWindowClosed: "Bu pratik penceresi kapandı.",
       dayDetailsNoSubmission: "Bu gün için ses pratiği gönderilmedi.",
       dayDetailsSubmittedAt: "Gönderim saati",
       dayDetailsLatestSubmission: "Bu gün için son gönderim.",
       dayDetailsClose: "Kapat",
+      dayPracticeDefaultTask: "Bu gün için kısa bir konuşma pratiği kaydet.",
+      dayPracticeInstruction: "60-90 saniye konuş. Hata yapsan bile devam et.",
+      dayPracticeAvailableToday: "Bugünkü pratik kullanıma hazır.",
+      dayPracticeLateAvailable: "Bu pratiği geç gönderim olarak hâlâ tamamlayabilirsin.",
+      dayPracticeLateSaved: "Bu gönderim geç gönderim olarak kaydedilecek.",
+      dayPracticePreview: "Önizle",
+      dayPracticeSubmit: "Pratiği Gönder",
+      dayPracticeSuccess: "Pratiğin gönderildi.",
+      dayPracticeFailed: "Pratiğini gönderemedik. Lütfen tekrar dene.",
     },
   };
 
@@ -670,6 +700,16 @@
   let voiceHistoryExpanded = false;
   let voiceHistoryLoadFailed = false;
   let activeDayDetailDateKey = "";
+  let dayPracticeMediaRecorder = null;
+  let dayPracticeMediaStream = null;
+  let dayPracticeChunks = [];
+  let dayPracticeTimerId = null;
+  let dayPracticeStartTime = 0;
+  let dayPracticeObjectUrl = "";
+  let dayPracticeFile = null;
+  let dayPracticeDurationSeconds = null;
+  let dayPracticeState = "idle";
+  let dayPracticeSuccessDateKey = "";
   const voicePlaybackUrls = new Map();
 
   const maxVoiceUploadBytes = 20 * 1024 * 1024;
@@ -805,12 +845,15 @@
         const date = new Date(start);
         date.setDate(start.getDate() + index);
         const dateKey = getLocalDateString(date);
+        const daySubmissions = getSortedVoiceSubmissions(submissions)
+          .filter((submission) => getSubmissionDateKey(submission) === dateKey);
         const submitted = submittedDates.has(dateKey);
+        const late = submitted && daySubmissions.length ? isLateSubmission(daySubmissions[0]) : false;
         if (submitted) completedCount += 1;
 
         return `
           <button
-            class="practice-day${submitted ? " is-submitted" : ""}"
+            class="practice-day${submitted ? " is-submitted" : ""}${late ? " is-late" : ""}"
             type="button"
             data-practice-day
             data-date="${escapeHtml(dateKey)}"
@@ -819,7 +862,7 @@
           >
             <strong>${t(dayKey)}</strong>
             <span><i aria-hidden="true"></i>${submitted ? t("oneTaskComplete") : t("zeroTaskComplete")}</span>
-            <small>${submitted ? t("taskSubmitted") : t("taskNotSubmitted")}</small>
+            <small>${submitted ? late ? t("dayLateSubmission") : t("taskSubmitted") : t("taskNotSubmitted")}</small>
           </button>
         `;
       })
@@ -1090,6 +1133,7 @@
     const playbackUrl = voicePlaybackUrls.get(key) || "";
     const status = getHistoryStatus(submission);
     const reviewed = isReviewedSubmission(submission);
+    const late = isLateSubmission(submission);
     const dateLabel = formatFeedbackDate(submission?.submission_date || submission?.created_at);
     const coachNote = hasText(submission?.coach_feedback)
       ? `<div class="voice-history-feedback"><span>${escapeHtml(t("feedbackCoachNote"))}</span><p>${escapeHtml(submission.coach_feedback)}</p></div>`
@@ -1107,6 +1151,7 @@
           </div>
           <span class="voice-history-status ${status.className}">${escapeHtml(status.label)}</span>
         </div>
+        ${late ? `<span class="voice-history-status is-late">${escapeHtml(t("dayLateSubmission"))}</span>` : ""}
         ${playbackUrl
           ? `<audio class="voice-history-audio" controls src="${escapeHtml(playbackUrl)}"></audio>`
           : `<p class="voice-history-unavailable">${escapeHtml(t("historyPlaybackUnavailable"))}</p>`
@@ -1207,29 +1252,168 @@
   function closeDayDetail() {
     const { modal } = getDayDetailElements();
     activeDayDetailDateKey = "";
+    resetDayPracticeRecordingState();
     if (modal) modal.hidden = true;
     document.body.classList.remove("workspace-modal-open");
+  }
+
+  function getDayRelation(dateKey) {
+    const today = getLocalDateString();
+    const { startDate } = getCurrentWeekRange();
+
+    if (dateKey > today) return "future";
+    if (dateKey < startDate) return "closed";
+    if (dateKey === today) return "today";
+    return "past";
+  }
+
+  function isLateSubmission(submission) {
+    if (submission?.is_late === true) return true;
+    const practiceDate = String(submission?.submitted_for_date || getSubmissionDateKey(submission) || "").trim();
+    const createdDate = submission?.created_at ? getLocalDateString(new Date(submission.created_at)) : "";
+    return Boolean(practiceDate && createdDate && practiceDate < createdDate);
+  }
+
+  function getDayPracticeElements() {
+    return {
+      message: document.querySelector("#day-practice-message"),
+      timer: document.querySelector("#day-practice-timer"),
+      meter: document.querySelector("#day-practice-meter"),
+      audio: document.querySelector("#day-practice-audio"),
+      uploadInput: document.querySelector("#day-practice-upload-input"),
+    };
+  }
+
+  function setDayPracticeMessage(message, type = "") {
+    const { message: element } = getDayPracticeElements();
+    if (!element) return;
+    element.textContent = message || "";
+    element.classList.toggle("is-success", type === "success");
+    element.classList.toggle("is-error", type === "error");
+  }
+
+  function clearDayPracticeObjectUrl() {
+    if (dayPracticeObjectUrl) {
+      URL.revokeObjectURL(dayPracticeObjectUrl);
+      dayPracticeObjectUrl = "";
+    }
+  }
+
+  function stopDayPracticeStream() {
+    if (dayPracticeMediaStream) {
+      dayPracticeMediaStream.getTracks().forEach((track) => track.stop());
+      dayPracticeMediaStream = null;
+    }
+  }
+
+  function clearDayPracticeTimer() {
+    window.clearInterval(dayPracticeTimerId);
+    dayPracticeTimerId = null;
+  }
+
+  function resetDayPracticeRecordingState() {
+    clearDayPracticeTimer();
+    stopDayPracticeStream();
+    clearDayPracticeObjectUrl();
+    dayPracticeMediaRecorder = null;
+    dayPracticeChunks = [];
+    dayPracticeFile = null;
+    dayPracticeDurationSeconds = null;
+    dayPracticeState = "idle";
+  }
+
+  function renderDayPracticeControls(dateKey, relation) {
+    const isPast = relation === "past";
+    const preview = dayPracticeState === "preview" && dayPracticeFile && activeDayDetailDateKey === dateKey;
+    const recording = dayPracticeState === "recording" && activeDayDetailDateKey === dateKey;
+    const uploading = dayPracticeState === "uploading" && activeDayDetailDateKey === dateKey;
+
+    return `
+      <div class="day-practice-task">
+        <strong>${escapeHtml(t("dayPracticeDefaultTask"))}</strong>
+        <p>${escapeHtml(t("dayPracticeInstruction"))}</p>
+        ${isPast ? `<small>${escapeHtml(t("dayPracticeLateSaved"))}</small>` : ""}
+      </div>
+      <div class="day-practice-recorder" data-day-practice-state="${escapeHtml(dayPracticeState)}">
+        <div class="voice-recorder-meter" id="day-practice-meter" ${recording ? "" : "hidden"}>
+          <span class="voice-recorder-dot" aria-hidden="true"></span>
+          <span id="day-practice-timer">00:00</span>
+        </div>
+        <audio
+          id="day-practice-audio"
+          class="voice-audio-preview"
+          controls
+          ${preview && dayPracticeObjectUrl ? `src="${escapeHtml(dayPracticeObjectUrl)}"` : "hidden"}
+        ></audio>
+        <p class="day-practice-message" id="day-practice-message">
+          ${escapeHtml(
+            uploading
+              ? t("voiceUploading")
+              : preview
+                ? t("dayPracticePreview")
+                : isPast
+                  ? t("dayPracticeLateAvailable")
+                  : t("dayPracticeAvailableToday"),
+          )}
+        </p>
+        <div class="day-practice-actions">
+          <button class="button button-primary" type="button" data-day-practice-action="start" ${recording || preview || uploading ? "hidden" : ""}>${escapeHtml(t("voiceStart"))}</button>
+          <button class="button button-primary" type="button" data-day-practice-action="stop" ${recording ? "" : "hidden"}>${escapeHtml(t("voiceStop"))}</button>
+          <button class="button button-primary" type="button" data-day-practice-action="submit" ${preview ? "" : "hidden"} ${uploading ? "disabled" : ""}>${escapeHtml(t("dayPracticeSubmit"))}</button>
+          <button class="button button-outline" type="button" data-day-practice-action="again" ${preview ? "" : "hidden"}>${escapeHtml(t("voiceAgain"))}</button>
+          <button class="button button-outline" type="button" data-day-practice-action="upload" ${recording || preview || uploading ? "hidden" : ""}>${escapeHtml(t("voiceUpload"))}</button>
+          <input
+            id="day-practice-upload-input"
+            type="file"
+            accept="audio/webm,audio/mp3,audio/mpeg,audio/mp4,audio/m4a,audio/wav,audio/ogg"
+            hidden
+          >
+        </div>
+      </div>
+    `;
   }
 
   async function renderDayDetails(dateKey) {
     const elements = getDayDetailElements();
     if (!elements.modal || !elements.body) return;
 
+    if (activeDayDetailDateKey && activeDayDetailDateKey !== dateKey) {
+      resetDayPracticeRecordingState();
+    }
     activeDayDetailDateKey = dateKey;
     elements.modal.hidden = false;
     document.body.classList.add("workspace-modal-open");
-    if (elements.title) elements.title.textContent = t("dayDetailsTitle");
+    if (elements.title) elements.title.textContent = t("dayPracticeTitle");
     if (elements.date) elements.date.textContent = formatLongDateKey(dateKey);
     if (elements.close) elements.close.setAttribute("aria-label", t("dayDetailsClose"));
 
     const submissions = getSubmissionsForDate(dateKey);
+    const relation = getDayRelation(dateKey);
     if (!submissions.length) {
+      const locked = relation === "future" || relation === "closed";
+      const statusLabel = relation === "future"
+        ? t("dayLocked")
+        : relation === "closed"
+          ? t("dayLocked")
+          : relation === "past"
+            ? t("dayMissedPractice")
+            : t("dayDetailsNotSubmitted");
+
       elements.body.innerHTML = `
-        <div class="day-detail-status is-empty">
-          <span>${escapeHtml(t("dayDetailsNotSubmitted"))}</span>
+        <div class="day-detail-status ${locked ? "is-locked" : relation === "past" ? "is-late" : "is-empty"}">
+          <span>${escapeHtml(statusLabel)}</span>
         </div>
         <div class="workspace-empty-state">
-          <strong>${escapeHtml(t("dayDetailsNoSubmission"))}</strong>
+          <strong>${escapeHtml(
+            locked
+              ? relation === "future" ? t("dayFutureLocked") : t("dayWindowClosed")
+              : relation === "past" ? t("dayPracticeLateAvailable") : t("dayDetailsNoSubmission"),
+          )}</strong>
+          ${!locked ? `<p>${escapeHtml(t("dayPracticeDefaultTask"))}</p>` : ""}
+        </div>
+        ${!locked ? renderDayPracticeControls(dateKey, relation) : ""}
+        <div class="day-detail-footer">
+          <button class="button button-outline" type="button" data-day-detail-close>${escapeHtml(t("dayDetailsClose"))}</button>
         </div>
       `;
       elements.card?.focus();
@@ -1242,6 +1426,7 @@
 
     const status = getHistoryStatus(latest);
     const reviewed = isReviewedSubmission(latest);
+    const late = isLateSubmission(latest);
     const submittedTime = formatSubmissionTime(latest.created_at);
     const coachNote = hasText(latest.coach_feedback)
       ? `<div class="day-detail-feedback"><span>${escapeHtml(t("feedbackCoachNote"))}</span><p>${escapeHtml(latest.coach_feedback)}</p></div>`
@@ -1251,9 +1436,14 @@
       : "";
 
     elements.body.innerHTML = `
+      <div class="day-detail-status is-submitted">
+        <span>${escapeHtml(t("dayDetailsSubmitted"))}</span>
+      </div>
+      ${late ? `<div class="day-detail-status is-late"><span>${escapeHtml(t("dayLateSubmission"))}</span></div>` : ""}
       <div class="day-detail-status ${status.className}">
         <span>${escapeHtml(status.label)}</span>
       </div>
+      ${dayPracticeSuccessDateKey === dateKey ? `<p class="day-practice-message is-success">${escapeHtml(t("dayPracticeSuccess"))}</p>` : ""}
       <div class="day-detail-meta">
         <strong>${escapeHtml(t("dayDetailsLatestSubmission"))}</strong>
         ${submittedTime ? `<p>${escapeHtml(t("dayDetailsSubmittedAt"))}: ${escapeHtml(submittedTime)}</p>` : ""}
@@ -1267,6 +1457,9 @@
           ? `${coachNote}${nextFocus}`
           : `<div class="day-detail-feedback"><span>${escapeHtml(t("historyFeedbackPending"))}</span><p>${escapeHtml(t("historyCoachPending"))}</p></div>`
         }
+      </div>
+      <div class="day-detail-footer">
+        <button class="button button-outline" type="button" data-day-detail-close>${escapeHtml(t("dayDetailsClose"))}</button>
       </div>
     `;
     elements.card?.focus();
@@ -1619,6 +1812,171 @@
     }
   }
 
+  async function startDayPracticeRecording() {
+    if (!activeDayDetailDateKey) return;
+    if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder !== "function") {
+      setDayPracticeMessage(t("voiceUnsupported"), "error");
+      return;
+    }
+
+    try {
+      resetDayPracticeRecordingState();
+      dayPracticeMediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mimeType = getBestRecorderMimeType();
+      dayPracticeMediaRecorder = new MediaRecorder(
+        dayPracticeMediaStream,
+        mimeType ? { mimeType } : undefined,
+      );
+      dayPracticeChunks = [];
+      dayPracticeStartTime = Date.now();
+      dayPracticeState = "recording";
+
+      dayPracticeMediaRecorder.addEventListener("dataavailable", (event) => {
+        if (event.data?.size) {
+          dayPracticeChunks.push(event.data);
+        }
+      });
+
+      dayPracticeMediaRecorder.addEventListener("stop", () => {
+        clearDayPracticeTimer();
+        stopDayPracticeStream();
+        dayPracticeDurationSeconds = Math.max(0, Math.round((Date.now() - dayPracticeStartTime) / 1000));
+
+        if (dayPracticeDurationSeconds < 1 || !dayPracticeChunks.length) {
+          resetDayPracticeRecordingState();
+          renderDayDetails(activeDayDetailDateKey);
+          window.setTimeout(() => setDayPracticeMessage(t("voiceTooShort"), "error"), 0);
+          return;
+        }
+
+        const type = dayPracticeMediaRecorder?.mimeType || "audio/webm";
+        dayPracticeFile = new Blob(dayPracticeChunks, { type });
+        clearDayPracticeObjectUrl();
+        dayPracticeObjectUrl = URL.createObjectURL(dayPracticeFile);
+        dayPracticeState = "preview";
+        renderDayDetails(activeDayDetailDateKey);
+      });
+
+      dayPracticeMediaRecorder.start();
+      renderDayDetails(activeDayDetailDateKey);
+      dayPracticeTimerId = window.setInterval(() => {
+        const elapsed = Math.floor((Date.now() - dayPracticeStartTime) / 1000);
+        const { timer } = getDayPracticeElements();
+        if (timer) timer.textContent = formatDuration(elapsed);
+        if (elapsed >= maxRecordingSeconds && dayPracticeMediaRecorder?.state === "recording") {
+          dayPracticeMediaRecorder.stop();
+        }
+      }, 250);
+    } catch (error) {
+      console.warn("Day practice recording failed:", error);
+      resetDayPracticeRecordingState();
+      renderDayDetails(activeDayDetailDateKey);
+      window.setTimeout(() => setDayPracticeMessage(t("voiceMicDenied"), "error"), 0);
+    }
+  }
+
+  function stopDayPracticeRecording() {
+    if (dayPracticeMediaRecorder?.state === "recording") {
+      dayPracticeMediaRecorder.stop();
+    }
+  }
+
+  function handleDayPracticeUploadFile(file) {
+    if (!file || !activeDayDetailDateKey) return;
+    if (file.size > maxVoiceUploadBytes) {
+      setDayPracticeMessage(t("voiceTooLarge"), "error");
+      return;
+    }
+
+    resetDayPracticeRecordingState();
+    dayPracticeFile = file;
+    dayPracticeDurationSeconds = null;
+    dayPracticeObjectUrl = URL.createObjectURL(file);
+    dayPracticeState = "preview";
+    renderDayDetails(activeDayDetailDateKey);
+  }
+
+  async function submitDayPractice() {
+    const selectedDate = activeDayDetailDateKey;
+    if (!activeWorkspaceUser?.id || !selectedDate) {
+      setDayPracticeMessage(t("denied"), "error");
+      return;
+    }
+
+    const relation = getDayRelation(selectedDate);
+    if (relation === "future") {
+      setDayPracticeMessage(t("dayFutureLocked"), "error");
+      return;
+    }
+    if (relation === "closed") {
+      setDayPracticeMessage(t("dayWindowClosed"), "error");
+      return;
+    }
+
+    if (!dayPracticeFile) {
+      setDayPracticeMessage(t("voiceNoRecording"), "error");
+      return;
+    }
+
+    const isLate = selectedDate < getLocalDateString();
+
+    try {
+      dayPracticeState = "uploading";
+      renderDayDetails(selectedDate);
+      const upload = await window.starSpeakerSupabase.uploadVoiceSubmissionAudio(
+        dayPracticeFile,
+        activeWorkspaceUser.id,
+        selectedDate,
+      );
+
+      await window.starSpeakerSupabase.insertVoiceSubmission({
+        user_id: activeWorkspaceUser.id,
+        student_email: activeWorkspaceUser.email || activeWorkspaceProfile?.email || null,
+        storage_path: upload.path,
+        audio_url: upload.publicUrl || null,
+        duration_seconds: dayPracticeDurationSeconds,
+        submission_date: selectedDate,
+        submitted_for_date: selectedDate,
+        is_late: isLate,
+        status: "submitted",
+        review_status: "pending",
+      });
+
+      resetDayPracticeRecordingState();
+      dayPracticeSuccessDateKey = selectedDate;
+      await hydrateVoiceSubmissions(activeWorkspaceUser);
+      await renderDayDetails(selectedDate);
+    } catch (error) {
+      console.warn("Day practice submission failed:", error);
+      dayPracticeState = dayPracticeFile ? "preview" : "idle";
+      renderDayDetails(selectedDate);
+      window.setTimeout(() => setDayPracticeMessage(t("dayPracticeFailed"), "error"), 0);
+    }
+  }
+
+  function handleDayPracticeAction(action) {
+    if (action === "start") {
+      startDayPracticeRecording();
+      return;
+    }
+    if (action === "stop") {
+      stopDayPracticeRecording();
+      return;
+    }
+    if (action === "submit") {
+      submitDayPractice();
+      return;
+    }
+    if (action === "again") {
+      resetDayPracticeRecordingState();
+      renderDayDetails(activeDayDetailDateKey);
+      return;
+    }
+    if (action === "upload") {
+      document.querySelector("#day-practice-upload-input")?.click();
+    }
+  }
+
   async function hydrateVoiceSubmissions(user) {
     if (!user?.id) return;
     try {
@@ -1696,6 +2054,15 @@
     });
 
     document.addEventListener("click", (event) => {
+      const dayPracticeButton = event.target instanceof Element
+        ? event.target.closest("[data-day-practice-action]")
+        : null;
+      if (dayPracticeButton) {
+        event.preventDefault();
+        handleDayPracticeAction(dayPracticeButton.dataset.dayPracticeAction);
+        return;
+      }
+
       if (event.target instanceof Element && event.target.closest("[data-day-detail-close]")) {
         closeDayDetail();
         return;
@@ -1705,6 +2072,14 @@
       if (button) {
         handleWorkspaceLogout(button);
       }
+    });
+
+    document.addEventListener("change", (event) => {
+      if (!(event.target instanceof HTMLInputElement) || event.target.id !== "day-practice-upload-input") {
+        return;
+      }
+
+      handleDayPracticeUploadFile(event.target.files?.[0]);
     });
   }
 
