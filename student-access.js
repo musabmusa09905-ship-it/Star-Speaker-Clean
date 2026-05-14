@@ -806,6 +806,7 @@
   let sessionNotesLoadFailed = false;
   let cachedWeeklyResource = null;
   let weeklyResourceLoadFailed = false;
+  let weeklyResourceHydrationStartedForUserId = "";
   const voicePlaybackUrls = new Map();
 
   const maxVoiceUploadBytes = 20 * 1024 * 1024;
@@ -1941,11 +1942,13 @@
       console.log("Upcoming Session: selected session", cachedUpcomingSession);
       upcomingSessionLoadFailed = false;
       renderUpcomingSession(cachedUpcomingSession);
+      hydrateWeeklyResource(user);
     } catch (error) {
       console.warn("Upcoming session load failed:", error);
       cachedUpcomingSession = null;
       upcomingSessionLoadFailed = true;
       renderUpcomingSession(null);
+      hydrateWeeklyResource(user);
     }
   }
 
@@ -1983,20 +1986,12 @@
   }
 
   function getAssignedWeeklyResource(resources = []) {
-    const today = getLocalDateString();
     const assigned = resources.filter((resource) => (
       String(resource?.status || "").trim().toLowerCase() === "assigned"
     ));
     const sortedAssigned = [...assigned].sort((a, b) => (
       Date.parse(b?.created_at || "") - Date.parse(a?.created_at || "")
     ));
-    const currentWeekResource = assigned.find((resource) => {
-      const start = String(resource?.assigned_week_start || "").slice(0, 10);
-      const end = String(resource?.assigned_week_end || "").slice(0, 10);
-      return start && end && start <= today && end >= today;
-    });
-
-    if (currentWeekResource) return currentWeekResource;
 
     return sortedAssigned[0] || null;
   }
@@ -2066,6 +2061,8 @@
 
   async function hydrateWeeklyResource(user) {
     if (!user?.id) return;
+    if (weeklyResourceHydrationStartedForUserId === user.id) return;
+    weeklyResourceHydrationStartedForUserId = user.id;
 
     try {
       console.log("Resource: function started");
@@ -2080,8 +2077,9 @@
       if (!resources.length) {
         console.warn("Resource: no assigned rows returned for this auth user. Check RLS, exact user_id, and status = assigned.");
       }
-      cachedWeeklyResource = getAssignedWeeklyResource(resources);
-      console.log("Resource: selected resource", cachedWeeklyResource);
+      const selectedResource = getAssignedWeeklyResource(resources);
+      console.log("Resource: selected resource", selectedResource);
+      cachedWeeklyResource = selectedResource;
       weeklyResourceLoadFailed = false;
       renderWeeklyResource(cachedWeeklyResource);
     } catch (error) {
