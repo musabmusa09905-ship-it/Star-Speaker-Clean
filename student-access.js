@@ -770,14 +770,28 @@
 
     if (options.error) {
       if (summary) summary.textContent = t("weeklyLoadError");
+      const { start } = getCurrentWeekRange();
       row.innerHTML = dayKeys
-        .map((dayKey, index) => `
-          <button class="practice-day" type="button" data-date-key="" aria-label="${escapeHtml(t(dayKey))}">
+        .map((dayKey, index) => {
+          const date = new Date(start);
+          date.setDate(start.getDate() + index);
+          const dateKey = getLocalDateString(date);
+
+          return `
+          <button
+            class="practice-day"
+            type="button"
+            data-practice-day
+            data-date="${escapeHtml(dateKey)}"
+            data-date-key="${escapeHtml(dateKey)}"
+            aria-label="${escapeHtml(`${t(dayKey)}: ${t("taskNotSubmitted")}`)}"
+          >
             <strong>${t(dayKey)}</strong>
             <span><i aria-hidden="true"></i>${t("zeroTaskComplete")}</span>
             <small>${t("taskNotSubmitted")}</small>
           </button>
-        `)
+        `;
+        })
         .join("");
       return;
     }
@@ -798,6 +812,8 @@
           <button
             class="practice-day${submitted ? " is-submitted" : ""}"
             type="button"
+            data-practice-day
+            data-date="${escapeHtml(dateKey)}"
             data-date-key="${escapeHtml(dateKey)}"
             aria-label="${escapeHtml(`${t(dayKey)}: ${submitted ? t("taskSubmitted") : t("taskNotSubmitted")}`)}"
           >
@@ -1150,7 +1166,34 @@
       .filter((submission) => getSubmissionDateKey(submission) === dateKey);
   }
 
+  function ensureDayDetailModal() {
+    let modal = document.querySelector("#day-detail-modal");
+    if (modal) return modal;
+
+    document.body.insertAdjacentHTML("beforeend", `
+      <div class="workspace-modal" id="day-detail-modal" hidden>
+        <div class="workspace-modal-backdrop" data-day-detail-close></div>
+        <section
+          class="workspace-modal-card"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="day-detail-title"
+          tabindex="-1"
+        >
+          <button class="workspace-modal-close" type="button" data-day-detail-close aria-label="Close">&times;</button>
+          <p class="student-eyebrow" id="day-detail-date"></p>
+          <h2 id="day-detail-title">Day Details</h2>
+          <div class="day-detail-body" id="day-detail-body"></div>
+        </section>
+      </div>
+    `);
+
+    modal = document.querySelector("#day-detail-modal");
+    return modal;
+  }
+
   function getDayDetailElements() {
+    ensureDayDetailModal();
     return {
       modal: document.querySelector("#day-detail-modal"),
       card: document.querySelector("#day-detail-modal .workspace-modal-card"),
@@ -1227,6 +1270,25 @@
       </div>
     `;
     elements.card?.focus();
+  }
+
+  function getClickedPracticeDay(target) {
+    if (!(target instanceof Element)) return null;
+    return target.closest("[data-practice-day], [data-date-key].practice-day, .practice-day");
+  }
+
+  function handlePracticeDayClick(event) {
+    const card = getClickedPracticeDay(event.target);
+    if (!card) return;
+
+    const row = card.closest("#weekly-practice-row");
+    if (!row) return;
+
+    const dateKey = card.dataset?.date || card.dataset?.dateKey || "";
+    if (!dateKey) return;
+
+    event.preventDefault();
+    renderDayDetails(dateKey);
   }
 
   function renderFeedbackField(labelKey, value) {
@@ -1625,15 +1687,7 @@
       renderVoiceHistory(cachedVoiceSubmissions);
     });
 
-    document.querySelector("#weekly-practice-row")?.addEventListener("click", (event) => {
-      const card = event.target.closest("[data-date-key]");
-      const dateKey = card?.dataset?.dateKey;
-      if (dateKey) renderDayDetails(dateKey);
-    });
-
-    document.querySelectorAll("[data-day-detail-close]").forEach((element) => {
-      element.addEventListener("click", closeDayDetail);
-    });
+    document.addEventListener("click", handlePracticeDayClick);
 
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape" && activeDayDetailDateKey) {
@@ -1642,6 +1696,11 @@
     });
 
     document.addEventListener("click", (event) => {
+      if (event.target instanceof Element && event.target.closest("[data-day-detail-close]")) {
+        closeDayDetail();
+        return;
+      }
+
       const button = event.target.closest("[data-profile-logout]");
       if (button) {
         handleWorkspaceLogout(button);
