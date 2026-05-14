@@ -1986,18 +1986,11 @@
   }
 
   function getAssignedWeeklyResources(resources = []) {
-    const today = getLocalDateString();
     const assigned = resources.filter((resource) => (
       String(resource?.status || "").trim().toLowerCase() === "assigned"
     ));
-    const currentWeekResources = assigned.filter((resource) => {
-      const start = String(resource?.assigned_week_start || "").slice(0, 10);
-      const end = String(resource?.assigned_week_end || "").slice(0, 10);
-      return start && end && start <= today && end >= today;
-    });
-    const selectedResources = currentWeekResources.length ? currentWeekResources : assigned;
 
-    return selectedResources
+    return assigned
       .sort((a, b) => {
         const orderA = Number.isFinite(Number(a?.display_order)) ? Number(a.display_order) : 1;
         const orderB = Number.isFinite(Number(b?.display_order)) ? Number(b.display_order) : 1;
@@ -2094,8 +2087,16 @@
       if (!resources.length) {
         console.warn("Resources: no assigned rows returned for this auth user. Check RLS, exact user_id, and status = assigned.");
       }
+      const currentWeekMatches = resources.filter((resource) => {
+        const start = String(resource?.assigned_week_start || "").slice(0, 10);
+        const end = String(resource?.assigned_week_end || "").slice(0, 10);
+        const today = getLocalDateString();
+        return start && end && start <= today && end >= today;
+      });
+      console.log("Resources: current-week matches", currentWeekMatches);
       const selectedResources = getAssignedWeeklyResources(resources);
       console.log("Resources: selected resources", selectedResources);
+      console.log("Resources: selected count", selectedResources?.length);
       cachedWeeklyResources = selectedResources;
       weeklyResourceLoadFailed = false;
       renderWeeklyResource(cachedWeeklyResources);
