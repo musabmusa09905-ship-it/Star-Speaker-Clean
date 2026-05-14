@@ -449,18 +449,19 @@
       return [];
     }
 
-    console.log("Resource: auth user id", userId);
+    console.log("Resources: auth user id", userId);
 
     const { data, error } = await supabaseClient
       .from("student_resources")
       .select("*")
       .eq("user_id", userId)
       .eq("status", "assigned")
-      .order("created_at", { ascending: false })
+      .order("display_order", { ascending: true })
+      .order("created_at", { ascending: true })
       .limit(20);
 
-    console.log("Resource: query data", data);
-    console.log("Resource: query error", error);
+    console.log("Resources: query data", data);
+    console.log("Resources: query error", error);
 
     if (error) throw error;
     return Array.isArray(data) ? data : [];

@@ -157,17 +157,17 @@
       sessionNotesAddedBy: "Added by",
       sessionNotesDefaultCoach: "Star Speaker Coach",
       sessionNotesLoadError: "We could not load your session notes right now.",
-      resourceTitle: "This Week's Resource",
-      resourceSubtitle: "Focused material for your current speaking practice.",
-      resourceEmptyTitle: "No resource assigned yet.",
-      resourceEmptyBody: "Your coach will assign your next study material soon.",
+      resourceTitle: "This Week's Resource Pack",
+      resourceSubtitle: "Focused materials for your current speaking practice.",
+      resourceEmptyTitle: "No resources assigned yet.",
+      resourceEmptyBody: "Your coach will assign your next study materials soon.",
       resourceType: "Type",
       resourceFocus: "Focus",
       resourceInstructions: "Instructions",
       resourceSpeakingTask: "Speaking Task",
       resourceOpen: "Open Resource",
       resourceLinkPending: "Resource link will appear here soon.",
-      resourceLoadError: "We could not load your resource right now.",
+      resourceLoadError: "We could not load your resources right now.",
       resourceTypeVideo: "Video",
       resourceTypePdf: "PDF",
       resourceTypeListening: "Listening",
@@ -328,17 +328,17 @@
       sessionNotesAddedBy: "Ekleyen",
       sessionNotesDefaultCoach: "Star Speaker Ko\u00e7u",
       sessionNotesLoadError: "Seans notlar\u0131n\u0131 \u015fu anda y\u00fckleyemedik.",
-      resourceTitle: "Bu Haftan\u0131n Kayna\u011f\u0131",
-      resourceSubtitle: "Mevcut konu\u015fma prati\u011fin i\u00e7in odakl\u0131 materyal.",
+      resourceTitle: "Bu Haftan\u0131n Kaynak Paketi",
+      resourceSubtitle: "Mevcut konu\u015fma prati\u011fin i\u00e7in odakl\u0131 materyaller.",
       resourceEmptyTitle: "Hen\u00fcz kaynak atanmad\u0131.",
-      resourceEmptyBody: "Ko\u00e7un bir sonraki \u00e7al\u0131\u015fma materyalini yak\u0131nda atayacak.",
+      resourceEmptyBody: "Ko\u00e7un bir sonraki \u00e7al\u0131\u015fma materyallerini yak\u0131nda atayacak.",
       resourceType: "T\u00fcr",
       resourceFocus: "Odak",
       resourceInstructions: "Talimatlar",
       resourceSpeakingTask: "Konu\u015fma G\u00f6revi",
       resourceOpen: "Kayna\u011f\u0131 A\u00e7",
       resourceLinkPending: "Kaynak ba\u011flant\u0131s\u0131 yak\u0131nda burada g\u00f6r\u00fcnecek.",
-      resourceLoadError: "Kayna\u011f\u0131n\u0131 \u015fu anda y\u00fckleyemedik.",
+      resourceLoadError: "Kaynaklar\u0131n\u0131 \u015fu anda y\u00fckleyemedik.",
       resourceTypeVideo: "Video",
       resourceTypePdf: "PDF",
       resourceTypeListening: "Dinleme",
@@ -804,7 +804,7 @@
   let upcomingSessionLoadFailed = false;
   let cachedSessionNote = null;
   let sessionNotesLoadFailed = false;
-  let cachedWeeklyResource = null;
+  let cachedWeeklyResources = [];
   let weeklyResourceLoadFailed = false;
   let weeklyResourceHydrationStartedForUserId = "";
   const voicePlaybackUrls = new Map();
@@ -1985,15 +1985,26 @@
     return t(labels[normalized] || "resourceTypeOther");
   }
 
-  function getAssignedWeeklyResource(resources = []) {
+  function getAssignedWeeklyResources(resources = []) {
+    const today = getLocalDateString();
     const assigned = resources.filter((resource) => (
       String(resource?.status || "").trim().toLowerCase() === "assigned"
     ));
-    const sortedAssigned = [...assigned].sort((a, b) => (
-      Date.parse(b?.created_at || "") - Date.parse(a?.created_at || "")
-    ));
+    const currentWeekResources = assigned.filter((resource) => {
+      const start = String(resource?.assigned_week_start || "").slice(0, 10);
+      const end = String(resource?.assigned_week_end || "").slice(0, 10);
+      return start && end && start <= today && end >= today;
+    });
+    const selectedResources = currentWeekResources.length ? currentWeekResources : assigned;
 
-    return sortedAssigned[0] || null;
+    return selectedResources
+      .sort((a, b) => {
+        const orderA = Number.isFinite(Number(a?.display_order)) ? Number(a.display_order) : 1;
+        const orderB = Number.isFinite(Number(b?.display_order)) ? Number(b.display_order) : 1;
+        if (orderA !== orderB) return orderA - orderB;
+        return Date.parse(a?.created_at || "") - Date.parse(b?.created_at || "");
+      })
+      .slice(0, 5);
   }
 
   function renderResourceField(labelKey, value) {
@@ -2007,7 +2018,7 @@
     `;
   }
 
-  function renderWeeklyResource(resource = cachedWeeklyResource) {
+  function renderWeeklyResource(resources = cachedWeeklyResources) {
     const title = document.querySelector("#weekly-resource-title");
     const subtitle = document.querySelector("#weekly-resource-subtitle");
     const panel = document.querySelector("#weekly-resource-panel");
@@ -2026,7 +2037,8 @@
       return;
     }
 
-    if (!resource) {
+    const resourceItems = Array.isArray(resources) ? resources : [];
+    if (!resourceItems.length) {
       panel.className = "workspace-empty-state";
       panel.innerHTML = `
         <strong>${escapeHtml(t("resourceEmptyTitle"))}</strong>
@@ -2035,27 +2047,32 @@
       return;
     }
 
-    const resourceUrl = String(resource.resource_url || "").trim();
-    const fields = [
-      renderResourceField("resourceType", getResourceTypeLabel(resource.resource_type)),
-      renderResourceField("resourceFocus", resource.focus),
-      renderResourceField("resourceInstructions", resource.instructions),
-      renderResourceField("resourceSpeakingTask", resource.speaking_task),
-    ].join("");
-
     panel.className = "weekly-resource-panel";
     panel.innerHTML = `
-      <div class="weekly-resource-main">
-        <span class="voice-history-status is-reviewed">${escapeHtml(getResourceTypeLabel(resource.resource_type))}</span>
-        <strong>${escapeHtml(resource.title || t("resourceTitle"))}</strong>
+      <div class="weekly-resource-list">
+        ${resourceItems.map((resource) => {
+          const resourceUrl = String(resource.resource_url || "").trim();
+          const fields = [
+            renderResourceField("resourceFocus", resource.focus),
+            renderResourceField("resourceInstructions", resource.instructions),
+            renderResourceField("resourceSpeakingTask", resource.speaking_task),
+          ].join("");
+
+          return `
+            <article class="weekly-resource-item">
+              <div class="weekly-resource-main">
+                <span class="voice-history-status is-reviewed">${escapeHtml(getResourceTypeLabel(resource.resource_type))}</span>
+                <strong>${escapeHtml(resource.title || t("resourceTitle"))}</strong>
+              </div>
+              ${fields ? `<div class="weekly-resource-fields">${fields}</div>` : ""}
+              ${resourceUrl
+                ? `<a class="button button-primary weekly-resource-open" href="${escapeHtml(resourceUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(t("resourceOpen"))}</a>`
+                : `<p class="weekly-resource-note">${escapeHtml(t("resourceLinkPending"))}</p>`
+              }
+            </article>
+          `;
+        }).join("")}
       </div>
-      <div class="weekly-resource-fields">
-        ${fields}
-      </div>
-      ${resourceUrl
-        ? `<a class="button button-primary weekly-resource-open" href="${escapeHtml(resourceUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(t("resourceOpen"))}</a>`
-        : `<p class="weekly-resource-note">${escapeHtml(t("resourceLinkPending"))}</p>`
-      }
     `;
   }
 
@@ -2065,28 +2082,28 @@
     weeklyResourceHydrationStartedForUserId = user.id;
 
     try {
-      console.log("Resource: function started");
-      console.log("Resource: auth user id", user?.id);
+      console.log("Resources: function started");
+      console.log("Resources: auth user id", user?.id);
       if (typeof window.starSpeakerSupabase?.getStudentResources !== "function") {
-        console.warn("Resource: getStudentResources helper is not loaded.");
+        console.warn("Resources: getStudentResources helper is not loaded.");
       }
 
       const resources = typeof window.starSpeakerSupabase?.getStudentResources === "function"
         ? await window.starSpeakerSupabase.getStudentResources(user.id)
         : [];
       if (!resources.length) {
-        console.warn("Resource: no assigned rows returned for this auth user. Check RLS, exact user_id, and status = assigned.");
+        console.warn("Resources: no assigned rows returned for this auth user. Check RLS, exact user_id, and status = assigned.");
       }
-      const selectedResource = getAssignedWeeklyResource(resources);
-      console.log("Resource: selected resource", selectedResource);
-      cachedWeeklyResource = selectedResource;
+      const selectedResources = getAssignedWeeklyResources(resources);
+      console.log("Resources: selected resources", selectedResources);
+      cachedWeeklyResources = selectedResources;
       weeklyResourceLoadFailed = false;
-      renderWeeklyResource(cachedWeeklyResource);
+      renderWeeklyResource(cachedWeeklyResources);
     } catch (error) {
       console.warn("Weekly resource load failed:", error);
-      cachedWeeklyResource = null;
+      cachedWeeklyResources = [];
       weeklyResourceLoadFailed = true;
-      renderWeeklyResource(null);
+      renderWeeklyResource([]);
     }
   }
 
@@ -2668,7 +2685,7 @@
     renderVoiceHistory(cachedVoiceSubmissions);
     renderUpcomingSession(cachedUpcomingSession);
     renderSessionNotes(cachedSessionNote);
-    renderWeeklyResource(cachedWeeklyResource);
+    renderWeeklyResource(cachedWeeklyResources);
     renderVoiceState(currentVoiceState || (voiceSubmittedToday ? "submitted" : "idle"));
   }
 
@@ -2686,7 +2703,7 @@
     renderVoiceHistory([]);
     renderUpcomingSession(null);
     renderSessionNotes(null);
-    renderWeeklyResource(null);
+    renderWeeklyResource([]);
     renderVoiceState("idle");
 
     if (!window.starSpeakerSupabase?.isConfigured?.()) {
@@ -2735,7 +2752,7 @@
         }
         renderUpcomingSession(cachedUpcomingSession);
         renderSessionNotes(cachedSessionNote);
-        renderWeeklyResource(cachedWeeklyResource);
+        renderWeeklyResource(cachedWeeklyResources);
       } else {
         if (subtitle) subtitle.textContent = t("checking");
         if (pill) pill.textContent = t("checkingPill");
