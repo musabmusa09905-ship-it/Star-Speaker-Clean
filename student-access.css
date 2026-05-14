@@ -1138,6 +1138,62 @@
   font-size: 0.8rem;
 }
 
+.weekly-resource-panel {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.weekly-resource-main {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.weekly-resource-main > strong {
+  color: var(--ivory);
+  font-size: 1.08rem;
+}
+
+.weekly-resource-fields {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.weekly-resource-field {
+  display: grid;
+  gap: 0.25rem;
+  border: 1px solid rgba(230, 211, 163, 0.14);
+  border-radius: 8px;
+  background: rgba(5, 5, 5, 0.26);
+  padding: 0.75rem 0.85rem;
+}
+
+.weekly-resource-field span {
+  color: var(--champagne);
+  font-size: 0.72rem;
+  font-weight: 850;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.weekly-resource-field p,
+.weekly-resource-note {
+  margin: 0;
+  line-height: 1.55;
+}
+
+.weekly-resource-field p {
+  color: rgba(247, 241, 228, 0.88);
+}
+
+.weekly-resource-note {
+  color: rgba(239, 231, 216, 0.72);
+}
+
+.weekly-resource-open {
+  justify-self: start;
+  min-width: 10rem;
+}
+
 .workspace-history-card {
   display: grid;
   gap: 1rem;
@@ -1881,6 +1937,10 @@
   }
 
   .upcoming-session-join {
+    width: 100%;
+  }
+
+  .weekly-resource-open {
     width: 100%;
   }
 

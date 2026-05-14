@@ -157,6 +157,24 @@
       sessionNotesAddedBy: "Added by",
       sessionNotesDefaultCoach: "Star Speaker Coach",
       sessionNotesLoadError: "We could not load your session notes right now.",
+      resourceTitle: "This Week's Resource",
+      resourceSubtitle: "Focused material for your current speaking practice.",
+      resourceEmptyTitle: "No resource assigned yet.",
+      resourceEmptyBody: "Your coach will assign your next study material soon.",
+      resourceType: "Type",
+      resourceFocus: "Focus",
+      resourceInstructions: "Instructions",
+      resourceSpeakingTask: "Speaking Task",
+      resourceOpen: "Open Resource",
+      resourceLinkPending: "Resource link will appear here soon.",
+      resourceLoadError: "We could not load your resource right now.",
+      resourceTypeVideo: "Video",
+      resourceTypePdf: "PDF",
+      resourceTypeListening: "Listening",
+      resourceTypeReading: "Reading",
+      resourceTypePromptPack: "Prompt Pack",
+      resourceTypeLink: "Link",
+      resourceTypeOther: "Resource",
     },
     tr: {
       checking: "Özel Star Speaker erişiminiz kontrol ediliyor.",
@@ -310,6 +328,24 @@
       sessionNotesAddedBy: "Ekleyen",
       sessionNotesDefaultCoach: "Star Speaker Ko\u00e7u",
       sessionNotesLoadError: "Seans notlar\u0131n\u0131 \u015fu anda y\u00fckleyemedik.",
+      resourceTitle: "Bu Haftan\u0131n Kayna\u011f\u0131",
+      resourceSubtitle: "Mevcut konu\u015fma prati\u011fin i\u00e7in odakl\u0131 materyal.",
+      resourceEmptyTitle: "Hen\u00fcz kaynak atanmad\u0131.",
+      resourceEmptyBody: "Ko\u00e7un bir sonraki \u00e7al\u0131\u015fma materyalini yak\u0131nda atayacak.",
+      resourceType: "T\u00fcr",
+      resourceFocus: "Odak",
+      resourceInstructions: "Talimatlar",
+      resourceSpeakingTask: "Konu\u015fma G\u00f6revi",
+      resourceOpen: "Kayna\u011f\u0131 A\u00e7",
+      resourceLinkPending: "Kaynak ba\u011flant\u0131s\u0131 yak\u0131nda burada g\u00f6r\u00fcnecek.",
+      resourceLoadError: "Kayna\u011f\u0131n\u0131 \u015fu anda y\u00fckleyemedik.",
+      resourceTypeVideo: "Video",
+      resourceTypePdf: "PDF",
+      resourceTypeListening: "Dinleme",
+      resourceTypeReading: "Okuma",
+      resourceTypePromptPack: "Konu\u015fma Paketi",
+      resourceTypeLink: "Ba\u011flant\u0131",
+      resourceTypeOther: "Kaynak",
     },
   };
 
@@ -768,6 +804,8 @@
   let upcomingSessionLoadFailed = false;
   let cachedSessionNote = null;
   let sessionNotesLoadFailed = false;
+  let cachedWeeklyResource = null;
+  let weeklyResourceLoadFailed = false;
   const voicePlaybackUrls = new Map();
 
   const maxVoiceUploadBytes = 20 * 1024 * 1024;
@@ -1929,6 +1967,120 @@
     }
   }
 
+  function getResourceTypeLabel(resourceType) {
+    const normalized = String(resourceType || "other").trim().toLowerCase();
+    const labels = {
+      video: "resourceTypeVideo",
+      pdf: "resourceTypePdf",
+      listening: "resourceTypeListening",
+      reading: "resourceTypeReading",
+      prompt_pack: "resourceTypePromptPack",
+      link: "resourceTypeLink",
+      other: "resourceTypeOther",
+    };
+
+    return t(labels[normalized] || "resourceTypeOther");
+  }
+
+  function getAssignedWeeklyResource(resources = []) {
+    const today = getLocalDateString();
+    const assigned = resources.filter((resource) => (
+      String(resource?.status || "").trim().toLowerCase() === "assigned"
+    ));
+    const currentWeekResource = assigned.find((resource) => {
+      const start = String(resource?.assigned_week_start || "").slice(0, 10);
+      const end = String(resource?.assigned_week_end || "").slice(0, 10);
+      return start && end && start <= today && end >= today;
+    });
+
+    if (currentWeekResource) return currentWeekResource;
+
+    return assigned.sort((a, b) => (
+      Date.parse(b?.created_at || "") - Date.parse(a?.created_at || "")
+    ))[0] || null;
+  }
+
+  function renderResourceField(labelKey, value) {
+    if (!hasText(value)) return "";
+
+    return `
+      <div class="weekly-resource-field">
+        <span>${escapeHtml(t(labelKey))}</span>
+        <p>${escapeHtml(value)}</p>
+      </div>
+    `;
+  }
+
+  function renderWeeklyResource(resource = cachedWeeklyResource) {
+    const title = document.querySelector("#weekly-resource-title");
+    const subtitle = document.querySelector("#weekly-resource-subtitle");
+    const panel = document.querySelector("#weekly-resource-panel");
+    if (title) title.textContent = t("resourceTitle");
+    if (subtitle) subtitle.textContent = t("resourceSubtitle");
+    if (!panel) return;
+
+    panel.classList.remove("weekly-resource-panel");
+
+    if (weeklyResourceLoadFailed) {
+      panel.className = "workspace-empty-state";
+      panel.innerHTML = `
+        <strong>${escapeHtml(t("resourceLoadError"))}</strong>
+        <p>${escapeHtml(t("resourceEmptyBody"))}</p>
+      `;
+      return;
+    }
+
+    if (!resource) {
+      panel.className = "workspace-empty-state";
+      panel.innerHTML = `
+        <strong>${escapeHtml(t("resourceEmptyTitle"))}</strong>
+        <p>${escapeHtml(t("resourceEmptyBody"))}</p>
+      `;
+      return;
+    }
+
+    const resourceUrl = String(resource.resource_url || "").trim();
+    const fields = [
+      renderResourceField("resourceType", getResourceTypeLabel(resource.resource_type)),
+      renderResourceField("resourceFocus", resource.focus),
+      renderResourceField("resourceInstructions", resource.instructions),
+      renderResourceField("resourceSpeakingTask", resource.speaking_task),
+    ].join("");
+
+    panel.className = "weekly-resource-panel";
+    panel.innerHTML = `
+      <div class="weekly-resource-main">
+        <span class="voice-history-status is-reviewed">${escapeHtml(getResourceTypeLabel(resource.resource_type))}</span>
+        <strong>${escapeHtml(resource.title || t("resourceTitle"))}</strong>
+      </div>
+      <div class="weekly-resource-fields">
+        ${fields}
+      </div>
+      ${resourceUrl
+        ? `<a class="button button-primary weekly-resource-open" href="${escapeHtml(resourceUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(t("resourceOpen"))}</a>`
+        : `<p class="weekly-resource-note">${escapeHtml(t("resourceLinkPending"))}</p>`
+      }
+    `;
+  }
+
+  async function hydrateWeeklyResource(user) {
+    if (!user?.id) return;
+
+    try {
+      const resources = typeof window.starSpeakerSupabase?.getStudentResources === "function"
+        ? await window.starSpeakerSupabase.getStudentResources(user.id)
+        : [];
+      cachedWeeklyResource = getAssignedWeeklyResource(resources);
+      weeklyResourceLoadFailed = false;
+      renderWeeklyResource(cachedWeeklyResource);
+    } catch (error) {
+      console.warn("Weekly resource load failed:", error);
+      cachedWeeklyResource = null;
+      weeklyResourceLoadFailed = true;
+      renderWeeklyResource(null);
+    }
+  }
+
   function getVoiceElements() {
     return {
       helper: document.querySelector("#voice-log-helper"),
@@ -2507,6 +2659,7 @@
     renderVoiceHistory(cachedVoiceSubmissions);
     renderUpcomingSession(cachedUpcomingSession);
     renderSessionNotes(cachedSessionNote);
+    renderWeeklyResource(cachedWeeklyResource);
     renderVoiceState(currentVoiceState || (voiceSubmittedToday ? "submitted" : "idle"));
   }
 
@@ -2524,6 +2677,7 @@
     renderVoiceHistory([]);
     renderUpcomingSession(null);
     renderSessionNotes(null);
+    renderWeeklyResource(null);
     renderVoiceState("idle");
 
     if (!window.starSpeakerSupabase?.isConfigured?.()) {
@@ -2551,6 +2705,7 @@
         await hydrateVoiceSubmissions(user);
         await hydrateUpcomingSession(user);
         await hydrateSessionNotes(user);
+        await hydrateWeeklyResource(user);
       })
       .catch(async (error) => {
         console.warn("Student workspace guard failed:", error);
@@ -2571,6 +2726,7 @@
         }
         renderUpcomingSession(cachedUpcomingSession);
         renderSessionNotes(cachedSessionNote);
+        renderWeeklyResource(cachedWeeklyResource);
       } else {
         if (subtitle) subtitle.textContent = t("checking");
         if (pill) pill.textContent = t("checkingPill");
