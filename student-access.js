@@ -1987,6 +1987,9 @@
     const assigned = resources.filter((resource) => (
       String(resource?.status || "").trim().toLowerCase() === "assigned"
     ));
+    const sortedAssigned = [...assigned].sort((a, b) => (
+      Date.parse(b?.created_at || "") - Date.parse(a?.created_at || "")
+    ));
     const currentWeekResource = assigned.find((resource) => {
       const start = String(resource?.assigned_week_start || "").slice(0, 10);
       const end = String(resource?.assigned_week_end || "").slice(0, 10);
@@ -1995,9 +1998,7 @@
 
     if (currentWeekResource) return currentWeekResource;
 
-    return assigned.sort((a, b) => (
-      Date.parse(b?.created_at || "") - Date.parse(a?.created_at || "")
-    ))[0] || null;
+    return sortedAssigned[0] || null;
   }
 
   function renderResourceField(labelKey, value) {
@@ -2067,10 +2068,20 @@
     if (!user?.id) return;
 
     try {
+      console.log("Resource: function started");
+      console.log("Resource: auth user id", user?.id);
+      if (typeof window.starSpeakerSupabase?.getStudentResources !== "function") {
+        console.warn("Resource: getStudentResources helper is not loaded.");
+      }
+
       const resources = typeof window.starSpeakerSupabase?.getStudentResources === "function"
         ? await window.starSpeakerSupabase.getStudentResources(user.id)
         : [];
+      if (!resources.length) {
+        console.warn("Resource: no assigned rows returned for this auth user. Check RLS, exact user_id, and status = assigned.");
+      }
       cachedWeeklyResource = getAssignedWeeklyResource(resources);
+      console.log("Resource: selected resource", cachedWeeklyResource);
       weeklyResourceLoadFailed = false;
       renderWeeklyResource(cachedWeeklyResource);
     } catch (error) {

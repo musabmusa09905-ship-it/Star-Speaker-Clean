@@ -449,6 +449,8 @@
       return [];
     }
 
+    console.log("Resource: auth user id", userId);
+
     const { data, error } = await supabaseClient
       .from("student_resources")
       .select("*")
@@ -456,6 +458,9 @@
       .eq("status", "assigned")
       .order("created_at", { ascending: false })
       .limit(20);
+
+    console.log("Resource: query data", data);
+    console.log("Resource: query error", error);
 
     if (error) throw error;
     return Array.isArray(data) ? data : [];
