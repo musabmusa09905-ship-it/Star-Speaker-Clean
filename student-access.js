@@ -130,6 +130,18 @@
       dayPracticeSubmit: "Submit Practice",
       dayPracticeSuccess: "Your practice has been submitted.",
       dayPracticeFailed: "We could not submit your practice. Please try again.",
+      sessionTitle: "Upcoming Session",
+      sessionEmptyTitle: "No session scheduled yet.",
+      sessionEmptyBody: "Your coach will confirm your next session soon.",
+      sessionType: "Type",
+      sessionFocus: "Focus",
+      sessionDate: "Date",
+      sessionTime: "Time",
+      sessionStatus: "Status",
+      sessionScheduled: "Scheduled",
+      sessionJoin: "Join Session",
+      sessionLinkPending: "Meeting link will appear here before your session.",
+      sessionLoadError: "We could not load your upcoming session right now.",
     },
     tr: {
       checking: "Özel Star Speaker erişiminiz kontrol ediliyor.",
@@ -256,6 +268,18 @@
       dayPracticeSubmit: "Pratiği Gönder",
       dayPracticeSuccess: "Pratiğin gönderildi.",
       dayPracticeFailed: "Pratiğini gönderemedik. Lütfen tekrar dene.",
+      sessionTitle: "Yakla\u015fan G\u00f6r\u00fc\u015fme",
+      sessionEmptyTitle: "Hen\u00fcz g\u00f6r\u00fc\u015fme planlanmad\u0131.",
+      sessionEmptyBody: "Ko\u00e7un bir sonraki g\u00f6r\u00fc\u015fmeni yak\u0131nda onaylayacak.",
+      sessionType: "T\u00fcr",
+      sessionFocus: "Odak",
+      sessionDate: "Tarih",
+      sessionTime: "Saat",
+      sessionStatus: "Durum",
+      sessionScheduled: "Planland\u0131",
+      sessionJoin: "G\u00f6r\u00fc\u015fmeye Kat\u0131l",
+      sessionLinkPending: "G\u00f6r\u00fc\u015fme ba\u011flant\u0131s\u0131 seans\u0131ndan \u00f6nce burada g\u00f6r\u00fcnecek.",
+      sessionLoadError: "Yakla\u015fan g\u00f6r\u00fc\u015fmeni \u015fu anda y\u00fckleyemedik.",
     },
   };
 
@@ -710,6 +734,8 @@
   let dayPracticeDurationSeconds = null;
   let dayPracticeState = "idle";
   let dayPracticeSuccessDateKey = "";
+  let cachedUpcomingSession = null;
+  let upcomingSessionLoadFailed = false;
   const voicePlaybackUrls = new Map();
 
   const maxVoiceUploadBytes = 20 * 1024 * 1024;
@@ -1540,6 +1566,126 @@
     `;
   }
 
+  function getSessionDateTime(session) {
+    const date = String(session?.session_date || "").trim();
+    const time = String(session?.session_time || "00:00").trim();
+    if (!date) return null;
+
+    const normalizedTime = time.slice(0, 8);
+    const value = new Date(`${date}T${normalizedTime || "00:00"}`);
+    return Number.isNaN(value.getTime()) ? null : value;
+  }
+
+  function getNextUpcomingSession(sessions = []) {
+    const now = new Date();
+    return [...sessions]
+      .filter((session) => String(session?.status || "").toLowerCase() === "scheduled")
+      .map((session) => ({ session, dateTime: getSessionDateTime(session) }))
+      .filter(({ dateTime }) => dateTime && dateTime >= now)
+      .sort((a, b) => a.dateTime - b.dateTime)[0]?.session || null;
+  }
+
+  function formatSessionDate(session) {
+    const date = getSessionDateTime(session);
+    if (!date) return t("notAvailable");
+
+    return new Intl.DateTimeFormat(getLanguage() === "tr" ? "tr-TR" : "en", {
+      weekday: "long",
+      month: "long",
+      day: "numeric",
+    }).format(date);
+  }
+
+  function formatSessionTime(session) {
+    const rawTime = String(session?.session_time || "").trim();
+    if (/^\d{2}:\d{2}/.test(rawTime)) {
+      return rawTime.slice(0, 5);
+    }
+
+    const date = getSessionDateTime(session);
+    if (!date) return t("notAvailable");
+    return new Intl.DateTimeFormat(getLanguage() === "tr" ? "tr-TR" : "en", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    }).format(date);
+  }
+
+  function renderSessionDetail(labelKey, value) {
+    if (!hasText(value)) return "";
+
+    return `
+      <div class="upcoming-session-detail">
+        <span>${escapeHtml(t(labelKey))}</span>
+        <strong>${escapeHtml(value)}</strong>
+      </div>
+    `;
+  }
+
+  function renderUpcomingSession(session = cachedUpcomingSession) {
+    const title = document.querySelector("#sessions-title");
+    const panel = document.querySelector("#upcoming-session-panel");
+    if (title) title.textContent = t("sessionTitle");
+    if (!panel) return;
+
+    panel.classList.remove("upcoming-session-panel");
+
+    if (upcomingSessionLoadFailed) {
+      panel.className = "workspace-empty-state";
+      panel.innerHTML = `
+        <strong>${escapeHtml(t("sessionLoadError"))}</strong>
+        <p>${escapeHtml(t("sessionEmptyBody"))}</p>
+      `;
+      return;
+    }
+
+    if (!session) {
+      panel.className = "workspace-empty-state";
+      panel.innerHTML = `
+        <strong>${escapeHtml(t("sessionEmptyTitle"))}</strong>
+        <p>${escapeHtml(t("sessionEmptyBody"))}</p>
+      `;
+      return;
+    }
+
+    const meetingLink = String(session.meeting_link || "").trim();
+    panel.className = "upcoming-session-panel";
+    panel.innerHTML = `
+      <div class="upcoming-session-main">
+        <span class="voice-history-status is-reviewed">${escapeHtml(t("sessionScheduled"))}</span>
+        <strong>${escapeHtml(session.session_title || t("sessionTitle"))}</strong>
+        ${hasText(session.session_focus) ? `<p>${escapeHtml(session.session_focus)}</p>` : ""}
+      </div>
+      <div class="upcoming-session-details">
+        ${renderSessionDetail("sessionType", session.session_type)}
+        ${renderSessionDetail("sessionFocus", session.session_focus)}
+        ${renderSessionDetail("sessionDate", formatSessionDate(session))}
+        ${renderSessionDetail("sessionTime", formatSessionTime(session))}
+        ${renderSessionDetail("sessionStatus", t("sessionScheduled"))}
+      </div>
+      ${meetingLink
+        ? `<a class="button button-primary upcoming-session-join" href="${escapeHtml(meetingLink)}" target="_blank" rel="noopener noreferrer">${escapeHtml(t("sessionJoin"))}</a>`
+        : `<p class="upcoming-session-note">${escapeHtml(t("sessionLinkPending"))}</p>`
+      }
+    `;
+  }
+
+  async function hydrateUpcomingSession(user) {
+    if (!user?.id) return;
+
+    try {
+      const sessions = await window.starSpeakerSupabase.getStudentSessions?.(user.id) || [];
+      cachedUpcomingSession = getNextUpcomingSession(sessions);
+      upcomingSessionLoadFailed = false;
+      renderUpcomingSession(cachedUpcomingSession);
+    } catch (error) {
+      console.warn("Upcoming session load failed:", error);
+      cachedUpcomingSession = null;
+      upcomingSessionLoadFailed = true;
+      renderUpcomingSession(null);
+    }
+  }
+
   function getVoiceElements() {
     return {
       helper: document.querySelector("#voice-log-helper"),
@@ -2116,6 +2262,7 @@
     renderWeeklyPractice(cachedVoiceSubmissions);
     renderTeacherFeedback(cachedVoiceSubmissions);
     renderVoiceHistory(cachedVoiceSubmissions);
+    renderUpcomingSession(cachedUpcomingSession);
     renderVoiceState(currentVoiceState || (voiceSubmittedToday ? "submitted" : "idle"));
   }
 
@@ -2131,6 +2278,7 @@
     renderWeeklyPractice([]);
     renderTeacherFeedback([]);
     renderVoiceHistory([]);
+    renderUpcomingSession(null);
     renderVoiceState("idle");
 
     if (!window.starSpeakerSupabase?.isConfigured?.()) {
@@ -2156,6 +2304,7 @@
         activeWorkspaceUser = user;
         renderWorkspace(profile);
         await hydrateVoiceSubmissions(user);
+        await hydrateUpcomingSession(user);
       })
       .catch(async (error) => {
         console.warn("Student workspace guard failed:", error);
@@ -2174,6 +2323,7 @@
         if (activeDayDetailDateKey) {
           renderDayDetails(activeDayDetailDateKey);
         }
+        renderUpcomingSession(cachedUpcomingSession);
       } else {
         if (subtitle) subtitle.textContent = t("checking");
         if (pill) pill.textContent = t("checkingPill");
