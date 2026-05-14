@@ -1571,17 +1571,75 @@
     const time = String(session?.session_time || "00:00").trim();
     if (!date) return null;
 
-    const normalizedTime = time.slice(0, 8);
+    const timeMatch = time.match(/^(\d{1,2}):(\d{2})(?::(\d{2}))?/);
+    const normalizedTime = timeMatch
+      ? `${timeMatch[1].padStart(2, "0")}:${timeMatch[2]}:${timeMatch[3] || "00"}`
+      : "00:00:00";
     const value = new Date(`${date}T${normalizedTime || "00:00"}`);
     return Number.isNaN(value.getTime()) ? null : value;
+  }
+
+  function getSessionDateKey(session) {
+    const rawDate = String(session?.session_date || "").trim();
+    const dateMatch = rawDate.match(/^\d{4}-\d{2}-\d{2}/);
+    if (dateMatch) return dateMatch[0];
+
+    const dateTime = getSessionDateTime(session);
+    return dateTime ? getLocalDateString(dateTime) : "";
+  }
+
+  function getSessionTimeMinutes(session) {
+    const rawTime = String(session?.session_time || "").trim();
+    const match = rawTime.match(/^(\d{1,2}):(\d{2})/);
+    if (!match) return null;
+
+    const hours = Number(match[1]);
+    const minutes = Number(match[2]);
+    if (!Number.isFinite(hours) || !Number.isFinite(minutes)) return null;
+    return (hours * 60) + minutes;
+  }
+
+  function getSessionFilterResult(session, now = new Date()) {
+    const normalizedStatus = String(session?.status || "").trim().toLowerCase();
+    if (normalizedStatus !== "scheduled") {
+      return { accepted: false, reason: "status_not_scheduled" };
+    }
+
+    const dateKey = getSessionDateKey(session);
+    if (!dateKey) {
+      return { accepted: false, reason: "missing_session_date" };
+    }
+
+    const todayKey = getLocalDateString(now);
+    if (dateKey > todayKey) {
+      return { accepted: true, reason: "future_date" };
+    }
+
+    if (dateKey < todayKey) {
+      return { accepted: false, reason: "past_date" };
+    }
+
+    const sessionMinutes = getSessionTimeMinutes(session);
+    if (sessionMinutes === null) {
+      return { accepted: true, reason: "today_no_parseable_time" };
+    }
+
+    const currentMinutes = (now.getHours() * 60) + now.getMinutes();
+    const cutoffMinutes = Math.max(0, currentMinutes - 15);
+    return sessionMinutes >= cutoffMinutes
+      ? { accepted: true, reason: "today_future_or_grace_window" }
+      : { accepted: false, reason: "today_time_passed" };
   }
 
   function getNextUpcomingSession(sessions = []) {
     const now = new Date();
     return [...sessions]
-      .filter((session) => String(session?.status || "").toLowerCase() === "scheduled")
-      .map((session) => ({ session, dateTime: getSessionDateTime(session) }))
-      .filter(({ dateTime }) => dateTime && dateTime >= now)
+      .map((session) => ({
+        session,
+        dateTime: getSessionDateTime(session),
+        filter: getSessionFilterResult(session, now),
+      }))
+      .filter(({ filter }) => filter.accepted)
       .sort((a, b) => a.dateTime - b.dateTime)[0]?.session || null;
   }
 
@@ -1675,6 +1733,19 @@
 
     try {
       const sessions = await window.starSpeakerSupabase.getStudentSessions?.(user.id) || [];
+      const debugRows = sessions.map((session) => ({
+        id: session.id || null,
+        user_id: session.user_id || null,
+        session_date: session.session_date || null,
+        session_time: session.session_time || null,
+        status: session.status || null,
+        decision: getSessionFilterResult(session),
+      }));
+      console.info("Upcoming session debug:", {
+        auth_user_id: user.id,
+        sessions_returned: sessions.length,
+        sessions: debugRows,
+      });
       cachedUpcomingSession = getNextUpcomingSession(sessions);
       upcomingSessionLoadFailed = false;
       renderUpcomingSession(cachedUpcomingSession);

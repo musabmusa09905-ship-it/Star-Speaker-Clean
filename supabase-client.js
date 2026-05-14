@@ -407,15 +407,13 @@
       return [];
     }
 
-    const today = new Date().toISOString().slice(0, 10);
     const { data, error } = await supabaseClient
       .from("student_sessions")
       .select("*")
       .eq("user_id", userId)
-      .eq("status", "scheduled")
-      .gte("session_date", today)
       .order("session_date", { ascending: true })
-      .order("session_time", { ascending: true });
+      .order("session_time", { ascending: true })
+      .limit(20);
 
     if (error) throw error;
     return Array.isArray(data) ? data : [];
