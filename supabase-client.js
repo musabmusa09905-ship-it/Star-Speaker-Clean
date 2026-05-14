@@ -457,10 +457,9 @@
       .eq("user_id", userId)
       .eq("status", "assigned")
       .order("display_order", { ascending: true })
-      .order("created_at", { ascending: true })
-      .limit(20);
+      .order("created_at", { ascending: true });
 
-    console.log("Resources: query data", data);
+    console.log("Resources: raw query data", data);
     console.log("Resources: query error", error);
 
     if (error) throw error;
