@@ -73,6 +73,59 @@
     window.setInterval(() => setSlide(activeIndex + 1), 7000);
   }
 
+  function initLandingReveal() {
+    const revealTargets = document.querySelectorAll([
+      ".landing-section .section-head",
+      ".premium-panel",
+      ".audience-grid article",
+      ".method-steps article",
+      ".feature-grid span",
+      ".price-card",
+      ".bonus-grid article",
+      ".guarantee-pills span",
+      ".pressure-form",
+      ".faq-grid details",
+      ".cta-band",
+    ].join(","));
+
+    if (!revealTargets.length) return;
+
+    revealTargets.forEach((element) => element.classList.add("landing-reveal"));
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      revealTargets.forEach((element) => element.classList.add("is-visible"));
+      return;
+    }
+
+    function revealVisible() {
+      revealTargets.forEach((element) => {
+        if (element.classList.contains("is-visible")) return;
+        if (element.getBoundingClientRect().top < window.innerHeight * 0.88) {
+          element.classList.add("is-visible");
+        }
+      });
+    }
+
+    if ("IntersectionObserver" in window) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add("is-visible");
+          observer.unobserve(entry.target);
+        });
+      }, {
+        rootMargin: "0px 0px -12% 0px",
+        threshold: 0.14,
+      });
+
+      revealTargets.forEach((element) => observer.observe(element));
+    }
+
+    revealVisible();
+    window.addEventListener("scroll", revealVisible, { passive: true });
+    window.addEventListener("resize", revealVisible);
+  }
+
   function setStatus(message, type = "success") {
     if (!status) return;
     status.textContent = message;
@@ -217,5 +270,6 @@
 
   window.addEventListener("starSpeakerLanguageChange", applyLandingLanguage);
   initHeroSlideshow();
+  initLandingReveal();
   applyLandingLanguage();
 })();
