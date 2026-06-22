@@ -1905,6 +1905,257 @@ body.transition-lock {
   }
 }
 
+/* Conversion hierarchy and icon system */
+.icon-sprite {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.landing-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.45rem;
+  height: 2.45rem;
+  flex: 0 0 auto;
+  border: 1px solid rgba(230, 211, 163, 0.42);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 40% 20%, rgba(230, 211, 163, 0.16), transparent 68%),
+    rgba(12, 11, 9, 0.72);
+  color: var(--champagne);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 10px 26px rgba(0, 0, 0, 0.25);
+}
+
+.landing-icon svg {
+  width: 1.22rem;
+  height: 1.22rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.45;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.section-icon {
+  width: 2.7rem;
+  height: 2.7rem;
+  margin-bottom: 0.85rem;
+}
+
+.landing-hero h1 {
+  max-width: 35.5rem;
+  font-size: clamp(2.45rem, 3.65vw, 4.08rem);
+  line-height: 1.075;
+}
+
+.landing-page .hero-subtitle {
+  max-width: 34.5rem;
+}
+
+.landing-page .hero-actions {
+  align-items: stretch;
+  gap: 0.75rem;
+  margin-top: 1.55rem;
+}
+
+.hero-actions .button-primary,
+.landing-page .nav-button,
+.pressure-form .submit-button {
+  position: relative;
+  border-color: rgba(247, 241, 228, 0.95);
+  background:
+    linear-gradient(135deg, #f4e6bd 0%, #e6d3a3 42%, #c9ad6e 100%);
+  box-shadow:
+    0 18px 46px rgba(191, 164, 106, 0.24),
+    0 0 0 1px rgba(247, 241, 228, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.34);
+}
+
+.hero-actions .button-primary::after,
+.pressure-form .submit-button::after {
+  position: absolute;
+  inset: 0.24rem;
+  border: 1px solid rgba(8, 8, 7, 0.18);
+  border-radius: inherit;
+  content: "";
+  pointer-events: none;
+}
+
+.hero-actions .button-outline {
+  border-color: rgba(230, 211, 163, 0.38);
+  background: rgba(8, 8, 7, 0.42);
+  color: rgba(230, 211, 163, 0.92);
+}
+
+.audience-grid article,
+.bonus-grid article,
+.price-card {
+  position: relative;
+}
+
+.audience-grid article .landing-icon,
+.bonus-grid article .landing-icon,
+.price-card > .landing-icon {
+  margin-bottom: 0.85rem;
+}
+
+.method-steps article {
+  overflow: hidden;
+}
+
+.method-steps .step-number {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  margin: 0;
+  opacity: 0.72;
+}
+
+.method-steps article .landing-icon {
+  margin-bottom: 1.05rem;
+}
+
+.method-steps article:hover .landing-icon,
+.audience-grid article:hover .landing-icon,
+.bonus-grid article:hover .landing-icon,
+.price-card:hover > .landing-icon,
+.price-card:focus-within > .landing-icon {
+  border-color: rgba(230, 211, 163, 0.72);
+  background:
+    radial-gradient(circle at 40% 20%, rgba(230, 211, 163, 0.24), transparent 68%),
+    rgba(24, 21, 16, 0.86);
+  box-shadow:
+    0 0 26px rgba(191, 164, 106, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.feature-grid > span {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.72rem;
+}
+
+.feature-grid .item-icon {
+  width: 2rem;
+  height: 2rem;
+  border-color: rgba(230, 211, 163, 0.36);
+}
+
+.feature-grid .item-icon svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.feature-grid .copy-text {
+  min-width: 0;
+}
+
+.feature-grid .landing-icon,
+.feature-grid .copy-text {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.feature-grid .landing-icon {
+  border: 1px solid rgba(230, 211, 163, 0.36);
+  background: rgba(8, 8, 7, 0.44);
+}
+
+.feature-grid .landing-icon::after,
+.feature-grid .copy-text::after {
+  display: none;
+}
+
+.price-card.featured > .landing-icon {
+  border-color: rgba(230, 211, 163, 0.68);
+  box-shadow:
+    0 0 30px rgba(191, 164, 106, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.application-layout > div:first-child {
+  position: relative;
+}
+
+@media (max-width: 760px) {
+  .landing-hero h1 {
+    font-size: clamp(1.78rem, 7.15vw, 2.12rem);
+    line-height: 1.09;
+  }
+
+  .landing-page .hero-subtitle {
+    max-width: 23.5rem;
+    font-size: 0.9rem;
+  }
+
+  .landing-page .hero-actions {
+    gap: 0.7rem;
+    margin-top: 1.08rem;
+  }
+
+  .hero-actions .button-primary,
+  .pressure-form .submit-button {
+    min-height: 3.08rem;
+    font-size: 0.88rem;
+  }
+
+  .hero-actions .button-outline {
+    min-height: 2.86rem;
+  }
+
+  .landing-icon {
+    width: 2.18rem;
+    height: 2.18rem;
+  }
+
+  .landing-icon svg {
+    width: 1.08rem;
+    height: 1.08rem;
+  }
+
+  .audience-grid article,
+  .bonus-grid article {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: 0.72rem;
+    align-items: start;
+  }
+
+  .audience-grid article p,
+  .bonus-grid article p {
+    grid-column: 2;
+    margin-top: 0.42rem;
+  }
+
+  .audience-grid article .landing-icon,
+  .bonus-grid article .landing-icon {
+    grid-row: 1 / span 2;
+    margin-bottom: 0;
+  }
+
+  .method-steps article .landing-icon {
+    margin-bottom: 0.82rem;
+  }
+
+  .feature-grid > span {
+    gap: 0.64rem;
+  }
+}
+
+@media (max-width: 430px) {
+  .landing-hero h1 {
+    font-size: clamp(1.72rem, 6.85vw, 1.96rem);
+  }
+}
+
 .landing-page {
   background:
     radial-gradient(circle at 76% 8%, rgba(230, 211, 163, 0.15), transparent 32rem),

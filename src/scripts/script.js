@@ -4,9 +4,27 @@ const navLinks = document.querySelectorAll(".nav-menu a");
 const languageLinks = document.querySelectorAll(".language-toggle a");
 
 const languageStorageKey = "starSpeakerLanguage";
+const fallbackLanguageStorage = new Map();
 const originalTextNodes = new WeakMap();
 const originalElements = new WeakMap();
 const originalAttrs = new WeakMap();
+
+function readStoredLanguage() {
+  try {
+    return window.localStorage?.getItem(languageStorageKey) || fallbackLanguageStorage.get(languageStorageKey) || "";
+  } catch {
+    return fallbackLanguageStorage.get(languageStorageKey) || "";
+  }
+}
+
+function storeLanguage(language) {
+  fallbackLanguageStorage.set(languageStorageKey, language);
+  try {
+    window.localStorage?.setItem(languageStorageKey, language);
+  } catch {
+    // Some embedded browsers disable storage; the in-memory fallback keeps language switching working.
+  }
+}
 
 const i18n = {
   en: {
@@ -709,11 +727,11 @@ function getPageKey() {
 function getInitialLanguage() {
   const queryLanguage = new URLSearchParams(window.location.search).get("lang");
   if (queryLanguage === "tr" || queryLanguage === "en") {
-    localStorage.setItem(languageStorageKey, queryLanguage);
+    storeLanguage(queryLanguage);
     return queryLanguage;
   }
 
-  const storedLanguage = localStorage.getItem(languageStorageKey);
+  const storedLanguage = readStoredLanguage();
   return storedLanguage === "tr" ? "tr" : "en";
 }
 
@@ -847,7 +865,7 @@ function updateLanguageLinks(lang) {
 
 function applyLanguage(lang) {
   currentLanguage = lang === "tr" ? "tr" : "en";
-  localStorage.setItem(languageStorageKey, currentLanguage);
+  storeLanguage(currentLanguage);
   document.documentElement.lang = currentLanguage;
   updateMeta(currentLanguage);
   applySelectorTranslations(currentLanguage);

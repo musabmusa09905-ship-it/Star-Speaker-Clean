@@ -4,6 +4,7 @@
   const status = document.querySelector("#pressure-test-status");
   const whatsappLinks = document.querySelectorAll(".js-whatsapp-link");
   const whatsappNumber = "905525247746";
+  const fallbackLanguageStorage = new Map();
 
   const messages = {
     en: {
@@ -26,8 +27,22 @@
     return window.starSpeakerI18n?.getLanguage?.() === "tr" ? "tr" : "en";
   }
 
+  function storeLanguage(language) {
+    fallbackLanguageStorage.set(languageStorageKey, language);
+    try {
+      window.localStorage?.setItem(languageStorageKey, language);
+    } catch {
+      // Embedded browsers can block storage; language still updates for the current page view.
+    }
+  }
+
   function setLocalizedContent(language) {
     document.querySelectorAll("[data-en][data-tr]").forEach((element) => {
+      const textTarget = element.querySelector(".copy-text");
+      if (textTarget) {
+        textTarget.textContent = element.dataset[language] || element.dataset.en || "";
+        return;
+      }
       element.textContent = element.dataset[language] || element.dataset.en || "";
     });
 
@@ -211,7 +226,7 @@
 
   function applyLandingLanguage() {
     const language = getLanguage();
-    localStorage.setItem(languageStorageKey, language);
+    storeLanguage(language);
     setLocalizedContent(language);
     updateWhatsappLinks(language);
   }
