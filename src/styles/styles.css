@@ -1651,8 +1651,26 @@ body.transition-lock {
     width: min(100% - 1.35rem, var(--container));
   }
 
+  .nav-shell {
+    display: grid;
+    grid-template-columns: 2.8rem minmax(0, 1fr) 2.8rem;
+    gap: 0.45rem;
+    min-height: 70px;
+  }
+
+  .nav-shell::before {
+    width: 2.8rem;
+    height: 2.8rem;
+    content: "";
+  }
+
   .brand {
+    justify-self: center;
     gap: 0.55rem;
+  }
+
+  .menu-toggle {
+    justify-self: end;
   }
 
   .brand-logo {

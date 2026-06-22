@@ -2,26 +2,23 @@
   const languageStorageKey = "starSpeakerLanguage";
   const form = document.querySelector("#pressure-test-form");
   const status = document.querySelector("#pressure-test-status");
-  const submitButton = form?.querySelector('button[type="submit"]');
   const whatsappLinks = document.querySelectorAll(".js-whatsapp-link");
-  const whatsappPlaceholderNumber = "900000000000";
+  const whatsappNumber = "905525247746";
 
   const messages = {
     en: {
       required: "Please complete this field.",
       email: "Please enter a valid email address or leave it blank.",
-      loading: "Submitting your request...",
-      success: "Thank you. Your Free English Speaking Analysis request has been received. We will contact you on WhatsApp to confirm your time.",
-      error: "We could not submit this right now. Please try again or contact us directly.",
+      success: "Your application message is ready in WhatsApp. Please send it to complete your request.",
       whatsapp: "Hi, I'm interested in the 30-Day Speak Under Pressure Program. Can I ask a question?",
+      notProvided: "Not provided",
     },
     tr: {
-      required: "Lütfen bu alanı doldurun.",
-      email: "Lütfen geçerli bir e-posta adresi girin veya bu alanı boş bırakın.",
-      loading: "Başvurunuz gönderiliyor...",
-      success: "Teşekkürler. Ücretsiz İngilizce Konuşma Analizi talebiniz alındı. Saatinizi onaylamak için WhatsApp üzerinden iletişime geçeceğiz.",
-      error: "Şu anda gönderim yapılamadı. Lütfen tekrar deneyin veya bizimle doğrudan iletişime geçin.",
-      whatsapp: "Merhaba, 30-Day Speak Under Pressure Program hakkında bilgi almak istiyorum. Bir soru sorabilir miyim?",
+      required: "L\u00fctfen bu alan\u0131 doldurun.",
+      email: "L\u00fctfen ge\u00e7erli bir e-posta adresi girin veya bu alan\u0131 bo\u015f b\u0131rak\u0131n.",
+      success: "Ba\u015fvuru mesaj\u0131n WhatsApp'ta haz\u0131rland\u0131. Ba\u015fvurunu tamamlamak i\u00e7in l\u00fctfen mesaj\u0131 g\u00f6nder.",
+      whatsapp: "Merhaba, 30-Day Speak Under Pressure Program hakk\u0131nda bilgi almak istiyorum. Bir soru sorabilir miyim?",
+      notProvided: "Belirtilmedi",
     },
   };
 
@@ -39,10 +36,13 @@
     });
   }
 
+  function buildWhatsappUrl(message) {
+    return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+  }
+
   function updateWhatsappLinks(language) {
-    const text = encodeURIComponent(messages[language].whatsapp);
     whatsappLinks.forEach((link) => {
-      link.href = `https://wa.me/${whatsappPlaceholderNumber}?text=${text}`;
+      link.href = buildWhatsappUrl(messages[language].whatsapp);
     });
   }
 
@@ -108,28 +108,52 @@
     return form?.querySelector(selector);
   }
 
-  function buildPayload() {
-    const goal = getField("#main-goal")?.value || "";
-    const timeline = getField("#start-timeline")?.value || "";
-    const contactLanguage = getField("#contact-language")?.value || "";
-    const currentLevel = getField("#english-level")?.value || "";
+  function getFieldText(selector) {
+    const field = getField(selector);
+    if (!field) return "";
+    if (field.tagName === "SELECT") {
+      return field.selectedOptions?.[0]?.textContent?.trim() || field.value.trim();
+    }
+    return field.value.trim();
+  }
 
-    return {
-      full_name: getField("#full-name")?.value.trim() || "",
-      whatsapp_number: getField("#whatsapp")?.value.trim() || "",
-      email: getField("#email")?.value.trim() || null,
-      current_level: currentLevel,
-      main_goal: goal,
-      biggest_speaking_problem: `Free English Speaking Analysis request. Goal: ${goal}. Timeline: ${timeline}. Current level: ${currentLevel}.`,
-      preferred_program: "Not sure",
-      start_timeline: timeline,
-      preferred_consultation_window: "free_mini_pressure_test",
-      preferred_consultation_date: null,
-      preferred_consultation_language: contactLanguage.toLowerCase() || "not_sure",
-      short_message: `Preferred contact language: ${contactLanguage || "Not specified"}`,
-      source: "homepage_pressure_test",
-      status: "new",
+  function buildApplicationMessage(language) {
+    const fallback = messages[language].notProvided;
+    const values = {
+      name: getFieldText("#full-name"),
+      whatsapp: getFieldText("#whatsapp"),
+      email: getFieldText("#email") || fallback,
+      level: getFieldText("#english-level"),
+      goal: getFieldText("#main-goal"),
+      timeline: getFieldText("#start-timeline"),
+      contactLanguage: getFieldText("#contact-language"),
     };
+
+    if (language === "tr") {
+      return [
+        "Merhaba, \u00dccretsiz \u0130ngilizce Konu\u015fma Analizi i\u00e7in ba\u015fvurmak istiyorum.",
+        "",
+        `\u0130sim: ${values.name}`,
+        `WhatsApp: ${values.whatsapp}`,
+        `E-posta: ${values.email}`,
+        `Mevcut \u0130ngilizce seviyesi: ${values.level}`,
+        `Ana hedef: ${values.goal}`,
+        `\u0130ngilizceye ne zaman ihtiyac\u0131m var: ${values.timeline}`,
+        `Tercih edilen ileti\u015fim dili: ${values.contactLanguage}`,
+      ].join("\n");
+    }
+
+    return [
+      "Hello, I want to apply for the Free English Speaking Analysis.",
+      "",
+      `Name: ${values.name}`,
+      `WhatsApp: ${values.whatsapp}`,
+      `Email: ${values.email}`,
+      `Current English level: ${values.level}`,
+      `Main goal: ${values.goal}`,
+      `When I need English: ${values.timeline}`,
+      `Preferred contact language: ${values.contactLanguage}`,
+    ].join("\n");
   }
 
   function applyLandingLanguage() {
@@ -170,7 +194,7 @@
     });
   });
 
-  form?.addEventListener("submit", async (event) => {
+  form?.addEventListener("submit", (event) => {
     event.preventDefault();
 
     const fields = Array.from(form.querySelectorAll("input, select, textarea"));
@@ -187,25 +211,8 @@
     }
 
     const language = getLanguage();
-    const payload = buildPayload();
-
-    try {
-      submitButton?.setAttribute("disabled", "true");
-      setStatus(messages[language].loading, "loading");
-      await window.starSpeakerSupabase.insertApplySubmission(payload);
-      setStatus(messages[language].success, "success");
-      form.reset();
-    } catch (error) {
-      console.warn("Pressure test submission failed:", error);
-      localStorage.setItem("starSpeakerLatestPressureTestSubmission", JSON.stringify({
-        ...payload,
-        savedAt: new Date().toISOString(),
-        submitError: error?.message || String(error),
-      }));
-      setStatus(messages[language].error, "error");
-    } finally {
-      submitButton?.removeAttribute("disabled");
-    }
+    window.open(buildWhatsappUrl(buildApplicationMessage(language)), "_blank", "noopener");
+    setStatus(messages[language].success, "success");
   });
 
   window.addEventListener("starSpeakerLanguageChange", applyLandingLanguage);
