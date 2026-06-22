@@ -8,14 +8,14 @@
       content="Private Star Speaker student workspace."
     >
     <title>Student Workspace | Star Speaker</title>
-    <link rel="icon" href="/favicon/favicon.ico" sizes="any">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
-    <link rel="manifest" href="/favicon/site.webmanifest">
+    <link rel="icon" href="public/favicon/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="32x32" href="public/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="public/favicon/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="public/favicon/apple-touch-icon.png">
+    <link rel="manifest" href="public/favicon/site.webmanifest">
     <meta name="theme-color" content="#050505">
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="student-access.css">
+    <link rel="stylesheet" href="src/styles/styles.css">
+    <link rel="stylesheet" href="src/styles/student-access.css">
   </head>
   <body class="student-access-page student-workspace-page">
     <a class="skip-link" href="#main">Skip to content</a>
@@ -24,7 +24,7 @@
       <aside class="workspace-sidebar" aria-label="Student workspace navigation">
         <a class="workspace-sidebar-logo" href="student-workspace.html" aria-label="Star Speaker student workspace">
           <img
-            src="public/images/star-speaker-logo.png"
+            src="public/assets/logo/star-speaker-logo.png"
             alt="Star Speaker"
             width="132"
             height="132"
@@ -71,7 +71,7 @@
       <main id="main" class="workspace-main" tabindex="-1">
         <header class="workspace-topbar">
           <a class="workspace-mobile-brand" href="student-workspace.html" aria-label="Star Speaker student workspace">
-            <img src="public/images/star-speaker-logo.png" alt="Star Speaker" width="176" height="64">
+            <img src="public/assets/logo/star-speaker-logo.png" alt="Star Speaker" width="176" height="64">
           </a>
           <div class="workspace-top-actions">
             <div class="language-toggle workspace-language-toggle" aria-label="Language selector">
@@ -323,9 +323,9 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="supabase-config.js"></script>
-    <script src="supabase-client.js?v=20260514-resource-query-all"></script>
-    <script src="script.js"></script>
-    <script src="student-access.js?v=20260514-resource-query-all"></script>
+    <script src="src/scripts/supabase-config.js"></script>
+    <script src="src/scripts/supabase-client.js?v=20260514-resource-query-all"></script>
+    <script src="src/scripts/script.js"></script>
+    <script src="src/scripts/student-access.js?v=20260514-resource-query-all"></script>
   </body>
 </html>
