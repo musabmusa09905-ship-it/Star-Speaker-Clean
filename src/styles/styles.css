@@ -2715,39 +2715,47 @@ body.transition-lock {
 @media (max-width: 760px) {
   .nav-shell {
     position: relative;
-    flex-wrap: nowrap;
-    min-height: 108px;
+    min-height: 76px;
     padding-block: 0;
   }
 
   .brand {
-    order: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    justify-self: auto;
+    transform: translate(-50%, -50%);
   }
 
   .menu-toggle {
-    order: 0;
-    margin-left: auto;
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
   }
 
   .mobile-language-toggle {
     position: absolute;
-    left: 50%;
-    bottom: 0.58rem;
+    top: 50%;
+    left: 0;
     width: auto;
     flex: 0 0 auto;
-    min-height: 2.08rem;
+    min-height: 2rem;
     margin: 0;
-    padding-inline: 0.46rem;
-    transform: translateX(-50%);
+    gap: 0.28rem;
+    padding-inline: 0.34rem;
+    transform: translateY(-50%);
   }
 
   .mobile-language-toggle a {
-    min-height: 1.72rem;
+    min-width: 1.45rem;
+    min-height: 1.68rem;
+    padding-inline: 0.08rem;
   }
 
   .nav-menu {
-    top: 104px;
-    max-height: calc(100svh - 120px);
+    top: 76px;
+    max-height: calc(100svh - 92px);
   }
 
   body.nav-open .nav-menu {
