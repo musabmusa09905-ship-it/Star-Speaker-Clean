@@ -957,6 +957,10 @@ body.transition-lock {
   text-underline-offset: 0.35rem;
 }
 
+.mobile-language-toggle {
+  display: none;
+}
+
 .button {
   display: inline-flex;
   align-items: center;
@@ -1526,6 +1530,37 @@ body.transition-lock {
     min-height: 76px;
   }
 
+  .mobile-language-toggle {
+    display: inline-flex;
+    justify-content: center;
+    flex: 0 0 auto;
+    min-height: 2.28rem;
+    margin-left: auto;
+    border: 1px solid rgba(230, 211, 163, 0.34);
+    border-radius: 999px;
+    background: rgba(8, 8, 7, 0.62);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.035),
+      0 10px 28px rgba(0, 0, 0, 0.26);
+    padding: 0 0.52rem;
+  }
+
+  .mobile-language-toggle a {
+    min-width: 2rem;
+    justify-content: center;
+    color: rgba(239, 231, 216, 0.76);
+    font-size: 0.74rem;
+    padding-inline: 0.18rem;
+    text-decoration: none;
+  }
+
+  .mobile-language-toggle a.active,
+  .mobile-language-toggle a:hover,
+  .mobile-language-toggle a:focus-visible {
+    color: var(--champagne);
+    text-decoration: none;
+  }
+
   .menu-toggle {
     display: block;
     flex: 0 0 auto;
@@ -1582,7 +1617,7 @@ body.transition-lock {
     gap: 0.8rem;
   }
 
-  .language-toggle {
+  .nav-actions .language-toggle {
     justify-content: flex-start;
     padding-block: 0.2rem;
   }
@@ -2678,6 +2713,50 @@ body.transition-lock {
 }
 
 @media (max-width: 760px) {
+  .nav-shell {
+    position: relative;
+    flex-wrap: nowrap;
+    min-height: 108px;
+    padding-block: 0;
+  }
+
+  .brand {
+    order: 0;
+  }
+
+  .menu-toggle {
+    order: 0;
+    margin-left: auto;
+  }
+
+  .mobile-language-toggle {
+    position: absolute;
+    left: 50%;
+    bottom: 0.58rem;
+    width: auto;
+    flex: 0 0 auto;
+    min-height: 2.08rem;
+    margin: 0;
+    padding-inline: 0.46rem;
+    transform: translateX(-50%);
+  }
+
+  .mobile-language-toggle a {
+    min-height: 1.72rem;
+  }
+
+  .nav-menu {
+    top: 104px;
+    max-height: calc(100svh - 120px);
+  }
+
+  body.nav-open .nav-menu {
+    transform: translateY(0);
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+  }
+
   .landing-hero-grid {
     gap: 1.4rem;
     padding-block: 2.7rem 2rem;

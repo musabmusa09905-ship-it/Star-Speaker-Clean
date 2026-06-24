@@ -26,6 +26,19 @@ function storeLanguage(language) {
   }
 }
 
+function getBrowserPreferredLanguage() {
+  const browserLanguages = [];
+  try {
+    browserLanguages.push(...(window.navigator?.languages || []));
+    browserLanguages.push(window.navigator?.language || "");
+    browserLanguages.push(window.navigator?.userLanguage || "");
+  } catch {
+    return "en";
+  }
+
+  return browserLanguages.some((language) => String(language).toLowerCase().startsWith("tr")) ? "tr" : "en";
+}
+
 const i18n = {
   en: {
     menuOpen: "Open navigation menu",
@@ -732,7 +745,11 @@ function getInitialLanguage() {
   }
 
   const storedLanguage = readStoredLanguage();
-  return storedLanguage === "tr" ? "tr" : "en";
+  if (storedLanguage === "tr" || storedLanguage === "en") {
+    return storedLanguage;
+  }
+
+  return getBrowserPreferredLanguage();
 }
 
 let currentLanguage = getInitialLanguage();
@@ -863,9 +880,11 @@ function updateLanguageLinks(lang) {
   });
 }
 
-function applyLanguage(lang) {
+function applyLanguage(lang, options = {}) {
   currentLanguage = lang === "tr" ? "tr" : "en";
-  storeLanguage(currentLanguage);
+  if (options.persist !== false) {
+    storeLanguage(currentLanguage);
+  }
   document.documentElement.lang = currentLanguage;
   updateMeta(currentLanguage);
   applySelectorTranslations(currentLanguage);
@@ -921,7 +940,7 @@ document.addEventListener("click", (event) => {
   }
 });
 
-applyLanguage(currentLanguage);
+applyLanguage(currentLanguage, { persist: false });
 
 const transitionPages = new Set([
   "index.html",
