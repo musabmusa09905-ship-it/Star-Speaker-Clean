@@ -15,10 +15,10 @@
       notProvided: "Not provided",
     },
     tr: {
-      required: "L\u00fctfen bu alan\u0131 doldurun.",
+      required: "L\u00fctfen bu alan\u0131 doldur.",
       email: "L\u00fctfen ge\u00e7erli bir e-posta adresi girin veya bu alan\u0131 bo\u015f b\u0131rak\u0131n.",
-      success: "Ba\u015fvuru mesaj\u0131n WhatsApp'ta haz\u0131rland\u0131. Ba\u015fvurunu tamamlamak i\u00e7in l\u00fctfen mesaj\u0131 g\u00f6nder.",
-      whatsapp: "Merhaba, 30-Day Speak Under Pressure Program hakk\u0131nda bilgi almak istiyorum. Bir soru sorabilir miyim?",
+      success: "Ba\u015fvurunu WhatsApp \u00fczerinden g\u00f6ndermek i\u00e7in devam et.",
+      whatsapp: "Merhaba, 30 G\u00fcnl\u00fck Bask\u0131 Alt\u0131nda Konu\u015fma Program\u0131 hakk\u0131nda bilgi almak istiyorum. Bir soru sorabilir miyim?",
       notProvided: "Belirtilmedi",
     },
   };
@@ -201,13 +201,13 @@
       return [
         "Merhaba, \u00dccretsiz \u0130ngilizce Konu\u015fma Analizi i\u00e7in ba\u015fvurmak istiyorum.",
         "",
-        `\u0130sim: ${values.name}`,
+        `Ad Soyad: ${values.name}`,
         `WhatsApp: ${values.whatsapp}`,
         `E-posta: ${values.email}`,
-        `Mevcut \u0130ngilizce seviyesi: ${values.level}`,
-        `Ana hedef: ${values.goal}`,
+        `\u0130ngilizce seviyem: ${values.level}`,
+        `Ana hedefim: ${values.goal}`,
         `\u0130ngilizceye ne zaman ihtiyac\u0131m var: ${values.timeline}`,
-        `Tercih edilen ileti\u015fim dili: ${values.contactLanguage}`,
+        `Tercih etti\u011fim ileti\u015fim dili: ${values.contactLanguage}`,
       ].join("\n");
     }
 

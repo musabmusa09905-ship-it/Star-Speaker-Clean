@@ -1904,7 +1904,7 @@
       </div>
       <p class="session-notes-footer">
         ${escapeHtml(t("sessionNotesAddedBy"))} ${escapeHtml(addedBy)}
-        ${addedAt ? ` Â· ${escapeHtml(addedAt)}` : ""}
+        ${addedAt ? ` · ${escapeHtml(addedAt)}` : ""}
       </p>
     `;
   }
