@@ -795,10 +795,12 @@ body.transition-lock {
 }
 
 .brand-logo {
-  width: clamp(3.75rem, 5.8vw, 5.45rem);
-  height: clamp(3.75rem, 5.8vw, 5.45rem);
+  width: clamp(3.95rem, 6vw, 5.75rem);
+  height: clamp(3.95rem, 6vw, 5.75rem);
   object-fit: contain;
   border-radius: 50%;
+  transform: scale(1.18);
+  transform-origin: center;
 }
 
 .brand-text {
@@ -1715,8 +1717,8 @@ body.transition-lock {
   }
 
   .brand-logo {
-    width: 3.1rem;
-    height: 3.1rem;
+    width: 3.22rem;
+    height: 3.22rem;
   }
 
   .brand-name {
@@ -3164,8 +3166,8 @@ body.transition-lock {
   }
 
   .landing-page .brand-logo {
-    width: 2.85rem;
-    height: 2.85rem;
+    width: 3.05rem;
+    height: 3.05rem;
   }
 
   .landing-page .brand-name {
@@ -3977,8 +3979,9 @@ body.transition-lock {
   }
 
   .landing-page .brand-logo {
-    width: 3.15rem;
-    height: 3.15rem;
+    width: 3.35rem;
+    height: 3.35rem;
+    transform: scale(1.2);
   }
 
   .landing-page .brand-text {
@@ -4019,7 +4022,7 @@ body.transition-lock {
     inset: auto;
     order: 2;
     z-index: 1;
-    height: clamp(8.8rem, 34vw, 10.4rem);
+    height: clamp(10rem, 38vw, 11.8rem);
     margin: 0 max(0.75rem, 3vw) 0.9rem;
     overflow: hidden;
     border: 1px solid rgba(230, 211, 163, 0.2);
@@ -4027,7 +4030,7 @@ body.transition-lock {
   }
 
   .hero-media img {
-    object-position: 58% center;
+    object-position: 54% center;
   }
 
   .homepage-hero .landing-hero-grid {
