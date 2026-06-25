@@ -11,14 +11,14 @@
       required: "Please complete this field.",
       email: "Please enter a valid email address or leave it blank.",
       success: "Your application message is ready in WhatsApp. Please send it to complete your request.",
-      whatsapp: "Hi, I'm interested in the 30-Day Speak Under Pressure Program. Can I ask a question?",
+      whatsapp: "Hi, I'm interested in the 30-Day Star Speaker Daily Speaking Program. Can I ask a question?",
       notProvided: "Not provided",
     },
     tr: {
       required: "L\u00fctfen bu alan\u0131 doldur.",
       email: "L\u00fctfen ge\u00e7erli bir e-posta adresi girin veya bu alan\u0131 bo\u015f b\u0131rak\u0131n.",
       success: "Ba\u015fvurunu WhatsApp \u00fczerinden g\u00f6ndermek i\u00e7in devam et.",
-      whatsapp: "Merhaba, 30 G\u00fcnl\u00fck Bask\u0131 Alt\u0131nda Konu\u015fma Program\u0131 hakk\u0131nda bilgi almak istiyorum. Bir soru sorabilir miyim?",
+      whatsapp: "Merhaba, 30 G\u00fcnl\u00fck Star Speaker Konu\u015fma Program\u0131 hakk\u0131nda bilgi almak istiyorum. Bir soru sorabilir miyim?",
       notProvided: "Belirtilmedi",
     },
   };

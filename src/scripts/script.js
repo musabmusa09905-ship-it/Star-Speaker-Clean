@@ -83,7 +83,7 @@ const i18n = {
 };
 const pageMetaTr = {
   home: {
-    title: "Star Speaker | Güvenle konuş. Globalde parla.",
+    title: "Star Speaker | 30 Günlük Konuşma Programı",
     description: "Star Speaker ile yapılandırılmış İngilizce konuşma koçluğu, günlük ses pratiği ve görünür ilerleme.",
   },
   programs: {
@@ -136,7 +136,6 @@ const selectorTranslationsTr = {
     [".nav-links a[href='apply.html']", "text", "Başvuru"],
   ],
   home: [
-    ["#hero-title", "html", "Yurt dışına çıkmadan,<br>yurt dışındaymış gibi<br>İngilizce konuşma deneyimi."],
     ["#journey-title", "text", "Güvenli iletişime giden dört aşamalı yolculuk."],
     ["#final-cta-title", "text", "Akıcı ve özgüvenli İngilizce yolculuğunuz şimdi başlayabilir."],
   ],
@@ -171,7 +170,7 @@ const selectorTranslationsTr = {
 
 const textTr = {
   "Skip to content": "İçeriğe geç",
-  "Speak confidently. Shine globally.": "Güvenle konuş. Globalde parla.",
+  "Show Your English.": "İngilizceni Göster.",
   "Home": "Ana Sayfa",
   "Programs": "Programlar",
   "Method": "Metot",

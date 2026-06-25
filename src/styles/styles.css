@@ -790,13 +790,13 @@ body.transition-lock {
   display: inline-flex;
   align-items: center;
   flex: 0 0 auto;
-  gap: 0.85rem;
+  gap: 1rem;
   min-width: 0;
 }
 
 .brand-logo {
-  width: clamp(3rem, 5vw, 4.25rem);
-  height: clamp(3rem, 5vw, 4.25rem);
+  width: clamp(3.45rem, 5.6vw, 5rem);
+  height: clamp(3.45rem, 5.6vw, 5rem);
   object-fit: contain;
   border-radius: 50%;
 }
@@ -809,7 +809,7 @@ body.transition-lock {
 .brand-name {
   color: var(--ivory);
   font-family: "Cormorant Garamond", "Bodoni 72", Georgia, serif;
-  font-size: clamp(1.25rem, 2vw, 1.65rem);
+  font-size: clamp(1.45rem, 2.35vw, 1.95rem);
   letter-spacing: 0.16em;
   line-height: 1;
   text-transform: uppercase;
@@ -818,7 +818,7 @@ body.transition-lock {
 
 .brand-tagline {
   color: var(--champagne);
-  font-size: 0.55rem;
+  font-size: 0.62rem;
   font-weight: 700;
   letter-spacing: 0.16em;
   line-height: 1.2;
@@ -1025,6 +1025,12 @@ body.transition-lock {
   font-size: 0.76rem;
   text-transform: uppercase;
   white-space: nowrap;
+}
+
+.nav-button svg {
+  width: 0.88rem;
+  height: 0.88rem;
+  stroke-width: 2;
 }
 
 .menu-toggle {
@@ -2011,6 +2017,24 @@ body.transition-lock {
     inset 0 1px 0 rgba(255, 255, 255, 0.34);
 }
 
+.hero-actions .hero-primary-cta {
+  min-height: 3.55rem;
+  padding: 1rem 1.65rem;
+  font-size: clamp(0.95rem, 1vw, 1.04rem);
+  font-weight: 850;
+  letter-spacing: 0.01em;
+  box-shadow:
+    0 22px 58px rgba(191, 164, 106, 0.32),
+    0 0 0 1px rgba(247, 241, 228, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.42);
+}
+
+.hero-actions .hero-primary-cta svg {
+  width: 1.12rem;
+  height: 1.12rem;
+  stroke-width: 2.2;
+}
+
 .hero-actions .button-primary::after,
 .pressure-form .submit-button::after {
   position: absolute;
@@ -2025,6 +2049,44 @@ body.transition-lock {
   border-color: rgba(230, 211, 163, 0.38);
   background: rgba(8, 8, 7, 0.42);
   color: rgba(230, 211, 163, 0.92);
+}
+
+.hero-actions .hero-whatsapp-cta svg {
+  width: 1.14rem;
+  height: 1.14rem;
+  color: #9fe0b7;
+  stroke-width: 1.75;
+}
+
+.hero-system-strip {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.7rem;
+  max-width: 42rem;
+  margin-top: 1.45rem;
+}
+
+.hero-system-strip > span {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.65rem;
+  border: 1px solid rgba(230, 211, 163, 0.2);
+  border-radius: 6px;
+  background: rgba(8, 8, 7, 0.34);
+  color: rgba(239, 231, 216, 0.82);
+  font-size: 0.78rem;
+  font-weight: 720;
+  line-height: 1.25;
+  padding: 0.72rem 0.78rem;
+}
+
+.hero-system-strip svg {
+  width: 1.02rem;
+  height: 1.02rem;
+  flex: 0 0 auto;
+  color: var(--champagne);
+  stroke-width: 1.85;
 }
 
 .audience-grid article,
@@ -2260,6 +2322,15 @@ body.transition-lock {
   font-size: clamp(3.2rem, 5.45vw, 6.35rem);
   line-height: 0.92;
   text-wrap: balance;
+}
+
+.hero-title-split span {
+  display: block;
+}
+
+.hero-title-accent {
+  color: var(--champagne);
+  text-shadow: 0 0 34px rgba(230, 211, 163, 0.16);
 }
 
 .landing-support,
@@ -2826,6 +2897,17 @@ body.transition-lock {
     inset 0 1px 0 rgba(255, 255, 255, 0.24);
 }
 
+.landing-page .hero-actions .hero-primary-cta {
+  min-height: 3.55rem;
+  padding: 1rem 1.65rem;
+  font-size: clamp(0.95rem, 1vw, 1.04rem);
+  font-weight: 850;
+  box-shadow:
+    0 22px 58px rgba(191, 164, 106, 0.32),
+    0 0 0 1px rgba(247, 241, 228, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.42);
+}
+
 .landing-page .button-primary:hover,
 .landing-page .button-primary:focus-visible {
   border-color: rgba(247, 241, 228, 0.95);
@@ -3077,6 +3159,30 @@ body.transition-lock {
     font-size: 0.84rem;
   }
 
+  .landing-page .brand {
+    gap: 0.5rem;
+  }
+
+  .landing-page .brand-logo {
+    width: 2.85rem;
+    height: 2.85rem;
+  }
+
+  .landing-page .brand-name {
+    font-size: 0.98rem;
+    letter-spacing: 0.11em;
+  }
+
+  .landing-page .brand-tagline {
+    display: block;
+    max-width: 8.6rem;
+    overflow: hidden;
+    font-size: 0.44rem;
+    letter-spacing: 0.1em;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
   .landing-hero-grid {
     display: flex;
     flex-direction: column;
@@ -3120,6 +3226,30 @@ body.transition-lock {
   .landing-page .hero-actions {
     gap: 0.62rem;
     margin-top: 1rem;
+  }
+
+  .hero-actions .hero-primary-cta {
+    min-height: 3.35rem;
+    padding-block: 0.95rem;
+    font-size: 0.9rem;
+  }
+
+  .hero-system-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.48rem;
+    margin-top: 1rem;
+  }
+
+  .hero-system-strip > span {
+    gap: 0.45rem;
+    font-size: 0.68rem;
+    line-height: 1.22;
+    padding: 0.62rem;
+  }
+
+  .hero-system-strip svg {
+    width: 0.9rem;
+    height: 0.9rem;
   }
 
   .urgency-note {
