@@ -3575,6 +3575,14 @@ body.transition-lock {
     linear-gradient(180deg, rgba(2, 2, 2, 0.98), rgba(8, 8, 7, 0.98));
 }
 
+.problem-section {
+  padding-block: clamp(3.5rem, 5.4vw, 5.8rem);
+  background:
+    radial-gradient(circle at 88% 22%, rgba(230, 211, 163, 0.08), transparent 26rem),
+    radial-gradient(circle at 10% 82%, rgba(230, 211, 163, 0.06), transparent 24rem),
+    linear-gradient(180deg, #020202, #080807);
+}
+
 .audience-section,
 .method-section {
   padding-block: clamp(4.2rem, 6.4vw, 6.8rem);
@@ -3592,6 +3600,29 @@ body.transition-lock {
 .program-copy {
   position: relative;
   z-index: 2;
+}
+
+.problem-section .problem-layout {
+  display: grid;
+  grid-template-areas:
+    "copy visual"
+    "cards visual";
+  grid-template-columns: minmax(0, 0.92fr) minmax(24rem, 1.08fr);
+  align-items: center;
+  gap: clamp(1.6rem, 3.4vw, 3.5rem) clamp(2rem, 4.2vw, 4.8rem);
+}
+
+.problem-section .problem-copy {
+  grid-area: copy;
+  align-self: end;
+}
+
+.problem-section .problem-grid {
+  grid-area: cards;
+}
+
+.problem-section .problem-visual {
+  grid-area: visual;
 }
 
 .split-title span {
@@ -3615,6 +3646,13 @@ body.transition-lock {
   text-wrap: balance;
 }
 
+.problem-section h2 {
+  max-width: 44rem;
+  margin-top: clamp(1.3rem, 2vw, 1.8rem);
+  font-size: clamp(3.25rem, 4.75vw, 5rem);
+  line-height: 0.98;
+}
+
 .audience-section .cinematic-head h2,
 .method-section .cinematic-head h2 {
   max-width: 50rem;
@@ -3629,8 +3667,8 @@ body.transition-lock {
 .problem-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.8rem;
-  margin-top: clamp(1.55rem, 2.6vw, 2.15rem);
+  gap: clamp(0.9rem, 1.4vw, 1.15rem);
+  margin-top: clamp(0.4rem, 1.2vw, 0.8rem);
 }
 
 .problem-grid article,
@@ -3647,11 +3685,54 @@ body.transition-lock {
   padding: clamp(0.9rem, 1.35vw, 1.18rem);
 }
 
+.problem-grid article {
+  display: grid;
+  min-height: clamp(11.3rem, 16vw, 14.7rem);
+  place-items: center;
+  gap: 0.95rem;
+  border-color: rgba(230, 211, 163, 0.23);
+  background:
+    radial-gradient(circle at 50% 4%, rgba(230, 211, 163, 0.08), transparent 9rem),
+    linear-gradient(145deg, rgba(18, 17, 15, 0.72), rgba(5, 5, 5, 0.62));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.035),
+    0 20px 60px rgba(0, 0, 0, 0.28);
+  padding: clamp(1.25rem, 2vw, 1.8rem);
+  text-align: center;
+}
+
+.problem-grid .landing-icon {
+  width: clamp(3.6rem, 5vw, 4.65rem);
+  height: clamp(3.6rem, 5vw, 4.65rem);
+  border: 0;
+  color: var(--champagne);
+  background: transparent;
+  box-shadow: none;
+}
+
+.problem-grid .landing-icon svg {
+  width: 100%;
+  height: 100%;
+  stroke-width: 1.45;
+}
+
+.problem-grid article::after {
+  display: block;
+  width: 1.7rem;
+  height: 1px;
+  order: 2;
+  content: "";
+  background: var(--champagne);
+  opacity: 0.86;
+}
+
 .problem-grid article p {
+  order: 3;
   margin: 0;
   color: var(--ivory);
-  font-size: clamp(0.98rem, 1.08vw, 1.08rem);
-  line-height: 1.45;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: clamp(1.23rem, 1.55vw, 1.7rem);
+  line-height: 1.22;
 }
 
 .cinema-visual {
@@ -3672,6 +3753,27 @@ body.transition-lock {
   object-fit: cover;
   object-position: center;
   opacity: 0.84;
+}
+
+.problem-visual {
+  aspect-ratio: 0.84 / 1;
+  min-height: clamp(31rem, 52vw, 55rem);
+  border-radius: 10px;
+  box-shadow:
+    0 34px 120px rgba(0, 0, 0, 0.72),
+    0 0 0 1px rgba(230, 211, 163, 0.08);
+}
+
+.problem-visual img {
+  min-height: 100%;
+  object-position: 48% center;
+  opacity: 0.96;
+}
+
+.problem-visual::after {
+  background:
+    linear-gradient(90deg, rgba(5, 5, 5, 0.18), transparent 36%, rgba(5, 5, 5, 0.08)),
+    linear-gradient(180deg, rgba(5, 5, 5, 0.06), transparent 54%, rgba(5, 5, 5, 0.26));
 }
 
 .cinema-visual::after {
@@ -3956,6 +4058,14 @@ body.transition-lock {
     max-width: 46rem;
   }
 
+  .problem-section .problem-layout {
+    grid-template-areas:
+      "copy"
+      "visual"
+      "cards";
+    grid-template-columns: 1fr;
+  }
+
   .problem-layout,
   .program-layout,
   .method-visual-panel {
@@ -4105,6 +4215,37 @@ body.transition-lock {
     padding: 0.46rem;
   }
 
+  .problem-section {
+    padding-block: 2.7rem 3.15rem;
+  }
+
+  .problem-section .problem-layout {
+    gap: 1.3rem;
+  }
+
+  .problem-section .section-kicker {
+    font-size: 0.82rem;
+    letter-spacing: 0.2em;
+  }
+
+  .problem-section h2 {
+    max-width: 100%;
+    margin-top: 1.35rem;
+    font-size: clamp(3.08rem, 12.9vw, 4.35rem);
+    line-height: 0.96;
+  }
+
+  .problem-visual {
+    width: 100%;
+    min-height: 0;
+    aspect-ratio: 1.46 / 1;
+    border-radius: 8px;
+  }
+
+  .problem-visual img {
+    object-position: 52% center;
+  }
+
   .problem-section h2,
   .cinematic-head h2,
   .program-structure-section h2 {
@@ -4112,8 +4253,48 @@ body.transition-lock {
     line-height: 1.06;
   }
 
+  .problem-section h2 {
+    font-size: clamp(3.08rem, 12.9vw, 4.35rem);
+    line-height: 0.96;
+  }
+
   .cinema-visual {
     min-height: 18rem;
+  }
+
+  .problem-section .cinema-visual {
+    min-height: 0;
+  }
+
+  .problem-grid {
+    gap: 0.8rem;
+    margin-top: 0.35rem;
+  }
+
+  .problem-grid article {
+    display: grid;
+    grid-template-columns: 4.7rem minmax(0, 1fr);
+    min-height: 8rem;
+    justify-items: start;
+    place-items: center start;
+    gap: 0.95rem;
+    padding: 1rem 1.05rem;
+    text-align: left;
+  }
+
+  .problem-grid .landing-icon {
+    width: 3.7rem;
+    height: 3.7rem;
+  }
+
+  .problem-grid article::after {
+    display: none;
+  }
+
+  .problem-grid article p {
+    font-family: "Inter", "Manrope", system-ui, sans-serif;
+    font-size: clamp(1.25rem, 5.5vw, 1.68rem);
+    line-height: 1.35;
   }
 
   .method-icon {
