@@ -43,6 +43,8 @@
       <symbol id="icon-document" viewBox="0 0 24 24"><path d="M7 3h7l4 4v14H7z"></path><path d="M14 3v5h5M9 12h6M9 16h5"></path></symbol>
       <symbol id="icon-clock-lines" viewBox="0 0 24 24"><path d="M4 12h3M3 8h3M5 16h2"></path><circle cx="13" cy="12" r="7"></circle><path d="M13 8v4l3 2"></path></symbol>
       <symbol id="icon-translate" viewBox="0 0 24 24"><path d="M4 5h7v7H4zM13 12h7v7h-7z"></path><path d="M7.5 8.5h.01M5.8 14.5c1.5 1.2 3.8 1.2 5.2-.2M18.2 9.5c-1.5-1.2-3.8-1.2-5.2.2M9 14l2 2-2 2M15 6l-2 2 2 2M15.6 16h1.8M16.5 14.5v3"></path></symbol>
+      <symbol id="icon-pin" viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-12A7 7 0 0 0 5 9c0 5.8 7 12 7 12z"></path><circle cx="12" cy="9" r="2.2"></circle></symbol>
+      <symbol id="icon-pencil" viewBox="0 0 24 24"><path d="M4 20h4l11-11-4-4L4 16z"></path><path d="M13.5 6.5l4 4M12 20h8"></path></symbol>
     </svg>
     <a class="skip-link" href="#main" data-en="Skip to content" data-tr="İçeriğe geç">Skip to content</a>
 
@@ -181,18 +183,49 @@
         <div class="container">
           <div class="section-head cinematic-head">
             <p class="section-kicker" data-en="THE STAR SPEAKER METHOD" data-tr="STAR SPEAKER METODU">THE STAR SPEAKER METHOD</p>
-            <h2 id="method-title" data-en="A simple daily system that creates real speaking results." data-tr="Gerçek konuşma sonucu oluşturan basit bir günlük sistem.">A simple daily system that creates real speaking results.</h2>
+            <h2 id="method-title" data-en="The road from knowing English to using English." data-tr="İngilizce bilmekten İngilizceyi kullanmaya giden yol.">The road from knowing English to using English.</h2>
           </div>
-          <div class="method-timeline">
-            <article><span class="method-number">01</span><span class="method-icon"><svg aria-hidden="true"><use href="#icon-mic"></use></svg></span><h3 data-en="Speak Daily" data-tr="Her Gün Konuş">Speak Daily</h3><p data-en="Build your speaking muscle." data-tr="Konuşma kasını geliştir.">Build your speaking muscle.</p></article>
-            <article><span class="method-number">02</span><span class="method-icon"><svg aria-hidden="true"><use href="#icon-message-check"></use></svg></span><h3 data-en="Get Corrected" data-tr="Düzeltil">Get Corrected</h3><p data-en="Receive clear, personal feedback." data-tr="Net ve kişisel geri bildirim al.">Receive clear, personal feedback.</p></article>
-            <article><span class="method-number">03</span><span class="method-icon"><svg aria-hidden="true"><use href="#icon-conversation"></use></svg></span><h3 data-en="Practice Real Situations" data-tr="Gerçek Durumlarda Pratik Yap">Practice Real Situations</h3><p data-en="Use English in real-life contexts." data-tr="İngilizceyi gerçek hayata yakın durumlarda kullan.">Use English in real-life contexts.</p></article>
-            <article><span class="method-number">04</span><span class="method-icon"><svg aria-hidden="true"><use href="#icon-chart"></use></svg></span><h3 data-en="Prove Progress" data-tr="Gelişimini Gör">Prove Progress</h3><p data-en="See, hear, and feel your improvement." data-tr="İlerlemeni gör, duy ve hisset.">See, hear, and feel your improvement.</p></article>
-          </div>
-          <div class="method-visual-panel">
-            <div class="voice-device"><span></span><strong>02:36</strong></div>
-            <div class="feedback-screen"><h3 data-en="Feedback" data-tr="Geri Bildirim">Feedback</h3><p data-en="Clear correction, next focus, and visible weekly progress." data-tr="Net düzeltme, sonraki odak ve görünür haftalık ilerleme.">Clear correction, next focus, and visible weekly progress.</p><div class="feedback-focus" data-en="Next focus: answer flow" data-tr="Sonraki odak: cevap akışı">Next focus: answer flow</div></div>
-            <div class="progress-card"><h3 data-en="Progress Report" data-tr="Gelişim Raporu">Progress Report</h3><span class="chart-line"></span><p data-en="Voice logs • Speaking time • Consistency" data-tr="Ses kayıtları • Konuşma süresi • Tutarlılık">Voice logs • Speaking time • Consistency</p></div>
+          <div class="method-journey" aria-label="Star Speaker method journey">
+            <svg class="method-route" viewBox="0 0 1200 360" preserveAspectRatio="none" aria-hidden="true">
+              <path class="route-glow" d="M64 218 C168 218 188 118 286 130 S436 240 548 190 S694 94 808 156 S986 258 1136 158"></path>
+              <path class="route-line" d="M64 218 C168 218 188 118 286 130 S436 240 548 190 S694 94 808 156 S986 258 1136 158"></path>
+              <circle class="route-dot" cx="198" cy="160" r="7"></circle>
+              <circle class="route-dot" cx="414" cy="211" r="7"></circle>
+              <circle class="route-dot" cx="654" cy="149" r="7"></circle>
+              <circle class="route-dot" cx="928" cy="221" r="7"></circle>
+            </svg>
+            <div class="method-point method-start">
+              <span class="method-marker"><svg aria-hidden="true"><use href="#icon-pin"></use></svg></span>
+              <strong data-en="You know English" data-tr="İngilizce biliyorsun">You know English</strong>
+            </div>
+            <article class="method-point method-stop stop-one">
+              <span class="method-icon"><svg aria-hidden="true"><use href="#icon-mic"></use></svg></span>
+              <span class="method-number">01</span>
+              <h3 data-en="Speak Daily" data-tr="Her Gün Konuş">Speak Daily</h3>
+              <p data-en="Build your speaking muscle." data-tr="Konuşma kasını geliştir.">Build your speaking muscle.</p>
+            </article>
+            <article class="method-point method-stop stop-two">
+              <span class="method-icon"><svg aria-hidden="true"><use href="#icon-pencil"></use></svg></span>
+              <span class="method-number">02</span>
+              <h3 data-en="Get Corrected" data-tr="Düzeltil">Get Corrected</h3>
+              <p data-en="Receive clear, personal feedback." data-tr="Net ve kişisel geri bildirim al.">Receive clear, personal feedback.</p>
+            </article>
+            <article class="method-point method-stop stop-three">
+              <span class="method-icon"><svg aria-hidden="true"><use href="#icon-conversation"></use></svg></span>
+              <span class="method-number">03</span>
+              <h3 data-en="Practice Real Situations" data-tr="Gerçek Durumlarda Pratik Yap">Practice Real Situations</h3>
+              <p data-en="Use English in real-life contexts." data-tr="İngilizceyi gerçek hayatta kullan.">Use English in real-life contexts.</p>
+            </article>
+            <article class="method-point method-stop stop-four">
+              <span class="method-icon"><svg aria-hidden="true"><use href="#icon-chart"></use></svg></span>
+              <span class="method-number">04</span>
+              <h3 data-en="Prove Progress" data-tr="İlerlemeni Göster">Prove Progress</h3>
+              <p data-en="See, hear, and feel your improvement." data-tr="Gelişimini gör, duy ve hisset.">See, hear, and feel your improvement.</p>
+            </article>
+            <div class="method-point method-final">
+              <span class="method-destination" aria-hidden="true"></span>
+              <strong data-en="Use English in real life" data-tr="İngilizceyi gerçek hayatta kullan">Use English in real life</strong>
+            </div>
           </div>
         </div>
       </section>

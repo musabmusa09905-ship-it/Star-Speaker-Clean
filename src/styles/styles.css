@@ -4166,6 +4166,253 @@ body.transition-lock {
   opacity: 0.85;
 }
 
+.method-section {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding-block: clamp(4.8rem, 8vw, 7.4rem);
+  background:
+    radial-gradient(circle at 50% 36%, rgba(216, 194, 138, 0.09), transparent 26rem),
+    linear-gradient(180deg, rgba(4, 4, 4, 0.96), rgba(0, 0, 0, 0.98));
+}
+
+.method-section::before {
+  position: absolute;
+  inset: 16% -8% 8%;
+  z-index: -2;
+  content: "";
+  background:
+    radial-gradient(circle at 13% 48%, rgba(230, 215, 168, 0.26) 0 0.08rem, transparent 0.1rem),
+    radial-gradient(circle at 28% 37%, rgba(191, 167, 106, 0.22) 0 0.07rem, transparent 0.09rem),
+    radial-gradient(circle at 46% 45%, rgba(216, 194, 138, 0.2) 0 0.08rem, transparent 0.1rem),
+    radial-gradient(circle at 64% 34%, rgba(230, 215, 168, 0.24) 0 0.08rem, transparent 0.1rem),
+    radial-gradient(circle at 79% 48%, rgba(203, 182, 122, 0.22) 0 0.08rem, transparent 0.1rem),
+    radial-gradient(circle at 91% 38%, rgba(230, 215, 168, 0.24) 0 0.08rem, transparent 0.1rem),
+    linear-gradient(90deg, transparent, rgba(230, 215, 168, 0.08), transparent);
+  background-size: 10rem 7rem, 11rem 8rem, 9rem 6rem, 12rem 8rem, 10rem 7rem, 13rem 8rem, 100% 100%;
+  opacity: 0.62;
+  mask-image:
+    radial-gradient(ellipse at 50% 44%, #000 0 52%, transparent 78%),
+    linear-gradient(#000, #000);
+}
+
+.method-section::after {
+  position: absolute;
+  inset: 22% 0 18%;
+  z-index: -1;
+  content: "";
+  background:
+    linear-gradient(18deg, transparent 48%, rgba(216, 194, 138, 0.12) 49%, transparent 50%),
+    linear-gradient(-11deg, transparent 52%, rgba(191, 167, 106, 0.1) 53%, transparent 54%);
+  opacity: 0.55;
+}
+
+.method-section .container {
+  max-width: 94rem;
+}
+
+.method-section .cinematic-head {
+  max-width: 75rem;
+  margin-inline: auto;
+  margin-bottom: clamp(4.6rem, 8vw, 7.1rem);
+}
+
+.method-section .section-kicker {
+  color: #e6d7a8;
+  letter-spacing: 0.25em;
+}
+
+.method-section .section-kicker::after {
+  width: 4.8rem;
+  background: linear-gradient(90deg, transparent, #d8c28a, transparent);
+}
+
+.method-section .cinematic-head h2 {
+  max-width: 76rem;
+  color: var(--ivory);
+  font-size: clamp(4.1rem, 6.5vw, 6.65rem);
+  line-height: 0.98;
+}
+
+.method-section .cinematic-head h2::first-letter {
+  color: var(--ivory);
+}
+
+.method-journey {
+  position: relative;
+  min-height: clamp(22rem, 30vw, 29rem);
+}
+
+.method-route {
+  position: absolute;
+  top: clamp(2.8rem, 5vw, 4.6rem);
+  left: 2%;
+  width: 96%;
+  height: clamp(11rem, 16vw, 15rem);
+  overflow: visible;
+  filter: drop-shadow(0 0 18px rgba(216, 194, 138, 0.28));
+}
+
+.method-route path {
+  fill: none;
+  stroke-linecap: round;
+}
+
+.route-glow {
+  stroke: rgba(230, 215, 168, 0.42);
+  stroke-width: 18;
+  opacity: 0.34;
+}
+
+.route-line {
+  stroke: #e6d7a8;
+  stroke-width: 4.2;
+}
+
+.route-dot {
+  fill: #e6d7a8;
+  filter: drop-shadow(0 0 12px rgba(230, 215, 168, 0.65));
+}
+
+.method-point {
+  position: absolute;
+  color: rgba(247, 241, 228, 0.9);
+  text-align: center;
+}
+
+.method-start {
+  top: 7.8rem;
+  left: 0;
+  width: 10.5rem;
+}
+
+.method-final {
+  top: 10rem;
+  right: 0;
+  width: 12.5rem;
+}
+
+.method-marker,
+.method-destination,
+.method-icon {
+  display: grid;
+  place-items: center;
+  color: #e6d7a8;
+}
+
+.method-marker {
+  width: 4.7rem;
+  height: 4.7rem;
+  margin: 0 auto 1rem;
+  filter: drop-shadow(0 0 18px rgba(230, 215, 168, 0.42));
+}
+
+.method-marker svg {
+  width: 4rem;
+  height: 4rem;
+  fill: rgba(230, 215, 168, 0.86);
+  stroke-width: 1.2;
+}
+
+.method-destination {
+  width: 5.8rem;
+  height: 5.8rem;
+  margin: 0 auto 1rem;
+  border: 1px solid rgba(230, 215, 168, 0.55);
+  border-radius: 999px;
+  background:
+    radial-gradient(circle, #e6d7a8 0 0.82rem, transparent 0.88rem),
+    repeating-radial-gradient(circle, rgba(230, 215, 168, 0.36) 0 0.08rem, transparent 0.08rem 0.78rem);
+  box-shadow: 0 0 34px rgba(230, 215, 168, 0.14);
+}
+
+.method-start strong,
+.method-final strong {
+  display: block;
+  color: #e6d7a8;
+  font-size: clamp(1.12rem, 1.4vw, 1.45rem);
+  line-height: 1.22;
+}
+
+.method-stop {
+  width: clamp(12.5rem, 15vw, 16rem);
+}
+
+.stop-one {
+  top: 2.5rem;
+  left: 19%;
+}
+
+.stop-two {
+  top: 2.8rem;
+  left: 38.5%;
+}
+
+.stop-three {
+  top: 3rem;
+  left: 58%;
+}
+
+.stop-four {
+  top: 3.1rem;
+  left: 77%;
+}
+
+.method-stop .method-icon {
+  width: clamp(6rem, 7.4vw, 7.4rem);
+  height: clamp(6rem, 7.4vw, 7.4rem);
+  margin: 0 auto 1.05rem;
+  border: 1px solid rgba(230, 215, 168, 0.72);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(216, 194, 138, 0.1), rgba(0, 0, 0, 0.74) 72%),
+    rgba(4, 4, 4, 0.72);
+  box-shadow:
+    0 0 32px rgba(230, 215, 168, 0.18),
+    inset 0 0 28px rgba(230, 215, 168, 0.07);
+}
+
+.method-stop .method-icon svg {
+  width: 2.55rem;
+  height: 2.55rem;
+  stroke-width: 1.55;
+}
+
+.method-stop .method-number {
+  display: block;
+  margin: 0 0 0.25rem;
+  color: #d8c28a;
+  font-size: clamp(1.35rem, 1.7vw, 1.72rem);
+  font-weight: 800;
+  letter-spacing: 0.03em;
+}
+
+.method-stop .method-number::after {
+  display: block;
+  width: 0.34rem;
+  height: 0.34rem;
+  margin: 0.33rem auto 0;
+  content: "";
+  border-radius: 50%;
+  background: #e6d7a8;
+  box-shadow: 0 0 12px rgba(230, 215, 168, 0.54);
+}
+
+.method-stop h3 {
+  margin: 0.62rem auto 0;
+  color: #d8c28a;
+  font-size: clamp(1.24rem, 1.55vw, 1.6rem);
+  line-height: 1.18;
+}
+
+.method-stop p {
+  max-width: 13.5rem;
+  margin: 0.55rem auto 0;
+  color: rgba(247, 241, 228, 0.82);
+  font-size: clamp(0.98rem, 1.12vw, 1.13rem);
+  line-height: 1.38;
+}
+
 .program-layout {
   grid-template-columns: minmax(0, 1.13fr) minmax(21rem, 0.87fr);
   align-items: center;
@@ -4648,6 +4895,228 @@ body.transition-lock {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@media (max-width: 1180px) {
+  .method-section .cinematic-head h2 {
+    font-size: clamp(3.5rem, 7vw, 5.4rem);
+  }
+
+  .method-stop {
+    width: 12rem;
+  }
+
+  .method-start {
+    left: -1rem;
+  }
+
+  .method-final {
+    right: -1rem;
+  }
+}
+
+@media (max-width: 760px) {
+  .method-section {
+    padding: 3rem 0 4.3rem;
+    background:
+      radial-gradient(circle at 50% 18%, rgba(230, 215, 168, 0.1), transparent 16rem),
+      radial-gradient(circle at 28% 82%, rgba(216, 194, 138, 0.12), transparent 14rem),
+      linear-gradient(180deg, #050505, #010101);
+  }
+
+  .method-section::before {
+    inset: 18% -38% 3%;
+    background-size: 8rem 5rem, 9rem 6rem, 8rem 5rem, 10rem 6rem, 8rem 5rem, 10rem 6rem, 100% 100%;
+    opacity: 0.72;
+    mask-image: radial-gradient(ellipse at 50% 48%, #000 0 62%, transparent 86%);
+  }
+
+  .method-section::after {
+    inset: 28% -10% 10%;
+    background:
+      linear-gradient(28deg, transparent 47%, rgba(216, 194, 138, 0.16) 48%, transparent 49%),
+      linear-gradient(-26deg, transparent 54%, rgba(191, 167, 106, 0.11) 55%, transparent 56%);
+  }
+
+  .method-section .container {
+    width: min(100% - 2rem, 40rem);
+  }
+
+  .method-section .cinematic-head {
+    margin-bottom: 2.1rem;
+  }
+
+  .method-section .section-kicker {
+    font-size: 0.9rem;
+    letter-spacing: 0.24em;
+  }
+
+  .method-section .section-kicker::after {
+    width: 5.8rem;
+    margin-top: 1rem;
+  }
+
+  .method-section .cinematic-head h2 {
+    max-width: 25rem;
+    margin-inline: auto;
+    font-size: clamp(3.35rem, 12.8vw, 4.45rem);
+    line-height: 0.95;
+  }
+
+  .method-journey {
+    display: grid;
+    grid-template-columns: 7.2rem minmax(0, 1fr);
+    gap: 0 0.25rem;
+    min-height: 0;
+    padding: 0.7rem 0 0.8rem;
+  }
+
+  .method-journey::before {
+    position: absolute;
+    top: 5.6rem;
+    bottom: 5.5rem;
+    left: 4.12rem;
+    width: 0.38rem;
+    content: "";
+    border-radius: 999px;
+    background:
+      radial-gradient(circle at 50% 0%, #e6d7a8 0 0.32rem, transparent 0.36rem),
+      linear-gradient(180deg, rgba(230, 215, 168, 0.18), #e6d7a8 12%, #cbb67a 55%, #e6d7a8 88%, rgba(230, 215, 168, 0.18));
+    box-shadow:
+      0 0 18px rgba(230, 215, 168, 0.52),
+      0 0 34px rgba(216, 194, 138, 0.18);
+  }
+
+  .method-route {
+    display: none;
+  }
+
+  .method-point {
+    position: relative;
+    top: auto;
+    right: auto;
+    left: auto;
+    width: auto;
+    text-align: left;
+  }
+
+  .method-start,
+  .method-final,
+  .method-stop {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: 7.2rem minmax(0, 1fr);
+    align-items: center;
+    min-height: 8.5rem;
+  }
+
+  .method-start {
+    min-height: 7.25rem;
+  }
+
+  .method-final {
+    min-height: 7.8rem;
+  }
+
+  .method-marker,
+  .method-destination,
+  .method-stop .method-icon {
+    grid-column: 1;
+    grid-row: 1;
+    margin: 0 auto;
+  }
+
+  .method-marker {
+    width: 4.9rem;
+    height: 4.9rem;
+  }
+
+  .method-marker svg {
+    width: 4.15rem;
+    height: 4.15rem;
+  }
+
+  .method-start strong,
+  .method-final strong {
+    grid-column: 2;
+    width: fit-content;
+    max-width: 100%;
+    padding: 1rem 1.25rem;
+    border: 1px solid rgba(230, 215, 168, 0.22);
+    border-radius: 8px;
+    background: linear-gradient(145deg, rgba(13, 12, 10, 0.8), rgba(3, 3, 3, 0.62));
+    box-shadow: 0 14px 42px rgba(0, 0, 0, 0.3);
+    font-size: clamp(1.25rem, 5.2vw, 1.65rem);
+    text-align: left;
+  }
+
+  .method-destination {
+    width: 5.25rem;
+    height: 5.25rem;
+  }
+
+  .method-stop .method-icon {
+    width: 5.55rem;
+    height: 5.55rem;
+    box-shadow:
+      0 0 28px rgba(230, 215, 168, 0.26),
+      inset 0 0 26px rgba(230, 215, 168, 0.08);
+  }
+
+  .method-stop .method-icon svg {
+    width: 2.25rem;
+    height: 2.25rem;
+  }
+
+  .method-stop .method-number {
+    position: absolute;
+    top: 0.55rem;
+    left: 6.35rem;
+    display: grid;
+    width: 2.75rem;
+    height: 2.75rem;
+    place-items: center;
+    border: 1px solid rgba(230, 215, 168, 0.44);
+    border-radius: 999px;
+    background: rgba(5, 5, 5, 0.86);
+    font-size: 1.05rem;
+    z-index: 2;
+  }
+
+  .method-stop .method-number::after {
+    display: none;
+  }
+
+  .method-stop h3,
+  .method-stop p {
+    grid-column: 2;
+    margin-inline: 0;
+    text-align: left;
+  }
+
+  .method-stop h3 {
+    align-self: end;
+    margin-top: 0;
+    padding: 1.18rem 1.15rem 0.25rem;
+    border: 1px solid rgba(230, 215, 168, 0.24);
+    border-bottom: 0;
+    border-radius: 8px 8px 0 0;
+    background: linear-gradient(145deg, rgba(13, 12, 10, 0.86), rgba(3, 3, 3, 0.74));
+    color: #d8c28a;
+    font-size: clamp(1.25rem, 5.3vw, 1.62rem);
+  }
+
+  .method-stop p {
+    align-self: start;
+    max-width: none;
+    padding: 0.15rem 1.15rem 1.05rem;
+    border: 1px solid rgba(230, 215, 168, 0.24);
+    border-top: 0;
+    border-radius: 0 0 8px 8px;
+    background: linear-gradient(145deg, rgba(13, 12, 10, 0.86), rgba(3, 3, 3, 0.74));
+    color: rgba(247, 241, 228, 0.88);
+    font-size: clamp(1rem, 4.2vw, 1.18rem);
   }
 }
 
