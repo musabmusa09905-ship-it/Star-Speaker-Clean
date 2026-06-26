@@ -1497,51 +1497,86 @@ body.transition-lock {
 }
 
 .final-cta {
-  padding-block: 0 clamp(2.2rem, 4vw, 3.2rem);
+  position: relative;
+  overflow: hidden;
+  padding-block: clamp(5rem, 9vw, 8rem);
+  background:
+    radial-gradient(circle at 18% 48%, rgba(216, 194, 138, 0.13), transparent 18rem),
+    radial-gradient(circle at 78% 48%, rgba(191, 167, 106, 0.08), transparent 20rem),
+    linear-gradient(180deg, rgba(7, 7, 6, 0.99), #000 72%);
+  border-top: 1px solid rgba(216, 194, 138, 0.16);
 }
 
-.cta-band {
+.final-cta::after {
+  position: absolute;
+  right: 0;
+  bottom: clamp(1.5rem, 4vw, 3.5rem);
+  left: 0;
+  height: 1px;
+  background:
+    linear-gradient(90deg, transparent, rgba(216, 194, 138, 0.55), transparent);
+  content: "";
+  opacity: 0.65;
+}
+
+.closing-brand {
+  position: relative;
+  z-index: 1;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  gap: clamp(1.25rem, 3vw, 2.6rem);
-  border: 1px solid var(--line-strong);
-  border-radius: 8px;
-  background:
-    radial-gradient(circle at 0% 50%, rgba(230, 211, 163, 0.12), transparent 18rem),
-    linear-gradient(135deg, rgba(20, 18, 15, 0.97), rgba(6, 6, 5, 0.98));
-  box-shadow: 0 0 0 1px rgba(230, 211, 163, 0.04), 0 22px 70px rgba(191, 164, 106, 0.15);
-  padding: clamp(1.2rem, 2.8vw, 2rem);
+  gap: clamp(1.8rem, 4.5vw, 5rem);
+  min-height: clamp(17rem, 32vw, 25rem);
 }
 
-.cta-band img {
-  width: clamp(4.2rem, 7vw, 6rem);
-  height: clamp(4.2rem, 7vw, 6rem);
+.closing-brand-logo {
+  width: clamp(9rem, 14vw, 13.5rem);
+  height: clamp(9rem, 14vw, 13.5rem);
   object-fit: contain;
+  filter: drop-shadow(0 0 2.2rem rgba(216, 194, 138, 0.22));
 }
 
-.cta-copy h2 {
+.closing-brand-copy {
+  min-width: 0;
+  padding-left: clamp(1.7rem, 3vw, 2.8rem);
+  border-left: 1px solid rgba(216, 194, 138, 0.42);
+}
+
+.landing-final .closing-brand-name {
   margin: 0;
-  color: var(--champagne);
+  color: var(--ivory);
   font-family: "Cormorant Garamond", "Bodoni 72", Georgia, serif;
-  font-size: clamp(1.7rem, 3vw, 2.55rem);
+  font-size: clamp(1.7rem, 2.6vw, 2.45rem);
   font-weight: 500;
-  letter-spacing: 0;
-  line-height: 1.1;
+  letter-spacing: 0.32em;
+  line-height: 1;
+  text-transform: uppercase;
 }
 
-.cta-copy p {
-  margin: 0.45rem 0 0;
-  color: rgba(239, 231, 216, 0.82);
-  font-size: clamp(0.95rem, 1.15vw, 1.06rem);
-  line-height: 1.5;
+.closing-brand-motto {
+  margin: 0.6rem 0 0;
+  color: #d8c28a;
+  font-size: clamp(1rem, 1.25vw, 1.16rem);
+  line-height: 1.35;
 }
 
-.cta-actions {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: 0.8rem;
+.closing-brand-cta {
+  min-width: min(100%, 26rem);
+  min-height: 4.7rem;
+  justify-content: center;
+  padding-inline: clamp(1.4rem, 3.5vw, 2.8rem);
+  border-color: rgba(230, 215, 168, 0.75);
+  background:
+    linear-gradient(180deg, rgba(216, 194, 138, 0.08), rgba(191, 167, 106, 0.03));
+  box-shadow: 0 0 0 1px rgba(216, 194, 138, 0.08), 0 18px 52px rgba(191, 167, 106, 0.13);
+  color: #e6d7a8;
+  white-space: normal;
+}
+
+.closing-brand-cta svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  flex: 0 0 auto;
 }
 
 @media (max-width: 1220px) {
@@ -1690,13 +1725,13 @@ body.transition-lock {
     border-bottom: 1px solid rgba(230, 211, 163, 0.22);
   }
 
-  .cta-band {
+  .closing-brand {
     grid-template-columns: auto minmax(0, 1fr);
   }
 
-  .cta-actions {
+  .closing-brand-cta {
     grid-column: 1 / -1;
-    justify-content: flex-start;
+    justify-self: start;
   }
 }
 
@@ -1889,36 +1924,47 @@ body.transition-lock {
     border-bottom: 1px solid rgba(230, 211, 163, 0.22);
   }
 
-  .cta-band {
+  .final-cta {
+    padding-block: clamp(4.5rem, 14vw, 6.8rem);
+  }
+
+  .final-cta::after {
+    bottom: 1.6rem;
+  }
+
+  .closing-brand {
     grid-template-columns: 1fr;
-    gap: 0.85rem;
-    padding: 1rem;
-    text-align: left;
+    justify-items: center;
+    gap: 1.4rem;
+    min-height: auto;
+    text-align: center;
   }
 
-  .cta-band img {
-    width: 3.15rem;
-    height: 3.15rem;
+  .closing-brand-logo {
+    width: clamp(9rem, 44vw, 12rem);
+    height: clamp(9rem, 44vw, 12rem);
   }
 
-  .cta-copy h2 {
-    font-size: clamp(1.45rem, 7vw, 1.9rem);
+  .closing-brand-copy {
+    padding-left: 0;
+    border-left: 0;
   }
 
-  .cta-copy p {
-    margin-top: 0.35rem;
-    font-size: 0.9rem;
-    line-height: 1.42;
+  .landing-final .closing-brand-name {
+    font-size: clamp(1.7rem, 9vw, 2.5rem);
+    letter-spacing: 0.26em;
   }
 
-  .cta-actions {
-    display: grid;
-    gap: 0.62rem;
-    width: 100%;
+  .closing-brand-motto {
+    margin-top: 0.55rem;
+    font-size: 1rem;
   }
 
-  .cta-actions .button {
-    width: 100%;
+  .closing-brand-cta {
+    width: min(100%, 25rem);
+    min-height: 4.25rem;
+    margin-top: 0.65rem;
+    padding-inline: 1rem;
   }
 }
 
@@ -3158,7 +3204,7 @@ body.transition-lock {
 }
 
 .landing-final {
-  padding-top: clamp(3rem, 5vw, 5rem);
+  padding-top: clamp(5rem, 9vw, 8rem);
 }
 
 @media (max-width: 1220px) {
