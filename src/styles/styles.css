@@ -1531,29 +1531,28 @@ body.transition-lock {
 
 .closing-brand-mark {
   position: relative;
-  width: clamp(12rem, 16vw, 15rem);
-  height: clamp(14.5rem, 19vw, 18rem);
-  overflow: hidden;
+  display: grid;
+  width: clamp(11.5rem, 15vw, 13.5rem);
+  aspect-ratio: 962 / 979;
+  place-items: center;
   isolation: isolate;
 }
 
 .closing-brand-mark::after {
   position: absolute;
-  inset: 12% -15% 0;
+  inset: 8% -12%;
   z-index: -1;
-  background: radial-gradient(circle, rgba(216, 194, 138, 0.16), transparent 62%);
+  background: radial-gradient(circle, rgba(216, 194, 138, 0.18), transparent 64%);
   content: "";
-  filter: blur(12px);
+  filter: blur(16px);
 }
 
 .closing-brand-logo {
-  position: absolute;
-  top: -52%;
-  left: -58%;
-  width: 200%;
-  max-width: none;
-  height: auto;
-  filter: drop-shadow(0 0 1.6rem rgba(216, 194, 138, 0.24));
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 0 1.4rem rgba(216, 194, 138, 0.22));
 }
 
 .closing-brand-copy {
@@ -1963,8 +1962,7 @@ body.transition-lock {
   }
 
   .closing-brand-mark {
-    width: clamp(12.5rem, 54vw, 14.5rem);
-    height: clamp(15rem, 65vw, 17.5rem);
+    width: clamp(11.5rem, 52vw, 13.5rem);
   }
 
   .closing-brand-copy {
