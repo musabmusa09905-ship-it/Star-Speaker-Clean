@@ -199,7 +199,7 @@
 
     if (language === "tr") {
       return [
-        "Merhaba, \u00dccretsiz \u0130ngilizce Konu\u015fma Analizi i\u00e7in ba\u015fvurmak istiyorum.",
+        "Merhaba, \u00dccretsiz Konu\u015fma Analizimi ba\u015flatmak istiyorum.",
         "",
         `Ad Soyad: ${values.name}`,
         `WhatsApp: ${values.whatsapp}`,
@@ -212,7 +212,7 @@
     }
 
     return [
-      "Hello, I want to apply for the Free English Speaking Analysis.",
+      "Hello, I want to start my Free Speaking Analysis.",
       "",
       `Name: ${values.name}`,
       `WhatsApp: ${values.whatsapp}`,
