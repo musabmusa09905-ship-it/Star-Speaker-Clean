@@ -11,14 +11,14 @@
       required: "Please complete this field.",
       email: "Please enter a valid email address or leave it blank.",
       success: "Your application message is ready in WhatsApp. Please send it to complete your request.",
-      whatsapp: "Hi, I'm interested in the 30-Day Star Speaker Daily Speaking Program. Can I ask a question?",
+      whatsapp: "Hi, I\u2019d like to start my free Star Speaker speaking analysis.",
       notProvided: "Not provided",
     },
     tr: {
       required: "L\u00fctfen bu alan\u0131 doldur.",
       email: "L\u00fctfen ge\u00e7erli bir e-posta adresi girin veya bu alan\u0131 bo\u015f b\u0131rak\u0131n.",
       success: "Ba\u015fvurunu WhatsApp \u00fczerinden g\u00f6ndermek i\u00e7in devam et.",
-      whatsapp: "Merhaba, 30 G\u00fcnl\u00fck Star Speaker Konu\u015fma Program\u0131 hakk\u0131nda bilgi almak istiyorum. Bir soru sorabilir miyim?",
+      whatsapp: "Merhaba, Star Speaker i\u00e7in \u00fccretsiz konu\u015fma analizimi ba\u015flatmak istiyorum.",
       notProvided: "Belirtilmedi",
     },
   };
@@ -199,12 +199,12 @@
 
     if (language === "tr") {
       return [
-        "Merhaba, \u00dccretsiz Konu\u015fma Analizimi ba\u015flatmak istiyorum.",
+        "Merhaba, Star Speaker i\u00e7in \u00fccretsiz konu\u015fma analizimi ba\u015flatmak istiyorum.",
         "",
-        `Ad Soyad: ${values.name}`,
-        `WhatsApp: ${values.whatsapp}`,
+        `Ad\u0131m: ${values.name}`,
+        `Telefon: ${values.whatsapp}`,
         `E-posta: ${values.email}`,
-        `\u0130ngilizce seviyem: ${values.level}`,
+        `Seviyem: ${values.level}`,
         `Ana hedefim: ${values.goal}`,
         `\u0130ngilizceye ne zaman ihtiyac\u0131m var: ${values.timeline}`,
         `Tercih etti\u011fim ileti\u015fim dili: ${values.contactLanguage}`,
@@ -212,10 +212,10 @@
     }
 
     return [
-      "Hello, I want to start my Free Speaking Analysis.",
+      "Hi, I\u2019d like to start my free Star Speaker speaking analysis.",
       "",
       `Name: ${values.name}`,
-      `WhatsApp: ${values.whatsapp}`,
+      `Phone: ${values.whatsapp}`,
       `Email: ${values.email}`,
       `Current English level: ${values.level}`,
       `Main goal: ${values.goal}`,
