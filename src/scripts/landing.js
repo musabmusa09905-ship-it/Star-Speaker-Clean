@@ -176,25 +176,33 @@
     return form?.querySelector(selector);
   }
 
-  function getFieldText(selector) {
+  function getFieldText(selector, language) {
     const field = getField(selector);
     if (!field) return "";
     if (field.tagName === "SELECT") {
-      return field.selectedOptions?.[0]?.textContent?.trim() || field.value.trim();
+      const option = field.selectedOptions?.[0];
+      return option?.dataset?.[language] || option?.textContent?.trim() || field.value.trim();
     }
     return field.value.trim();
+  }
+
+  function getPreferredContactLanguage() {
+    const preference = getField("#contact-language")?.value;
+    if (preference === "Turkish") return "tr";
+    if (preference === "English") return "en";
+    return getLanguage();
   }
 
   function buildApplicationMessage(language) {
     const fallback = messages[language].notProvided;
     const values = {
-      name: getFieldText("#full-name"),
-      whatsapp: getFieldText("#whatsapp"),
-      email: getFieldText("#email") || fallback,
-      level: getFieldText("#english-level"),
-      goal: getFieldText("#main-goal"),
-      timeline: getFieldText("#start-timeline"),
-      contactLanguage: getFieldText("#contact-language"),
+      name: getFieldText("#full-name", language),
+      whatsapp: getFieldText("#whatsapp", language),
+      email: getFieldText("#email", language) || fallback,
+      level: getFieldText("#english-level", language),
+      goal: getFieldText("#main-goal", language),
+      timeline: getFieldText("#start-timeline", language),
+      contactLanguage: getFieldText("#contact-language", language),
     };
 
     if (language === "tr") {
@@ -202,7 +210,7 @@
         "Merhaba, Star Speaker i\u00e7in \u00fccretsiz konu\u015fma analizimi ba\u015flatmak istiyorum.",
         "",
         `Ad\u0131m: ${values.name}`,
-        `Telefon: ${values.whatsapp}`,
+        `WhatsApp: ${values.whatsapp}`,
         `E-posta: ${values.email}`,
         `Seviyem: ${values.level}`,
         `Ana hedefim: ${values.goal}`,
@@ -215,7 +223,7 @@
       "Hi, I\u2019d like to start my free Star Speaker speaking analysis.",
       "",
       `Name: ${values.name}`,
-      `Phone: ${values.whatsapp}`,
+      `WhatsApp: ${values.whatsapp}`,
       `Email: ${values.email}`,
       `Current English level: ${values.level}`,
       `Main goal: ${values.goal}`,
@@ -278,9 +286,10 @@
       return;
     }
 
-    const language = getLanguage();
-    window.open(buildWhatsappUrl(buildApplicationMessage(language)), "_blank", "noopener");
-    setStatus(messages[language].success, "success");
+    const pageLanguage = getLanguage();
+    const messageLanguage = getPreferredContactLanguage();
+    window.open(buildWhatsappUrl(buildApplicationMessage(messageLanguage)), "_blank", "noopener");
+    setStatus(messages[pageLanguage].success, "success");
   });
 
   window.addEventListener("starSpeakerLanguageChange", applyLandingLanguage);
