@@ -1,12 +1,21 @@
 <!doctype html>
-<html lang="en">
+<html lang="tr">
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="refresh" content="0; url=about.html">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>About | Star Speaker</title>
+    <meta name="robots" content="noindex, follow">
+    <meta http-equiv="refresh" content="0; url=/tr/">
+    <link rel="canonical" href="https://starspeakerstudio.com/tr/">
+    <title>Star Speaker</title>
+    <script>
+      (() => {
+        const requestedLocale = new URLSearchParams(location.search).get("lang");
+        const locale = requestedLocale === "en" ? "en" : "tr";
+        location.replace(`/${locale}/`);
+      })();
+    </script>
   </head>
-  <body>
-    <p><a href="about.html">Open the About page</a>.</p>
+  <body data-legacy-route="about">
+    <p><a href="/tr/">Star Speaker ana sayfasına devam et</a></p>
   </body>
 </html>

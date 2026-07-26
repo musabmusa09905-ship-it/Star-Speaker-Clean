@@ -25,7 +25,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/public/favicon/apple-touch-icon.png">
     <link rel="manifest" href="/public/favicon/site.webmanifest">
     <meta name="theme-color" content="#070707">
-    <link rel="stylesheet" href="/src/styles/styles.css">
+    <link rel="stylesheet" href="/src/styles/styles.css?v=20260726-routing-2">
   </head>
   <body class="stage-one-home">
     <a class="skip-link" href="#main">Skip to content</a>
@@ -65,12 +65,9 @@
 
           <div class="stage-home-menu" id="primary-navigation">
             <ul class="stage-home-links" aria-label="Main links">
-              <li><a href="/programs.html?lang=en">Program</a></li>
-              <li><a href="/method.html?lang=en">How It Works</a></li>
-              <li><a href="/programs.html?lang=en#apply">Star and Super Star</a></li>
-              <li><a href="/results.html?lang=en">Progress System</a></li>
-              <li><a href="/about.html?lang=en">About Us</a></li>
-              <li><span class="stage-home-link-unavailable" aria-disabled="true">FAQ</span></li>
+              <li><a href="#programs">Program</a></li>
+              <li><a href="#method">How It Works</a></li>
+              <li><a href="#results">Progress System</a></li>
             </ul>
           </div>
 
@@ -79,14 +76,19 @@
               <a class="stage-home-lang-button is-active" href="/en/" aria-current="page" data-locale-link="en" hreflang="en" lang="en">EN</a>
               <span aria-hidden="true">/</span>
               <a
-                class="stage-home-lang-button"
-                href="/tr/"
+                class="stage-home-lang-button" href="/tr/"
                 data-locale-link="tr"
                 hreflang="tr"
                 lang="tr"
               >TR</a>
             </div>
-            <a class="stage-home-nav-cta" href="/apply.html?lang=en">
+            <a
+              class="stage-home-nav-cta"
+              data-whatsapp-link
+              href="https://wa.me/905525247746?text=Hi%2C%20I%E2%80%99d%20like%20to%20start%20my%20free%20Star%20Speaker%20speaking%20analysis."
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               Free Speaking Analysis
             </a>
           </div>
@@ -97,14 +99,19 @@
             <a class="stage-home-lang-button is-active" href="/en/" aria-current="page" data-locale-link="en" hreflang="en" lang="en">EN</a>
             <span aria-hidden="true">/</span>
             <a
-              class="stage-home-lang-button"
-              href="/tr/"
+              class="stage-home-lang-button" href="/tr/"
               data-locale-link="tr"
               hreflang="tr"
               lang="tr"
             >TR</a>
           </div>
-          <a class="stage-home-nav-cta" href="/apply.html?lang=en">
+          <a
+            class="stage-home-nav-cta"
+            data-whatsapp-link
+            href="https://wa.me/905525247746?text=Hi%2C%20I%E2%80%99d%20like%20to%20start%20my%20free%20Star%20Speaker%20speaking%20analysis."
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <svg aria-hidden="true" viewBox="0 0 24 24">
               <path d="M7 8.5h10M7 12h7M5 4.5h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-7l-4.5 3v-3H5a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2Z"></path>
               <path d="M9 8.5v3M12 7v6M15 9v2"></path>
@@ -169,8 +176,14 @@
               In job interviews, meetings, presentations, and international work environments, express your expertise clearly, fluently, and confidently.
             </p>
 
-            <div class="stage-home-actions" aria-label="Homepage actions">
-              <a class="stage-home-action stage-home-primary" href="/apply.html?lang=en">
+            <div class="stage-home-actions" id="contact" aria-label="Homepage actions">
+              <a
+                class="stage-home-action stage-home-primary"
+                data-whatsapp-link
+                href="https://wa.me/905525247746?text=Hi%2C%20I%E2%80%99d%20like%20to%20start%20my%20free%20Star%20Speaker%20speaking%20analysis."
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <svg aria-hidden="true" viewBox="0 0 24 24">
                   <path d="M5 8.5v7M8.5 5.5v13M12 8v8M15.5 4v16M19 7v10"></path>
                 </svg>
@@ -189,20 +202,20 @@
                 </svg>
                 <span>Ask on WhatsApp</span>
               </a>
-              <a class="stage-home-action stage-home-test" href="/level-test.html?lang=en">
+              <a class="stage-home-action stage-home-test" href="#programs">
                 <svg aria-hidden="true" viewBox="0 0 24 24">
                   <path d="M9 5h6M9 3h6v4H9z"></path>
                   <path d="M7 5H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"></path>
                   <path d="m8 14 2.2 2.2L16 10.5"></path>
                 </svg>
-                <span>Free Test</span>
+                <span>Program</span>
               </a>
             </div>
           </div>
         </div>
       </section>
 
-      <section class="stage-program" aria-labelledby="program-title">
+      <section class="stage-program" id="programs" aria-labelledby="program-title">
         <div class="stage-program-container">
           <header class="stage-program-intro">
             <p class="stage-program-kicker">PROGRAM</p>
@@ -312,7 +325,7 @@
         </div>
       </section>
 
-      <section class="stage-method" aria-labelledby="method-title">
+      <section class="stage-method" id="method" aria-labelledby="method-title">
         <div class="stage-method-container">
           <header class="stage-method-intro">
             <p class="stage-method-kicker">HOW DOES IT WORK?</p>
@@ -416,7 +429,7 @@
         </div>
       </section>
 
-      <section class="stage-results" aria-labelledby="results-title">
+      <section class="stage-results" id="results" aria-labelledby="results-title">
         <svg class="stage-results-technical stage-results-technical-top" aria-hidden="true" viewBox="0 0 360 260">
           <g fill="none" stroke="currentColor" stroke-width="1">
             <path d="M0 142h320M205 0v236M142 142a63 63 0 1 1 126 0a63 63 0 1 1-126 0Z"></path>
@@ -560,6 +573,6 @@
       </section>
     </main>
 
-    <script type="module" src="/src/scripts/landing.js"></script>
+    <script type="module" src="/src/scripts/landing.js?v=20260726-routing-2"></script>
   </body>
 </html>

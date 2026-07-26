@@ -1,13 +1,6 @@
 import { homepageCopy, homepageLocales } from "../i18n/homepage-locales.mjs";
 
 (() => {
-  const legacyLanguage = new URLSearchParams(window.location.search).get("lang");
-  const isRootHomepage = /^\/(?:index\.html)?$/.test(window.location.pathname);
-  if (isRootHomepage && (legacyLanguage === "en" || legacyLanguage === "tr")) {
-    window.location.replace(`/${legacyLanguage}/`);
-    return;
-  }
-
   const body = document.body;
   const menuButton = document.querySelector(".stage-home-menu-toggle");
   const menu = document.querySelector(".stage-home-menu");
@@ -20,6 +13,15 @@ import { homepageCopy, homepageLocales } from "../i18n/homepage-locales.mjs";
   const currentLocale = homepageLocales[currentLanguage];
   let activeSlide = 0;
   let slideTimer = 0;
+
+  const supportedSectionHashes = new Set(["#programs", "#method", "#results", "#contact"]);
+
+  function syncLocaleLinks() {
+    const sectionHash = supportedSectionHashes.has(window.location.hash) ? window.location.hash : "";
+    document.querySelectorAll("[data-locale-link]").forEach((link) => {
+      link.href = `/${link.dataset.localeLink}/${sectionHash}`;
+    });
+  }
 
   function updateMenuLabel() {
     if (!menuButton) return;
@@ -272,6 +274,8 @@ import { homepageCopy, homepageLocales } from "../i18n/homepage-locales.mjs";
   document.querySelectorAll("[data-whatsapp-link]").forEach((link) => {
     link.href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(currentLocale.whatsappMessage)}`;
   });
+  window.addEventListener("hashchange", syncLocaleLinks);
+  syncLocaleLinks();
   updateMenuLabel();
   syncSlideshow();
 })();

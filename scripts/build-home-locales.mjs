@@ -9,7 +9,7 @@ import {
 } from "../src/i18n/homepage-locales.mjs";
 
 const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const sourcePath = resolve(repositoryRoot, "index.html");
+const sourcePath = resolve(repositoryRoot, "tr", "index.html");
 
 function flexibleTextPattern(value) {
   return value
@@ -43,7 +43,6 @@ function translatePage(source, locale) {
     /<link rel="canonical" href="[^"]+">/,
     `<link rel="canonical" href="https://starspeakerstudio.com/${locale}/">`,
   );
-  output = output.replace(/\?lang=tr/g, `?lang=${locale}`);
   output = output.replace(/href="\/tr\/"\s+data-home-link/, `href="/${locale}/" data-home-link`);
   output = output.replace(/\s+aria-current="page"/g, "");
   output = output.replace(/stage-home-lang-button is-active/g, "stage-home-lang-button");

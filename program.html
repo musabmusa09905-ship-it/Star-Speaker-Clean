@@ -1,17 +1,21 @@
 <!doctype html>
-<html lang="en">
+<html lang="tr">
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="refresh" content="0; url=programs.html">
-    <title>Opening Programs | Star Speaker</title>
-    <link rel="icon" href="public/favicon/favicon.ico" sizes="any">
-    <link rel="icon" type="image/png" sizes="32x32" href="public/favicon/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="public/favicon/favicon-16x16.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="public/favicon/apple-touch-icon.png">
-    <link rel="manifest" href="public/favicon/site.webmanifest">
-    <meta name="theme-color" content="#050505">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, follow">
+    <meta http-equiv="refresh" content="0; url=/tr/#programs">
+    <link rel="canonical" href="https://starspeakerstudio.com/tr/">
+    <title>Star Speaker</title>
+    <script>
+      (() => {
+        const requestedLocale = new URLSearchParams(location.search).get("lang");
+        const locale = requestedLocale === "en" ? "en" : "tr";
+        location.replace(`/${locale}/#programs`);
+      })();
+    </script>
   </head>
-  <body>
-    <p><a href="programs.html">Open Programs page</a></p>
+  <body data-legacy-route="program.html">
+    <p><a href="/tr/#programs">Star Speaker ana sayfasına devam et</a></p>
   </body>
 </html>

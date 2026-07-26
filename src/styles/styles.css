@@ -3603,6 +3603,13 @@ body.stage-one-home.nav-open {
   margin-top: 40px;
 }
 
+.stage-one-home #programs,
+.stage-one-home #method,
+.stage-one-home #results,
+.stage-one-home #contact {
+  scroll-margin-top: 2rem;
+}
+
 .stage-one-home .stage-home-action {
   display: inline-flex;
   align-items: center;

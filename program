@@ -1,11 +1,21 @@
 <!doctype html>
-<html lang="en">
+<html lang="tr">
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="refresh" content="0; url=programs.html">
-    <title>Opening Programs | Star Speaker</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, follow">
+    <meta http-equiv="refresh" content="0; url=/tr/#programs">
+    <link rel="canonical" href="https://starspeakerstudio.com/tr/">
+    <title>Star Speaker</title>
+    <script>
+      (() => {
+        const requestedLocale = new URLSearchParams(location.search).get("lang");
+        const locale = requestedLocale === "en" ? "en" : "tr";
+        location.replace(`/${locale}/#programs`);
+      })();
+    </script>
   </head>
-  <body>
-    <p><a href="programs.html">Open Programs page</a></p>
+  <body data-legacy-route="program">
+    <p><a href="/tr/#programs">Star Speaker ana sayfasına devam et</a></p>
   </body>
 </html>
