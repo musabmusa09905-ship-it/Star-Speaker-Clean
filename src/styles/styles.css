@@ -2026,6 +2026,455 @@ body.transition-lock {
   }
 }
 
+/* Stage three: connected method journey */
+.stage-method {
+  position: relative;
+  overflow: hidden;
+  border-top: 1px solid rgba(216, 195, 154, 0.2);
+  background:
+    radial-gradient(circle at 84% 15%, rgba(216, 195, 154, 0.055), transparent 31rem),
+    radial-gradient(circle at 14% 68%, rgba(216, 195, 154, 0.035), transparent 28rem),
+    linear-gradient(180deg, #090a09 0%, #0c0d0c 48%, #080908 100%);
+  color: #f4f0e8;
+  padding-block: 118px 132px;
+}
+
+.stage-method::before {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+  opacity: 0.18;
+  background-image: linear-gradient(rgba(244, 240, 232, 0.018) 1px, transparent 1px);
+  background-size: 100% 78px;
+}
+
+.stage-method-container {
+  position: relative;
+  width: min(calc(100% - 112px), 1320px);
+  margin-inline: auto;
+}
+
+.stage-method-intro {
+  max-width: 720px;
+}
+
+.stage-method-kicker {
+  display: flex;
+  align-items: flex-end;
+  min-height: 44px;
+  margin: 0 0 29px;
+  color: #d8c39a;
+  font-size: 13px;
+  font-weight: 750;
+  line-height: 1;
+  letter-spacing: 0.28em;
+}
+
+.stage-method-kicker::after {
+  display: block;
+  width: 42px;
+  height: 1px;
+  margin-left: -7.2em;
+  margin-bottom: -20px;
+  content: "";
+  background: #cbb67a;
+}
+
+.stage-method-intro h2 {
+  max-width: 690px;
+  margin: 0;
+  color: #f4f0e8;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 54px;
+  font-weight: 500;
+  line-height: 1.02;
+  letter-spacing: 0;
+  text-wrap: balance;
+}
+
+.stage-method-intro > p:last-child {
+  max-width: 640px;
+  margin: 25px 0 0;
+  color: rgba(244, 240, 232, 0.76);
+  font-size: 18px;
+  line-height: 1.55;
+}
+
+.stage-method-journey {
+  position: relative;
+  display: grid;
+  gap: 18px;
+  margin: 76px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stage-method-journey::before {
+  position: absolute;
+  top: 8%;
+  bottom: 13%;
+  left: 50%;
+  width: 1px;
+  pointer-events: none;
+  content: "";
+  background: linear-gradient(
+    180deg,
+    transparent,
+    rgba(203, 182, 122, 0.42) 8%,
+    rgba(203, 182, 122, 0.22) 88%,
+    transparent
+  );
+}
+
+.stage-method-step {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  align-items: center;
+  min-height: 322px;
+  margin: 0;
+}
+
+.stage-method-visual {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid rgba(216, 195, 154, 0.22);
+  border-radius: 5px;
+  background: #0b0b0a;
+  box-shadow: 0 22px 54px rgba(0, 0, 0, 0.28);
+  aspect-ratio: 3 / 2;
+}
+
+.stage-method-visual::after {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+  background:
+    linear-gradient(180deg, rgba(7, 7, 7, 0.08), transparent 22%, transparent 80%, rgba(7, 7, 7, 0.25)),
+    linear-gradient(90deg, rgba(7, 7, 7, 0.1), transparent 14%, transparent 88%, rgba(7, 7, 7, 0.08));
+}
+
+.stage-method-visual img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.stage-method-copy {
+  position: relative;
+  z-index: 2;
+  min-width: 0;
+  padding: 30px 34px;
+}
+
+.stage-method-copy::after {
+  position: absolute;
+  top: 55px;
+  width: 72px;
+  height: 1px;
+  pointer-events: none;
+  content: "";
+  background: linear-gradient(90deg, #cbb67a, rgba(203, 182, 122, 0.12));
+}
+
+.stage-method-number {
+  display: block;
+  margin-bottom: 17px;
+  color: #d8c39a;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 36px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.stage-method-copy h3 {
+  margin: 0;
+  color: #f4f0e8;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 30px;
+  font-weight: 500;
+  line-height: 1.08;
+  letter-spacing: 0;
+}
+
+.stage-method-copy p {
+  max-width: 330px;
+  margin: 13px 0 0;
+  color: rgba(244, 240, 232, 0.7);
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+.stage-method-step-one .stage-method-visual,
+.stage-method-step-three .stage-method-visual {
+  grid-column: 8 / 13;
+}
+
+.stage-method-step-one .stage-method-copy {
+  grid-column: 5 / 8;
+  grid-row: 1;
+}
+
+.stage-method-step-three .stage-method-copy {
+  grid-column: 4 / 8;
+  grid-row: 1;
+}
+
+.stage-method-step-two .stage-method-visual,
+.stage-method-step-four .stage-method-visual {
+  grid-column: 1 / 6;
+}
+
+.stage-method-step-two .stage-method-copy,
+.stage-method-step-four .stage-method-copy {
+  grid-column: 6 / 10;
+  grid-row: 1;
+}
+
+.stage-method-step-one .stage-method-copy::after,
+.stage-method-step-three .stage-method-copy::after {
+  right: -48px;
+}
+
+.stage-method-step-two .stage-method-copy::after,
+.stage-method-step-four .stage-method-copy::after {
+  left: -28px;
+  transform: translateX(-100%);
+}
+
+.stage-method-step-five {
+  min-height: 286px;
+  margin-top: 28px;
+}
+
+.stage-method-step-five .stage-method-visual {
+  grid-column: 4 / 13;
+  aspect-ratio: 1983 / 793;
+}
+
+.stage-method-step-five .stage-method-copy {
+  grid-column: 1 / 4;
+  grid-row: 1;
+  padding-left: 10px;
+}
+
+.stage-method-step-five .stage-method-copy::after {
+  right: -40px;
+}
+
+@media (max-width: 1200px) {
+  .stage-method {
+    padding-block: 96px 110px;
+  }
+
+  .stage-method-container {
+    width: min(calc(100% - 72px), 1120px);
+  }
+
+  .stage-method-intro h2 {
+    font-size: 48px;
+  }
+
+  .stage-method-step {
+    min-height: 290px;
+  }
+
+  .stage-method-copy {
+    padding-inline: 25px;
+  }
+
+  .stage-method-copy h3 {
+    font-size: 27px;
+  }
+
+  .stage-method-copy p {
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 900px) {
+  .stage-method-container {
+    width: min(calc(100% - 48px), 720px);
+  }
+
+  .stage-method-intro h2 {
+    max-width: 650px;
+    font-size: 44px;
+  }
+
+  .stage-method-intro > p:last-child {
+    font-size: 17px;
+  }
+
+  .stage-method-journey {
+    gap: 58px;
+    margin-top: 62px;
+    padding-left: 18px;
+  }
+
+  .stage-method-journey::before {
+    top: 10px;
+    bottom: 52px;
+    left: 7px;
+    background: linear-gradient(
+      180deg,
+      rgba(203, 182, 122, 0.52),
+      rgba(203, 182, 122, 0.2) 92%,
+      transparent
+    );
+  }
+
+  .stage-method-step,
+  .stage-method-step-five {
+    display: flex;
+    min-height: 0;
+    margin: 0;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .stage-method-visual,
+  .stage-method-step-five .stage-method-visual {
+    order: 1;
+    width: 100%;
+  }
+
+  .stage-method-copy,
+  .stage-method-step-five .stage-method-copy {
+    order: 2;
+    width: min(88%, 550px);
+    padding: 22px 0 0 34px;
+  }
+
+  .stage-method-step:nth-child(even) .stage-method-copy {
+    align-self: flex-end;
+  }
+
+  .stage-method-copy::before {
+    position: absolute;
+    top: 38px;
+    left: -15px;
+    width: 7px;
+    height: 7px;
+    border: 1px solid #cbb67a;
+    border-radius: 50%;
+    content: "";
+    background: #0a0b0a;
+  }
+
+  .stage-method-copy::after,
+  .stage-method-step-one .stage-method-copy::after,
+  .stage-method-step-two .stage-method-copy::after,
+  .stage-method-step-three .stage-method-copy::after,
+  .stage-method-step-four .stage-method-copy::after,
+  .stage-method-step-five .stage-method-copy::after {
+    top: 41px;
+    right: auto;
+    left: -8px;
+    width: 30px;
+    transform: none;
+  }
+
+  .stage-method-copy h3 {
+    font-size: 29px;
+  }
+
+  .stage-method-copy p {
+    max-width: 520px;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 560px) {
+  .stage-method {
+    padding-block: 68px 78px;
+  }
+
+  .stage-method-container {
+    width: calc(100% - 40px);
+  }
+
+  .stage-method-kicker {
+    margin-bottom: 27px;
+    font-size: 12px;
+  }
+
+  .stage-method-intro h2 {
+    font-size: 34px;
+    line-height: 1.03;
+    text-wrap: pretty;
+  }
+
+  .stage-method-intro > p:last-child {
+    margin-top: 22px;
+    font-size: 16px;
+    line-height: 1.55;
+  }
+
+  .stage-method-journey {
+    gap: 48px;
+    margin-top: 48px;
+    padding-left: 12px;
+  }
+
+  .stage-method-journey::before {
+    left: 4px;
+  }
+
+  .stage-method-visual {
+    aspect-ratio: 3 / 2;
+  }
+
+  .stage-method-step-five .stage-method-visual {
+    aspect-ratio: 1983 / 793;
+  }
+
+  .stage-method-copy,
+  .stage-method-step-five .stage-method-copy {
+    width: 94%;
+    padding: 18px 0 0 29px;
+  }
+
+  .stage-method-copy::before {
+    top: 31px;
+    left: -12px;
+    width: 6px;
+    height: 6px;
+  }
+
+  .stage-method-copy::after,
+  .stage-method-step-one .stage-method-copy::after,
+  .stage-method-step-two .stage-method-copy::after,
+  .stage-method-step-three .stage-method-copy::after,
+  .stage-method-step-four .stage-method-copy::after,
+  .stage-method-step-five .stage-method-copy::after {
+    top: 34px;
+    left: -6px;
+    width: 25px;
+  }
+
+  .stage-method-number {
+    margin-bottom: 13px;
+    font-size: 31px;
+  }
+
+  .stage-method-copy h3 {
+    font-size: 26px;
+  }
+
+  .stage-method-copy p {
+    margin-top: 10px;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+}
+
 /* Stage 1 engineer homepage */
 body.stage-one-home {
   min-width: 320px;
