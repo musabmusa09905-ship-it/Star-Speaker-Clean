@@ -2026,6 +2026,794 @@ body.transition-lock {
   }
 }
 
+/* Stage 1 engineer homepage */
+body.stage-one-home {
+  min-width: 320px;
+  min-height: 100svh;
+  overflow-x: hidden;
+  background: #070707;
+  color: #f4f0e8;
+}
+
+body.stage-one-home.nav-open {
+  overflow: hidden;
+}
+
+.stage-one-home .stage-home-header {
+  position: relative;
+  z-index: 30;
+  width: 100%;
+  border-bottom: 1px solid rgba(216, 195, 154, 0.34);
+  background: #070707;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.stage-one-home .stage-home-nav {
+  width: min(calc(100% - 56px), 1540px);
+  margin-inline: auto;
+}
+
+.stage-one-home .stage-home-nav-main {
+  display: flex;
+  align-items: center;
+  min-height: 112px;
+  gap: 28px;
+}
+
+.stage-one-home .stage-home-brand {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 14px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.stage-one-home .stage-home-logo {
+  display: block;
+  width: 82px;
+  height: 82px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 14px rgba(216, 195, 154, 0.18));
+}
+
+.stage-one-home .stage-home-brand-copy {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.stage-one-home .stage-home-brand-name {
+  color: #e7d8b7;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 29px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.07em;
+  white-space: nowrap;
+}
+
+.stage-one-home .stage-home-brand-tagline {
+  color: #cbb67a;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+
+.stage-one-home .stage-home-menu {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.stage-one-home .stage-home-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stage-one-home .stage-home-links a,
+.stage-one-home .stage-home-link-unavailable {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: rgba(244, 240, 232, 0.9);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.2;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.stage-one-home .stage-home-links a {
+  position: relative;
+}
+
+.stage-one-home .stage-home-links a::after {
+  position: absolute;
+  right: 0;
+  bottom: 4px;
+  left: 0;
+  height: 1px;
+  content: "";
+  background: #d8c39a;
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 180ms ease;
+}
+
+.stage-one-home .stage-home-links a:hover::after,
+.stage-one-home .stage-home-links a:focus-visible::after {
+  transform: scaleX(1);
+}
+
+.stage-one-home .stage-home-link-unavailable {
+  opacity: 0.72;
+  cursor: default;
+}
+
+.stage-one-home .stage-home-desktop-tools {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 18px;
+}
+
+.stage-one-home .stage-home-language {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: rgba(244, 240, 232, 0.52);
+}
+
+.stage-one-home .stage-home-lang-button {
+  min-width: 30px;
+  min-height: 44px;
+  border: 0;
+  background: transparent;
+  color: rgba(244, 240, 232, 0.58);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+}
+
+.stage-one-home .stage-home-lang-button.is-active {
+  color: #e6d7a8;
+}
+
+.stage-one-home .stage-home-nav-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  border: 1px solid #cbb67a;
+  border-radius: 5px;
+  color: #e6d7a8;
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 1.15;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  padding: 10px 17px;
+  transition: border-color 180ms ease, background-color 180ms ease, color 180ms ease;
+}
+
+.stage-one-home .stage-home-nav-cta:hover,
+.stage-one-home .stage-home-nav-cta:focus-visible {
+  border-color: #e7d8b7;
+  background: rgba(216, 195, 154, 0.1);
+  color: #f4f0e8;
+}
+
+.stage-one-home .stage-home-mobile-tools,
+.stage-one-home .stage-home-menu-toggle {
+  display: none;
+}
+
+.stage-one-home .stage-home-hero {
+  position: relative;
+  isolation: isolate;
+  min-height: calc(100svh - 113px);
+  overflow: hidden;
+  background: #070707;
+}
+
+.stage-one-home .stage-home-slideshow {
+  position: absolute;
+  inset: 0;
+  z-index: -3;
+  overflow: hidden;
+}
+
+.stage-one-home .stage-home-slideshow::before {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  content: "";
+  background:
+    linear-gradient(90deg, #070707 0%, #070707 31%, rgba(7, 7, 7, 0.93) 39%, rgba(7, 7, 7, 0.42) 51%, rgba(7, 7, 7, 0.02) 69%),
+    linear-gradient(180deg, rgba(7, 7, 7, 0.2) 0%, transparent 18%, transparent 78%, #070707 100%);
+}
+
+.stage-one-home .stage-home-slideshow::after {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  content: "";
+  box-shadow:
+    inset 0 34px 42px rgba(7, 7, 7, 0.34),
+    inset 0 -50px 58px rgba(7, 7, 7, 0.72),
+    inset -24px 0 40px rgba(7, 7, 7, 0.3);
+}
+
+.stage-one-home .hero-slide {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  opacity: 0;
+  transition: opacity 1.3s ease-in-out;
+}
+
+.stage-one-home .hero-slide.is-active {
+  opacity: 1;
+}
+
+.stage-one-home .stage-home-hero-inner {
+  display: flex;
+  align-items: center;
+  width: min(calc(100% - 112px), 1540px);
+  min-height: calc(100svh - 113px);
+  margin-inline: auto;
+  padding-block: 50px 66px;
+}
+
+.stage-one-home .stage-home-copy {
+  width: min(700px, 48%);
+}
+
+.stage-one-home .stage-home-copy h1 {
+  max-width: 680px;
+  margin: 0;
+  color: #d8c39a;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 66px;
+  font-weight: 500;
+  line-height: 0.98;
+  letter-spacing: 0;
+  text-wrap: balance;
+}
+
+.stage-one-home .stage-home-title-light {
+  display: block;
+  color: #f4f0e8;
+}
+
+.stage-one-home .stage-home-copy > p {
+  max-width: 640px;
+  margin: 34px 0 0;
+  color: rgba(244, 240, 232, 0.86);
+  font-size: 20px;
+  line-height: 1.55;
+}
+
+.stage-one-home .stage-home-actions {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  gap: 18px;
+  margin-top: 40px;
+}
+
+.stage-one-home .stage-home-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 66px;
+  border: 1px solid #cbb67a;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.15;
+  text-decoration: none;
+  white-space: nowrap;
+  padding: 14px 20px;
+  transition: border-color 180ms ease, background-color 180ms ease, color 180ms ease, transform 180ms ease;
+}
+
+.stage-one-home .stage-home-action svg {
+  flex: 0 0 auto;
+  width: 25px;
+  height: 25px;
+  margin-right: 11px;
+  stroke-width: 1.7;
+}
+
+.stage-one-home .stage-home-primary {
+  min-width: 254px;
+  border-color: #e6d7a8;
+  background: #d8c39a;
+  color: #070707;
+}
+
+.stage-one-home .stage-home-whatsapp {
+  min-width: 208px;
+  background: rgba(7, 7, 7, 0.76);
+  color: #e6d7a8;
+}
+
+.stage-one-home .stage-home-test {
+  min-width: 156px;
+  background: rgba(7, 7, 7, 0.54);
+  color: #d8c39a;
+}
+
+.stage-one-home .stage-home-action:hover,
+.stage-one-home .stage-home-action:focus-visible {
+  transform: translateY(-2px);
+}
+
+.stage-one-home .stage-home-primary:hover,
+.stage-one-home .stage-home-primary:focus-visible {
+  background: #e6d7a8;
+}
+
+.stage-one-home .stage-home-whatsapp:hover,
+.stage-one-home .stage-home-whatsapp:focus-visible,
+.stage-one-home .stage-home-test:hover,
+.stage-one-home .stage-home-test:focus-visible {
+  border-color: #e7d8b7;
+  color: #f4f0e8;
+}
+
+.stage-one-home .stage-home-mobile-image {
+  display: none;
+}
+
+.stage-one-home :is(a, button):focus-visible {
+  outline: 2px solid #e7d8b7;
+  outline-offset: 4px;
+}
+
+@media (max-width: 1380px) and (min-width: 1025px) {
+  .stage-one-home .stage-home-nav {
+    width: min(calc(100% - 36px), 1320px);
+  }
+
+  .stage-one-home .stage-home-nav-main {
+    gap: 16px;
+    min-height: 100px;
+  }
+
+  .stage-one-home .stage-home-logo {
+    width: 66px;
+    height: 66px;
+  }
+
+  .stage-one-home .stage-home-brand {
+    gap: 10px;
+  }
+
+  .stage-one-home .stage-home-brand-name {
+    font-size: 23px;
+  }
+
+  .stage-one-home .stage-home-brand-tagline {
+    font-size: 12px;
+  }
+
+  .stage-one-home .stage-home-links {
+    gap: 15px;
+  }
+
+  .stage-one-home .stage-home-links a,
+  .stage-one-home .stage-home-link-unavailable,
+  .stage-one-home .stage-home-lang-button {
+    font-size: 12px;
+  }
+
+  .stage-one-home .stage-home-desktop-tools {
+    gap: 11px;
+  }
+
+  .stage-one-home .stage-home-nav-cta {
+    min-height: 44px;
+    font-size: 12px;
+    padding-inline: 12px;
+  }
+
+  .stage-one-home .stage-home-hero,
+  .stage-one-home .stage-home-hero-inner {
+    min-height: calc(100svh - 101px);
+  }
+
+  .stage-one-home .stage-home-hero-inner {
+    width: min(calc(100% - 72px), 1320px);
+  }
+
+  .stage-one-home .stage-home-copy {
+    width: min(620px, 50%);
+  }
+
+  .stage-one-home .stage-home-copy h1 {
+    font-size: 56px;
+  }
+
+  .stage-one-home .stage-home-copy > p {
+    max-width: 570px;
+    margin-top: 26px;
+    font-size: 17px;
+  }
+
+  .stage-one-home .stage-home-actions {
+    gap: 12px;
+    margin-top: 30px;
+  }
+
+  .stage-one-home .stage-home-action {
+    min-height: 58px;
+    font-size: 14px;
+    padding-inline: 15px;
+  }
+
+  .stage-one-home .stage-home-primary {
+    min-width: 220px;
+  }
+
+  .stage-one-home .stage-home-whatsapp {
+    min-width: 174px;
+  }
+
+  .stage-one-home .stage-home-test {
+    min-width: 132px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .stage-one-home .stage-home-header {
+    position: relative;
+  }
+
+  .stage-one-home .stage-home-nav {
+    width: 100%;
+  }
+
+  .stage-one-home .stage-home-nav-main {
+    position: relative;
+    min-height: 86px;
+    padding-inline: 22px;
+  }
+
+  .stage-one-home .stage-home-logo {
+    width: 58px;
+    height: 58px;
+  }
+
+  .stage-one-home .stage-home-brand-name {
+    font-size: 24px;
+  }
+
+  .stage-one-home .stage-home-brand-tagline {
+    font-size: 12px;
+  }
+
+  .stage-one-home .stage-home-menu-toggle {
+    display: grid;
+    flex: 0 0 auto;
+    width: 48px;
+    height: 48px;
+    margin-left: auto;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: #d8c39a;
+    place-content: center;
+    gap: 6px;
+    padding: 0;
+    cursor: pointer;
+  }
+
+  .stage-one-home .stage-home-menu-toggle span {
+    display: block;
+    width: 30px;
+    height: 2px;
+    background: currentColor;
+    transition: transform 180ms ease, opacity 180ms ease;
+  }
+
+  .stage-one-home.nav-open .stage-home-menu-toggle span:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+  }
+
+  .stage-one-home.nav-open .stage-home-menu-toggle span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .stage-one-home.nav-open .stage-home-menu-toggle span:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+  }
+
+  .stage-one-home .stage-home-menu {
+    position: absolute;
+    top: 86px;
+    right: 16px;
+    left: 16px;
+    z-index: 40;
+    display: none;
+    border: 1px solid rgba(216, 195, 154, 0.34);
+    background: rgba(7, 7, 7, 0.98);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.46);
+    padding: 8px 18px;
+  }
+
+  .stage-one-home.nav-open .stage-home-menu {
+    display: block;
+  }
+
+  .stage-one-home .stage-home-links {
+    display: grid;
+    gap: 0;
+  }
+
+  .stage-one-home .stage-home-links li {
+    border-bottom: 1px solid rgba(216, 195, 154, 0.13);
+  }
+
+  .stage-one-home .stage-home-links li:last-child {
+    border-bottom: 0;
+  }
+
+  .stage-one-home .stage-home-links a,
+  .stage-one-home .stage-home-link-unavailable {
+    width: 100%;
+    min-height: 48px;
+    font-size: 15px;
+  }
+
+  .stage-one-home .stage-home-desktop-tools {
+    display: none;
+  }
+
+  .stage-one-home .stage-home-mobile-tools {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 66px;
+    border-top: 1px solid rgba(216, 195, 154, 0.2);
+    padding: 8px 22px;
+  }
+
+  .stage-one-home .stage-home-mobile-tools .stage-home-language {
+    flex: 0 0 auto;
+  }
+
+  .stage-one-home .stage-home-mobile-tools .stage-home-lang-button {
+    font-size: 16px;
+  }
+
+  .stage-one-home .stage-home-mobile-tools .stage-home-nav-cta {
+    min-height: 48px;
+    font-size: 14px;
+    padding-inline: 16px;
+  }
+
+  .stage-one-home .stage-home-mobile-tools .stage-home-nav-cta svg {
+    width: 22px;
+    height: 22px;
+    margin-right: 9px;
+  }
+
+  .stage-one-home .stage-home-hero {
+    min-height: auto;
+    overflow: visible;
+  }
+
+  .stage-one-home .stage-home-slideshow {
+    display: none;
+  }
+
+  .stage-one-home .stage-home-mobile-image {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 500px;
+    overflow: hidden;
+    background: #070707;
+  }
+
+  .stage-one-home .stage-home-mobile-image::after {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    content: "";
+    background:
+      linear-gradient(90deg, #070707 0%, transparent 15%, transparent 88%, rgba(7, 7, 7, 0.54) 100%),
+      linear-gradient(180deg, rgba(7, 7, 7, 0.16) 0%, transparent 22%, transparent 72%, #070707 100%);
+  }
+
+  .stage-one-home .stage-home-mobile-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 70% center;
+  }
+
+  .stage-one-home .stage-home-hero-inner {
+    display: block;
+    width: min(calc(100% - 56px), 760px);
+    min-height: 0;
+    padding-block: 8px 64px;
+  }
+
+  .stage-one-home .stage-home-copy {
+    width: 100%;
+  }
+
+  .stage-one-home .stage-home-copy h1 {
+    max-width: 760px;
+    font-size: 56px;
+  }
+
+  .stage-one-home .stage-home-copy > p {
+    max-width: 690px;
+    margin-top: 26px;
+    font-size: 19px;
+  }
+
+  .stage-one-home .stage-home-actions {
+    margin-top: 30px;
+  }
+}
+
+@media (max-width: 560px) {
+  .stage-one-home .stage-home-nav-main {
+    min-height: 82px;
+    padding-inline: 16px;
+  }
+
+  .stage-one-home .stage-home-brand {
+    gap: 8px;
+  }
+
+  .stage-one-home .stage-home-logo {
+    width: 52px;
+    height: 52px;
+  }
+
+  .stage-one-home .stage-home-brand-name {
+    font-size: 20px;
+  }
+
+  .stage-one-home .stage-home-brand-tagline {
+    font-size: 10px;
+  }
+
+  .stage-one-home .stage-home-menu {
+    top: 82px;
+    right: 10px;
+    left: 10px;
+  }
+
+  .stage-one-home .stage-home-mobile-tools {
+    min-height: 62px;
+    padding-inline: 16px;
+  }
+
+  .stage-one-home .stage-home-mobile-tools .stage-home-language {
+    gap: 4px;
+  }
+
+  .stage-one-home .stage-home-mobile-tools .stage-home-lang-button {
+    min-width: 28px;
+    font-size: 14px;
+  }
+
+  .stage-one-home .stage-home-mobile-tools .stage-home-nav-cta {
+    min-height: 44px;
+    max-width: 236px;
+    font-size: 12px;
+    padding-inline: 11px;
+  }
+
+  .stage-one-home .stage-home-mobile-tools .stage-home-nav-cta svg {
+    width: 19px;
+    height: 19px;
+    margin-right: 7px;
+  }
+
+  .stage-one-home .stage-home-mobile-image {
+    height: clamp(330px, 103vw, 420px);
+  }
+
+  .stage-one-home .stage-home-mobile-image img {
+    object-position: 72% center;
+  }
+
+  .stage-one-home .stage-home-hero-inner {
+    width: calc(100% - 40px);
+    padding-block: 0 48px;
+  }
+
+  .stage-one-home .stage-home-copy h1 {
+    font-size: 36px;
+    line-height: 1.01;
+    text-wrap: pretty;
+  }
+
+  .stage-one-home .stage-home-copy > p {
+    margin-top: 22px;
+    font-size: 16px;
+    line-height: 1.55;
+  }
+
+  .stage-one-home .stage-home-actions {
+    display: grid;
+    gap: 12px;
+    margin-top: 27px;
+  }
+
+  .stage-one-home .stage-home-action {
+    width: 100%;
+    min-width: 0;
+    min-height: 58px;
+    font-size: 15px;
+    padding-inline: 14px;
+  }
+
+  .stage-one-home .stage-home-test {
+    width: calc(100% - 32px);
+    justify-self: center;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) and (max-height: 800px) {
+  .stage-one-home .stage-home-mobile-image {
+    height: 420px;
+  }
+}
+
+@media (max-width: 380px) {
+  .stage-one-home .stage-home-brand-name {
+    font-size: 18px;
+  }
+
+  .stage-one-home .stage-home-brand-tagline {
+    font-size: 9px;
+  }
+
+  .stage-one-home .stage-home-mobile-tools .stage-home-nav-cta {
+    max-width: 218px;
+    font-size: 11px;
+  }
+
+  .stage-one-home .stage-home-copy h1 {
+    font-size: 34px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stage-one-home .hero-slide {
+    transition: none;
+  }
+
+  .stage-one-home .hero-slide:not(:first-child) {
+    display: none;
+  }
+}
+
 /* Conversion hierarchy and icon system */
 .icon-sprite {
   position: absolute;

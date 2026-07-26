@@ -1,299 +1,159 @@
 (() => {
+  const body = document.body;
+  const menuButton = document.querySelector(".stage-home-menu-toggle");
+  const menu = document.querySelector(".stage-home-menu");
+  const menuLinks = document.querySelectorAll(".stage-home-menu a");
+  const languageButtons = document.querySelectorAll("[data-language]");
+  const slides = Array.from(document.querySelectorAll(".hero-slide"));
+  const desktopQuery = window.matchMedia("(min-width: 1025px)");
+  const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
   const languageStorageKey = "starSpeakerLanguage";
-  const form = document.querySelector("#pressure-test-form");
-  const status = document.querySelector("#pressure-test-status");
-  const whatsappLinks = document.querySelectorAll(".js-whatsapp-link");
   const whatsappNumber = "905525247746";
-  const fallbackLanguageStorage = new Map();
-
-  const messages = {
-    en: {
-      required: "Please complete this field.",
-      email: "Please enter a valid email address or leave it blank.",
-      success: "Your application message is ready in WhatsApp. Please send it to complete your request.",
-      whatsapp: "Hi, I\u2019d like to start my free Star Speaker speaking analysis.",
-      notProvided: "Not provided",
-    },
-    tr: {
-      required: "L\u00fctfen bu alan\u0131 doldur.",
-      email: "L\u00fctfen ge\u00e7erli bir e-posta adresi girin veya bu alan\u0131 bo\u015f b\u0131rak\u0131n.",
-      success: "Ba\u015fvurunu WhatsApp \u00fczerinden g\u00f6ndermek i\u00e7in devam et.",
-      whatsapp: "Merhaba, Star Speaker i\u00e7in \u00fccretsiz konu\u015fma analizimi ba\u015flatmak istiyorum.",
-      notProvided: "Belirtilmedi",
-    },
+  const whatsappMessages = {
+    en: "Hi, I’d like to start my free Star Speaker speaking analysis.",
+    tr: "Merhaba, Star Speaker için ücretsiz konuşma analizimi başlatmak istiyorum.",
   };
+  let currentLanguage = "tr";
+  let activeSlide = 0;
+  let slideTimer = 0;
 
-  function getLanguage() {
-    return window.starSpeakerI18n?.getLanguage?.() === "tr" ? "tr" : "en";
-  }
-
-  function storeLanguage(language) {
-    fallbackLanguageStorage.set(languageStorageKey, language);
+  function storedLanguage() {
     try {
-      window.localStorage?.setItem(languageStorageKey, language);
+      return window.localStorage.getItem(languageStorageKey);
     } catch {
-      // Embedded browsers can block storage; language still updates for the current page view.
+      return null;
     }
   }
 
-  function setLocalizedContent(language) {
+  function detectedLanguage() {
+    const queryLanguage = new URLSearchParams(window.location.search).get("lang");
+    if (queryLanguage === "en" || queryLanguage === "tr") return queryLanguage;
+    const savedLanguage = storedLanguage();
+    if (savedLanguage === "en" || savedLanguage === "tr") return savedLanguage;
+    return navigator.language?.toLowerCase().startsWith("tr") ? "tr" : "en";
+  }
+
+  function translatedValue(element, language) {
+    return element.dataset[language] || element.dataset.tr || element.dataset.en;
+  }
+
+  function applyLanguage(language, persist = false) {
+    currentLanguage = language === "tr" ? "tr" : "en";
+    document.documentElement.lang = currentLanguage;
+
     document.querySelectorAll("[data-en][data-tr]").forEach((element) => {
-      const textTarget = element.querySelector(".copy-text");
-      if (textTarget) {
-        textTarget.textContent = element.dataset[language] || element.dataset.en || "";
-        return;
+      const translation = translatedValue(element, currentLanguage);
+      if (translation) element.textContent = translation;
+    });
+
+    document.querySelectorAll("[data-aria-en][data-aria-tr]").forEach((element) => {
+      const translation = currentLanguage === "tr" ? element.dataset.ariaTr : element.dataset.ariaEn;
+      if (translation) element.setAttribute("aria-label", translation);
+    });
+
+    const description = document.querySelector('meta[name="description"]');
+    if (description) description.content = translatedValue(description, currentLanguage);
+
+    languageButtons.forEach((button) => {
+      const isActive = button.dataset.language === currentLanguage;
+      button.classList.toggle("is-active", isActive);
+      button.setAttribute("aria-pressed", String(isActive));
+    });
+
+    document.querySelectorAll("[data-whatsapp-link]").forEach((link) => {
+      link.href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessages[currentLanguage])}`;
+    });
+
+    updateMenuLabel();
+
+    if (persist) {
+      try {
+        window.localStorage.setItem(languageStorageKey, currentLanguage);
+      } catch {
+        // Language switching remains functional when storage is unavailable.
       }
-      element.textContent = element.dataset[language] || element.dataset.en || "";
-    });
-
-    document.querySelectorAll("option[data-en][data-tr]").forEach((option) => {
-      option.textContent = option.dataset[language] || option.dataset.en || "";
-    });
-  }
-
-  function buildWhatsappUrl(message) {
-    return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
-  }
-
-  function updateWhatsappLinks(language) {
-    whatsappLinks.forEach((link) => {
-      link.href = buildWhatsappUrl(messages[language].whatsapp);
-    });
-  }
-
-  function initHeroSlideshow() {
-    const slides = Array.from(document.querySelectorAll(".hero-slide"));
-    const indicators = Array.from(document.querySelectorAll(".hero-slide-progress span"));
-    if (slides.length <= 1) return;
-
-    slides.slice(1).forEach((slide) => {
-      const image = new Image();
-      image.src = slide.currentSrc || slide.src;
-    });
-
-    let activeIndex = slides.findIndex((slide) => slide.classList.contains("is-active"));
-    if (activeIndex < 0) activeIndex = 0;
-
-    function setSlide(nextIndex) {
-      activeIndex = nextIndex % slides.length;
-      slides.forEach((slide, index) => slide.classList.toggle("is-active", index === activeIndex));
-      indicators.forEach((indicator, index) => indicator.classList.toggle("is-active", index === activeIndex));
     }
 
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setSlide(activeIndex);
-      return;
-    }
-
-    window.setInterval(() => setSlide(activeIndex + 1), 7000);
+    window.dispatchEvent(new CustomEvent("starSpeakerLanguageChange", { detail: { language: currentLanguage } }));
   }
 
-  function initLandingReveal() {
-    const revealTargets = document.querySelectorAll([
-      ".landing-section .section-head",
-      ".premium-panel",
-      ".audience-grid article",
-      ".method-steps article",
-      ".feature-grid span",
-      ".price-card",
-      ".bonus-grid article",
-      ".guarantee-pills span",
-      ".pressure-form",
-      ".faq-grid details",
-      ".cta-band",
-    ].join(","));
-
-    if (!revealTargets.length) return;
-
-    revealTargets.forEach((element) => element.classList.add("landing-reveal"));
-
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      revealTargets.forEach((element) => element.classList.add("is-visible"));
-      return;
-    }
-
-    function revealVisible() {
-      revealTargets.forEach((element) => {
-        if (element.classList.contains("is-visible")) return;
-        if (element.getBoundingClientRect().top < window.innerHeight * 0.88) {
-          element.classList.add("is-visible");
-        }
-      });
-    }
-
-    if ("IntersectionObserver" in window) {
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          entry.target.classList.add("is-visible");
-          observer.unobserve(entry.target);
-        });
-      }, {
-        rootMargin: "0px 0px -12% 0px",
-        threshold: 0.14,
-      });
-
-      revealTargets.forEach((element) => observer.observe(element));
-    }
-
-    revealVisible();
-    window.addEventListener("scroll", revealVisible, { passive: true });
-    window.addEventListener("resize", revealVisible);
+  function updateMenuLabel() {
+    if (!menuButton) return;
+    const isOpen = body.classList.contains("nav-open");
+    const labelKey = isOpen
+      ? currentLanguage === "tr" ? "closeTr" : "closeEn"
+      : currentLanguage === "tr" ? "openTr" : "openEn";
+    menuButton.setAttribute("aria-label", menuButton.dataset[labelKey]);
   }
 
-  function setStatus(message, type = "success") {
-    if (!status) return;
-    status.textContent = message;
-    status.classList.remove("is-error", "is-loading");
-    status.classList.add("is-visible");
-    if (type === "error") status.classList.add("is-error");
-    if (type === "loading") status.classList.add("is-loading");
+  function setMenu(open) {
+    body.classList.toggle("nav-open", open);
+    menuButton?.setAttribute("aria-expanded", String(open));
+    updateMenuLabel();
   }
 
-  function getErrorElement(field) {
-    return field.closest(".form-field")?.querySelector(".field-error") || null;
-  }
+  menuButton?.addEventListener("click", () => {
+    setMenu(!body.classList.contains("nav-open"));
+  });
 
-  function setFieldError(field, message) {
-    const wrapper = field.closest(".form-field");
-    const error = getErrorElement(field);
-    wrapper?.classList.toggle("has-error", Boolean(message));
-    field.setAttribute("aria-invalid", message ? "true" : "false");
-    if (error) error.textContent = message;
-  }
+  menuLinks.forEach((link) => link.addEventListener("click", () => setMenu(false)));
+  languageButtons.forEach((button) => {
+    button.addEventListener("click", () => applyLanguage(button.dataset.language, true));
+  });
 
-  function validateField(field) {
-    const language = getLanguage();
-    const value = field.value.trim();
-    if (field.required && !value) return messages[language].required;
-    if (field.type === "email" && value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-      return messages[language].email;
-    }
-    return "";
-  }
-
-  function getField(selector) {
-    return form?.querySelector(selector);
-  }
-
-  function getFieldText(selector, language) {
-    const field = getField(selector);
-    if (!field) return "";
-    if (field.tagName === "SELECT") {
-      const option = field.selectedOptions?.[0];
-      return option?.dataset?.[language] || option?.textContent?.trim() || field.value.trim();
-    }
-    return field.value.trim();
-  }
-
-  function getPreferredContactLanguage() {
-    const preference = getField("#contact-language")?.value;
-    if (preference === "Turkish") return "tr";
-    if (preference === "English") return "en";
-    return getLanguage();
-  }
-
-  function buildApplicationMessage(language) {
-    const fallback = messages[language].notProvided;
-    const values = {
-      name: getFieldText("#full-name", language),
-      whatsapp: getFieldText("#whatsapp", language),
-      email: getFieldText("#email", language) || fallback,
-      level: getFieldText("#english-level", language),
-      goal: getFieldText("#main-goal", language),
-      timeline: getFieldText("#start-timeline", language),
-      contactLanguage: getFieldText("#contact-language", language),
-    };
-
-    if (language === "tr") {
-      return [
-        "Merhaba, Star Speaker i\u00e7in \u00fccretsiz konu\u015fma analizimi ba\u015flatmak istiyorum.",
-        "",
-        `Ad\u0131m: ${values.name}`,
-        `WhatsApp: ${values.whatsapp}`,
-        `E-posta: ${values.email}`,
-        `Seviyem: ${values.level}`,
-        `Ana hedefim: ${values.goal}`,
-        `\u0130ngilizceye ne zaman ihtiyac\u0131m var: ${values.timeline}`,
-        `Tercih etti\u011fim ileti\u015fim dili: ${values.contactLanguage}`,
-      ].join("\n");
-    }
-
-    return [
-      "Hi, I\u2019d like to start my free Star Speaker speaking analysis.",
-      "",
-      `Name: ${values.name}`,
-      `WhatsApp: ${values.whatsapp}`,
-      `Email: ${values.email}`,
-      `Current English level: ${values.level}`,
-      `Main goal: ${values.goal}`,
-      `When I need English: ${values.timeline}`,
-      `Preferred contact language: ${values.contactLanguage}`,
-    ].join("\n");
-  }
-
-  function applyLandingLanguage() {
-    const language = getLanguage();
-    storeLanguage(language);
-    setLocalizedContent(language);
-    updateWhatsappLinks(language);
-  }
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") setMenu(false);
+  });
 
   document.addEventListener("click", (event) => {
-    const link = event.target?.closest?.('a[href^="#"]');
-    if (!link) return;
-
-    const targetId = link.getAttribute("href");
-    if (!targetId || targetId === "#") return;
-
-    const target = document.querySelector(targetId);
-    if (!target) return;
-
-    event.preventDefault();
-    document.body.classList.remove("nav-open");
-    document.querySelector(".menu-toggle")?.setAttribute("aria-expanded", "false");
-    history.pushState(null, "", targetId);
-    const headerOffset = document.querySelector(".site-header")?.offsetHeight || 0;
-    const top = target.getBoundingClientRect().top + window.scrollY - headerOffset - 12;
-    window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
-  }, true);
-
-  form?.querySelectorAll("input, select, textarea").forEach((field) => {
-    field.addEventListener("input", () => {
-      setFieldError(field, validateField(field));
-      status?.classList.remove("is-visible");
-    });
-
-    field.addEventListener("change", () => {
-      setFieldError(field, validateField(field));
-      status?.classList.remove("is-visible");
-    });
+    if (!body.classList.contains("nav-open")) return;
+    if (menu?.contains(event.target) || menuButton?.contains(event.target)) return;
+    setMenu(false);
   });
 
-  form?.addEventListener("submit", (event) => {
-    event.preventDefault();
-
-    const fields = Array.from(form.querySelectorAll("input, select, textarea"));
-    const invalid = [];
-    fields.forEach((field) => {
-      const error = validateField(field);
-      setFieldError(field, error);
-      if (error) invalid.push(field);
+  function loadDesktopSlides() {
+    slides.slice(1).forEach((slide) => {
+      if (!slide.getAttribute("src") && slide.dataset.src) slide.src = slide.dataset.src;
     });
+  }
 
-    if (invalid.length) {
-      invalid[0].focus();
-      return;
-    }
+  function showSlide(index) {
+    activeSlide = index;
+    slides.forEach((slide, slideIndex) => {
+      slide.classList.toggle("is-active", slideIndex === activeSlide);
+    });
+  }
 
-    const pageLanguage = getLanguage();
-    const messageLanguage = getPreferredContactLanguage();
-    window.open(buildWhatsappUrl(buildApplicationMessage(messageLanguage)), "_blank", "noopener");
-    setStatus(messages[pageLanguage].success, "success");
+  function stopSlideshow() {
+    window.clearTimeout(slideTimer);
+    slideTimer = 0;
+  }
+
+  function scheduleNextSlide() {
+    stopSlideshow();
+    if (!desktopQuery.matches || reducedMotionQuery.matches || document.hidden || slides.length < 2) return;
+    slideTimer = window.setTimeout(() => {
+      showSlide((activeSlide + 1) % slides.length);
+      scheduleNextSlide();
+    }, 6000);
+  }
+
+  function syncSlideshow() {
+    stopSlideshow();
+    showSlide(0);
+    if (!desktopQuery.matches || reducedMotionQuery.matches) return;
+    loadDesktopSlides();
+    scheduleNextSlide();
+  }
+
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) stopSlideshow();
+    else scheduleNextSlide();
   });
 
-  window.addEventListener("starSpeakerLanguageChange", applyLandingLanguage);
-  initHeroSlideshow();
-  initLandingReveal();
-  applyLandingLanguage();
+  desktopQuery.addEventListener("change", syncSlideshow);
+  reducedMotionQuery.addEventListener("change", syncSlideshow);
+
+  applyLanguage(detectedLanguage());
+  syncSlideshow();
 })();
