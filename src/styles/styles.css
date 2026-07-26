@@ -3465,6 +3465,7 @@ body.stage-one-home.nav-open {
   font: inherit;
   font-size: 14px;
   font-weight: 700;
+  text-decoration: none;
   cursor: pointer;
   padding: 0;
 }
