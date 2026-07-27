@@ -23,6 +23,31 @@ import { homepageCopy, homepageLocales } from "../i18n/homepage-locales.mjs";
     });
   }
 
+  function alignCurrentSectionHash() {
+    if (!supportedSectionHashes.has(window.location.hash)) return;
+    const target = document.querySelector(window.location.hash);
+    if (!target) return;
+    const scrollMargin = Number.parseFloat(window.getComputedStyle(target).scrollMarginTop) || 0;
+    const top = target.getBoundingClientRect().top + window.scrollY - scrollMargin;
+    window.scrollTo({ top, behavior: "instant" });
+  }
+
+  function stabilizeInitialSectionHash() {
+    if (!supportedSectionHashes.has(window.location.hash)) return;
+    const target = document.querySelector(window.location.hash);
+    if (!target) return;
+
+    document.querySelectorAll("img").forEach((image) => {
+      const targetFollowsImage = image.compareDocumentPosition(target) & Node.DOCUMENT_POSITION_FOLLOWING;
+      if (targetFollowsImage && !image.complete) {
+        image.addEventListener("load", alignCurrentSectionHash, { once: true });
+      }
+    });
+
+    window.requestAnimationFrame(alignCurrentSectionHash);
+    document.fonts?.ready.then(alignCurrentSectionHash);
+  }
+
   function updateMenuLabel() {
     if (!menuButton) return;
     const isOpen = body.classList.contains("nav-open");
@@ -274,8 +299,13 @@ import { homepageCopy, homepageLocales } from "../i18n/homepage-locales.mjs";
   document.querySelectorAll("[data-whatsapp-link]").forEach((link) => {
     link.href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(currentLocale.whatsappMessage)}`;
   });
-  window.addEventListener("hashchange", syncLocaleLinks);
+  window.addEventListener("hashchange", () => {
+    syncLocaleLinks();
+    window.requestAnimationFrame(alignCurrentSectionHash);
+  });
+  window.addEventListener("load", stabilizeInitialSectionHash, { once: true });
   syncLocaleLinks();
+  stabilizeInitialSectionHash();
   updateMenuLabel();
   syncSlideshow();
 })();

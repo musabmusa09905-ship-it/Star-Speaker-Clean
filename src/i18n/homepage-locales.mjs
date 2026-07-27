@@ -164,6 +164,159 @@ export const homepageCopy = {
   cerenResult: { tr: "Ceren Aksu sonucunu göster", en: "Show Ceren Aksu's result" },
   yarenResult: { tr: "Yaren Ulaş sonucunu göster", en: "Show Yaren Ulaş's result" },
   nextResult: { tr: "Sonraki öğrenci sonucu", en: "Next student result" },
+  programsLabel: { tr: "PROGRAMLAR", en: "PROGRAMS" },
+  programsTitle: {
+    tr: "Hedefinize uygun çalışma yoğunluğunu seçin.",
+    en: "Choose the level of support that matches your goal.",
+  },
+  programsBody: {
+    tr: "Yakın bir profesyonel hedef için yoğun bir sprint veya İngilizce iletişiminizi geliştirmek için altı haftalık kapsamlı bir program.",
+    en: "Choose an intensive sprint for an approaching professional goal, or a comprehensive six-week program to develop your English communication.",
+  },
+  flowDesignation: { tr: "ANA PROGRAM", en: "FLAGSHIP PROGRAM" },
+  flowName: { tr: "Star Speaker Engineer Flow", en: "Star Speaker Engineer Flow" },
+  flowDuration: { tr: "6 HAFTA", en: "6 WEEKS" },
+  flowDescription: {
+    tr: "İngilizcesini iş hayatında düzenli ve kapsamlı bir sistemle geliştirmek isteyen mühendisler için.",
+    en: "For engineers who want to develop their professional English through a structured and comprehensive system.",
+  },
+  sharedContent: { tr: "ORTAK İÇERİK", en: "SHARED PROGRAM ELEMENTS" },
+  flowSharedOne: {
+    tr: "Her gün yönlendirilmiş konuşma pratiği",
+    en: "Guided speaking practice every day",
+  },
+  flowSharedTwo: {
+    tr: "Haftada 1 performans simülasyonu",
+    en: "1 performance simulation per week",
+  },
+  flowSharedThree: {
+    tr: "Haftada 1 küçük grup konuşma çalışması",
+    en: "1 small-group speaking session per week",
+  },
+  flowSharedFour: {
+    tr: "Kişiselleştirilmiş çalışma planı",
+    en: "A personalized training plan",
+  },
+  flowSharedFive: {
+    tr: "Düzenli gelişim takibi",
+    en: "Regular progress tracking",
+  },
+  starPrice: { tr: "17.000 TL", en: "17,000 TL" },
+  starPositioning: {
+    tr: "Eksiksiz ve kişiselleştirilmiş altı haftalık gelişim sistemi.",
+    en: "The complete personalized six-week development system.",
+  },
+  starOne: {
+    tr: "Haftada 2 birebir konuşma çalışması",
+    en: "2 private speaking sessions per week",
+  },
+  starTwo: {
+    tr: "Hedefe göre kişiselleştirilmiş çalışma planı",
+    en: "A training plan adapted to the participant’s goals",
+  },
+  starThree: {
+    tr: "Kişiselleştirilmiş geri bildirim",
+    en: "Personalized feedback",
+  },
+  starFour: { tr: "Düzenli gelişim takibi", en: "Regular progress tracking" },
+  starFive: { tr: "Standart program desteği", en: "Standard program support" },
+  starSix: {
+    tr: "Planlı ve sürdürülebilir gelişim temposu",
+    en: "A structured and sustainable development pace",
+  },
+  superStarPrice: { tr: "23.000 TL", en: "23,000 TL" },
+  superStarPositioning: {
+    tr: "Daha yüksek yoğunluk, daha derin kişiselleştirme ve daha yakın destek.",
+    en: "Greater intensity, deeper personalization and closer support.",
+  },
+  superStarOne: {
+    tr: "Haftada 3 birebir konuşma çalışması",
+    en: "3 private speaking sessions per week",
+  },
+  superStarTwo: {
+    tr: "Daha sık güncellenen kişisel gelişim yol haritası",
+    en: "A personal development roadmap adjusted more frequently",
+  },
+  superStarThree: {
+    tr: "Daha hızlı ve daha detaylı öncelik geri bildirimi",
+    en: "Faster and more detailed priority feedback",
+  },
+  superStarFour: {
+    tr: "Profesyonel hedeflere daha derin uyarlanan çalışmalar",
+    en: "Practice adapted more deeply to exact professional situations",
+  },
+  superStarFive: {
+    tr: "Daha kişiselleştirilmiş simülasyon hazırlığı ve değerlendirmesi",
+    en: "More personalized simulation preparation and review",
+  },
+  superStarSix: {
+    tr: "Daha yakın ve detaylı gelişim takibi",
+    en: "Closer and more detailed progress tracking",
+  },
+  superStarSeven: {
+    tr: "Öncelikli destek ve daha fazla öğretmen erişimi",
+    en: "Priority support and greater teacher access",
+  },
+  superStarEight: {
+    tr: "Daha yoğun gelişim ve daha hızlı geri bildirim döngüsü",
+    en: "A more intensive development pace and faster feedback cycle",
+  },
+  flowClarification: {
+    tr: "Size uygun program seviyesi konuşma analizi sonrasında belirlenir.",
+    en: "The most suitable program level is determined after your speaking analysis.",
+  },
+  sprintDesignation: { tr: "YAKIN HEDEFLER İÇİN", en: "FOR APPROACHING GOALS" },
+  sprintName: {
+    tr: "Mühendisler İçin 21 Günlük İngilizce Performans Sprinti",
+    en: "21-Day English Performance Sprint for Engineers",
+  },
+  sprintDuration: { tr: "21 GÜN", en: "21 DAYS" },
+  sprintPrice: { tr: "12.000 TL", en: "12,000 TL" },
+  sprintDescription: {
+    tr: "Yaklaşan bir mülakat, toplantı, sunum veya önemli profesyonel hedef için yoğunlaştırılmış konuşma programı.",
+    en: "An intensive speaking program for an approaching interview, meeting, presentation or other important professional goal.",
+  },
+  sprintOne: {
+    tr: "Haftada 3 birebir konuşma çalışması",
+    en: "3 private speaking sessions per week",
+  },
+  sprintTwo: {
+    tr: "Her gün hedefe özel konuşma pratiği",
+    en: "Daily goal-specific speaking practice",
+  },
+  sprintThree: {
+    tr: "Haftada 1 performans simülasyonu",
+    en: "1 performance simulation per week",
+  },
+  sprintFour: {
+    tr: "Haftada 1 küçük grup konuşma çalışması",
+    en: "1 small-group speaking session per week",
+  },
+  sprintFive: { tr: "Kişiselleştirilmiş geri bildirim", en: "Personalized feedback" },
+  sprintSix: { tr: "Hedefe özel çalışma planı", en: "A goal-specific training plan" },
+  sprintClarification: {
+    tr: "Belirli ve yakın tarihli bir profesyonel hedefi olan mühendisler için.",
+    en: "For engineers with a specific professional goal approaching soon.",
+  },
+  sprintSummaryLabel: { tr: "Program süresi ve fiyatı", en: "Program duration and price" },
+  analysisDesignation: { tr: "İLK ADIM", en: "FIRST STEP" },
+  analysisTitle: {
+    tr: "Ücretsiz Konuşma Performans Analizi",
+    en: "Free Speaking Performance Analysis",
+  },
+  analysisBody: {
+    tr: "Konuşmanızı birlikte değerlendirir, temel problemlerinizi belirler ve hedefinize uygun programı netleştiririz.",
+    en: "We assess your speaking together, identify your main problems and clarify the program that best matches your goal.",
+  },
+  analysisOutcomesLabel: { tr: "Konuşma analizi çıktıları", en: "Speaking analysis outcomes" },
+  analysisOutcomeOne: { tr: "1 güçlü yönünüz", en: "1 strength" },
+  analysisOutcomeTwo: { tr: "2 temel konuşma probleminiz", en: "2 main speaking problems" },
+  analysisOutcomeThree: { tr: "Size uygun sonraki adım", en: "Your most suitable next step" },
+  analysisCta: { tr: "Ücretsiz Analize Başvur", en: "Apply for Your Free Analysis" },
+  analysisReassurance: {
+    tr: "15 dakika · Online · Satın alma zorunluluğu yok",
+    en: "15 minutes · Online · No obligation to purchase",
+  },
 };
 
 export const homepageLocales = {
