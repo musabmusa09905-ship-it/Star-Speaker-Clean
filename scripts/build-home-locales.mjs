@@ -27,7 +27,13 @@ function translatePage(source, locale) {
       en: homepageLocales.en.stories[index][key],
     })),
   );
-  const translations = [...Object.values(homepageCopy), ...storyTranslations].sort(
+  const faqTranslations = homepageLocales.tr.faqItems.flatMap((item, index) =>
+    Object.keys(item).map((key) => ({
+      tr: item[key],
+      en: homepageLocales.en.faqItems[index][key],
+    })),
+  );
+  const translations = [...Object.values(homepageCopy), ...storyTranslations, ...faqTranslations].sort(
     (a, b) => b.tr.length - a.tr.length,
   );
 

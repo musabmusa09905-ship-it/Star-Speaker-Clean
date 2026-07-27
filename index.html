@@ -14,7 +14,7 @@
       (() => {
         const requestedLocale = new URLSearchParams(location.search).get("lang");
         const locale = requestedLocale === "en" ? "en" : "tr";
-        const supportedHashes = new Set(["#programs","#method","#results","#contact"]);
+        const supportedHashes = new Set(["#programs","#method","#results","#contact","#faq"]);
         const hash = supportedHashes.has(location.hash) ? location.hash : "";
         location.replace(`/${locale}/${hash}`);
       })();

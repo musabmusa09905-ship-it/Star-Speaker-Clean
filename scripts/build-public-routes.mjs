@@ -3,7 +3,7 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const supportedHashes = new Set(["#programs", "#method", "#results", "#contact"]);
+const supportedHashes = new Set(["#programs", "#method", "#results", "#contact", "#faq"]);
 
 const legacyRoutes = new Map([
   ["programs.html", "#programs"],

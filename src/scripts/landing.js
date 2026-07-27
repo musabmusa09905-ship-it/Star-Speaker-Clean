@@ -14,7 +14,7 @@ import { homepageCopy, homepageLocales } from "../i18n/homepage-locales.mjs";
   let activeSlide = 0;
   let slideTimer = 0;
 
-  const supportedSectionHashes = new Set(["#programs", "#method", "#results", "#contact"]);
+  const supportedSectionHashes = new Set(["#programs", "#method", "#results", "#contact", "#faq"]);
 
   function syncLocaleLinks() {
     const sectionHash = supportedSectionHashes.has(window.location.hash) ? window.location.hash : "";
@@ -77,6 +77,25 @@ import { homepageCopy, homepageLocales } from "../i18n/homepage-locales.mjs";
     if (!body.classList.contains("nav-open")) return;
     if (menu?.contains(event.target) || menuButton?.contains(event.target)) return;
     setMenu(false);
+  });
+
+  const faq = document.querySelector("[data-closing-faq]");
+  const faqButtons = Array.from(faq?.querySelectorAll(".stage-closing-faq-button") || []);
+
+  function setFaqItem(button, open) {
+    const panelId = button.getAttribute("aria-controls");
+    const panel = panelId ? document.getElementById(panelId) : null;
+    const item = button.closest(".stage-closing-faq-item");
+    button.setAttribute("aria-expanded", String(open));
+    if (panel) panel.hidden = !open;
+    item?.classList.toggle("is-open", open);
+  }
+
+  faqButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const shouldOpen = button.getAttribute("aria-expanded") !== "true";
+      faqButtons.forEach((candidate) => setFaqItem(candidate, shouldOpen && candidate === button));
+    });
   });
 
   function loadDesktopSlides() {

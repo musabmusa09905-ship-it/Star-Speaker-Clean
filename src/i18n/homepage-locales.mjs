@@ -317,11 +317,68 @@ export const homepageCopy = {
     tr: "15 dakika · Online · Satın alma zorunluluğu yok",
     en: "15 minutes · Online · No obligation to purchase",
   },
+  faqHeading: {
+    tr: "Aklınızdaki son soruları netleştirelim.",
+    en: "Let’s clarify the final questions on your mind.",
+  },
+  finalCtaTitle: {
+    tr: "Bir sonraki profesyonel fırsatınıza daha hazır girin.",
+    en: "Walk into your next professional opportunity better prepared.",
+  },
+  finalCtaBody: {
+    tr: "15 dakikalık ücretsiz konuşma performans analizinde güçlü yönünüzü, iki temel konuşma probleminizi ve hedefinize uygun sonraki adımı birlikte netleştirelim.",
+    en: "In a free 15-minute speaking performance analysis, we will identify one strength, two main speaking problems, and the next step that best fits your goal.",
+  },
+  footerNavigation: { tr: "Alt bilgi navigasyonu", en: "Footer navigation" },
+  footerHome: { tr: "Ana Sayfa", en: "Home" },
+  footerHowItWorks: { tr: "Nasıl Çalışır?", en: "How It Works" },
+  footerResults: { tr: "Sonuçlar", en: "Results" },
+  footerPrograms: { tr: "Programlar", en: "Programs" },
+  footerBrandLine: {
+    tr: "İNGİLİZCE KONUŞAN MÜHENDİSLER",
+    en: "ENGLISH-SPEAKING ENGINEERS",
+  },
+  footerCopyright: {
+    tr: "© 2026 Star Speaker. Tüm hakları saklıdır.",
+    en: "© 2026 Star Speaker. All rights reserved.",
+  },
 };
 
 export const homepageLocales = {
   tr: {
     whatsappMessage: "Merhaba, Star Speaker için ücretsiz konuşma analizimi başlatmak istiyorum.",
+    faqItems: [
+      {
+        question: "Bu programlar kimler için?",
+        answer:
+          "İngilizce bilgisi olmasına rağmen mülakatlarda, toplantılarda, sunumlarda veya teknik konuşmalarda kendini istediği kadar net ve özgüvenli ifade edemeyen mühendisler için.",
+      },
+      {
+        question: "Bu bir genel İngilizce kursu mu?",
+        answer:
+          "Hayır. Programlar, genel İngilizce konularını sırayla tamamlamak yerine profesyonel hayatta ihtiyaç duyduğunuz konuşma performansını geliştirmeye odaklanır.",
+      },
+      {
+        question: "Engineer Flow ile 21 Günlük Performans Sprinti arasındaki fark nedir?",
+        answer:
+          "21 Günlük Performans Sprinti, yaklaşan bir mülakat, toplantı, sunum veya benzeri yakın tarihli bir hedefe hazırlanmak içindir. Engineer Flow ise İngilizce iletişiminizi altı haftalık kapsamlı bir sistemle daha kalıcı biçimde geliştirmek için tasarlanmıştır.",
+      },
+      {
+        question: "Hangi programın bana uygun olduğunu nasıl anlayacağım?",
+        answer:
+          "Hedefinizin ne kadar yakın olduğu, mevcut konuşma performansınız ve ihtiyaç duyduğunuz destek seviyesi ücretsiz konuşma analizi sırasında değerlendirilir. Size uygun program ve program seviyesi bu görüşmenin ardından netleştirilir.",
+      },
+      {
+        question: "Programlara katılmak için hangi İngilizce seviyesinde olmam gerekiyor?",
+        answer:
+          "Tek bir seviye şartı yoktur. Önemli olan mevcut İngilizce bilginizden çok, profesyonel hedefiniz ve konuşurken yaşadığınız problemlerdir. Programa uygunluğunuz konuşma analizi sırasında değerlendirilir.",
+      },
+      {
+        question: "Ücretsiz Konuşma Performans Analizi nasıl ilerliyor?",
+        answer:
+          "15 dakikalık online görüşmede konuşmanızı birlikte değerlendiririz. Görüşmenin sonunda bir güçlü yönünüzü, iki temel konuşma probleminizi ve size uygun sonraki adımı netleştiririz. Satın alma zorunluluğu yoktur.",
+      },
+    ],
     carousel: {
       roledescription: "karusel",
       student: "Öğrenci",
@@ -369,6 +426,38 @@ export const homepageLocales = {
   },
   en: {
     whatsappMessage: "Hi, I’d like to start my free Star Speaker speaking analysis.",
+    faqItems: [
+      {
+        question: "Who are these programs for?",
+        answer:
+          "They are designed for engineers who know English but cannot express themselves as clearly and confidently as they would like in interviews, meetings, presentations, or technical conversations.",
+      },
+      {
+        question: "Is this a general English course?",
+        answer:
+          "No. Instead of moving through a standard sequence of general English topics, the programs focus on developing the speaking performance you need in professional situations.",
+      },
+      {
+        question: "What is the difference between Engineer Flow and the 21-Day Performance Sprint?",
+        answer:
+          "The 21-Day Performance Sprint is designed to prepare you for an upcoming interview, meeting, presentation, or another time-sensitive professional goal. Engineer Flow is designed to develop your English communication more sustainably through a comprehensive six-week system.",
+      },
+      {
+        question: "How will I know which program is right for me?",
+        answer:
+          "During the free speaking analysis, we assess how close your goal is, your current speaking performance, and the level of support you need. We then identify the most suitable program and program level for you.",
+      },
+      {
+        question: "What level of English do I need to join?",
+        answer:
+          "There is no single level requirement. What matters is not only your current English knowledge, but also your professional goal and the problems you experience while speaking. Your suitability for the program is assessed during the speaking analysis.",
+      },
+      {
+        question: "What happens during the Free Speaking Performance Analysis?",
+        answer:
+          "During the 15-minute online conversation, we assess your speaking together. By the end, we identify one strength, two main speaking problems, and the most suitable next step for you. There is no obligation to purchase.",
+      },
+    ],
     carousel: {
       roledescription: "carousel",
       student: "Student",
@@ -434,6 +523,18 @@ export function validateHomepageLocales() {
     storyKeys.forEach((key) => {
       if (!homepageLocales.tr.stories[index][key] || !homepageLocales.en.stories[index][key]) {
         throw new Error(`Missing ${key} for homepage story ${index + 1}.`);
+      }
+    });
+  });
+
+  const faqKeys = ["question", "answer"];
+  if (homepageLocales.en.faqItems.length !== 6 || homepageLocales.tr.faqItems.length !== 6) {
+    throw new Error("Each homepage locale must contain exactly six FAQ entries.");
+  }
+  homepageLocales.tr.faqItems.forEach((_, index) => {
+    faqKeys.forEach((key) => {
+      if (!homepageLocales.tr.faqItems[index][key] || !homepageLocales.en.faqItems[index][key]) {
+        throw new Error(`Missing ${key} for homepage FAQ ${index + 1}.`);
       }
     });
   });
