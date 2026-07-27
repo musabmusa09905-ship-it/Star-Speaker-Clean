@@ -20,6 +20,7 @@ export const homepageCopy = {
   faq: { tr: "SSS", en: "FAQ" },
   languageSelection: { tr: "Dil seçimi", en: "Language selection" },
   freeSpeakingAnalysis: { tr: "Ücretsiz Konuşma Analizi", en: "Free Speaking Analysis" },
+  performanceSessionCta: { tr: "Ücretsiz Performans Seansı", en: "Free Performance Session" },
   heroTitleOne: { tr: "İngilizcen, ne kadar", en: "Your English should not hide" },
   heroTitleTwo: {
     tr: "iyi bir mühendis olduğunu gizlemesin.",

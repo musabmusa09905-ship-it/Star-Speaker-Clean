@@ -105,6 +105,9 @@ await writeFile(
     <xhtml:link rel="alternate" hreflang="en" href="https://starspeakerstudio.com/en/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://starspeakerstudio.com/tr/"/>
   </url>
+  <url>
+    <loc>https://starspeakerstudio.com/tr/performans-testi/</loc>
+  </url>
 </urlset>
 `,
   "utf8",

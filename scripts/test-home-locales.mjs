@@ -146,6 +146,10 @@ for (const locale of supportedHomepageLocales) {
 }
 
 assert.match(pages.tr, /Star Speaker Engineer Flow/);
+assert.match(pages.tr, /data-performance-link/);
+assert.match(pages.tr, /href="\/tr\/performans-testi\/"/);
+assert.match(pages.tr, /Ücretsiz Performans Seansı/);
+assert.doesNotMatch(pages.en, /data-performance-link|\/tr\/performans-testi\//);
 assert.match(pages.tr, /17\.000 TL/);
 assert.match(pages.tr, /23\.000 TL/);
 assert.match(pages.tr, /12\.000 TL/);
@@ -218,6 +222,7 @@ for (const [route, hash] of Object.entries(legacyRoutes)) {
 const sitemap = await readFile(resolve("sitemap.xml"), "utf8");
 assert.match(sitemap, /https:\/\/starspeakerstudio\.com\/tr\//);
 assert.match(sitemap, /https:\/\/starspeakerstudio\.com\/en\//);
+assert.match(sitemap, /https:\/\/starspeakerstudio\.com\/tr\/performans-testi\//);
 assert.doesNotMatch(sitemap, /\.html/);
 
 console.log("Homepage locale, navigation, metadata, and legacy-route checks passed.");

@@ -62,6 +62,17 @@ function translatePage(source, locale) {
     /https:\/\/wa\.me\/905525247746\?text=[^"]+/g,
     `https://wa.me/905525247746?text=${encodeURIComponent(homepageLocales[locale].whatsappMessage)}`,
   );
+  if (locale === "en") {
+    output = output.replace(
+      /class="stage-home-action stage-home-primary"\s+data-performance-link\s+href="\/tr\/performans-testi\/"/,
+      `class="stage-home-action stage-home-primary"
+                data-whatsapp-link
+                href="https://wa.me/905525247746?text=${encodeURIComponent(homepageLocales.en.whatsappMessage)}"
+                target="_blank"
+                rel="noopener noreferrer"`,
+    );
+    output = output.replace("<span>Free Performance Session</span>", "<span>Free Speaking Analysis</span>");
+  }
   return output;
 }
 
