@@ -185,6 +185,9 @@ async function saveLead(payload: Record<string, unknown>) {
     baseline_metrics: payload.baseline_metrics || null,
     final_metrics: payload.final_metrics || null,
     transcripts: payload.transcripts || {},
+    session_id: compactText(payload.session_id, 80) || null,
+    budget_range: compactText(payload.budget_range, 80) || null,
+    source_data: payload.source_data || {},
     updated_at: new Date().toISOString(),
   };
   const leadId = compactText(payload.lead_id, 80);
@@ -203,7 +206,51 @@ async function saveLead(payload: Record<string, unknown>) {
   });
   const body = await response.json().catch(() => []);
   if (!response.ok) throw new Error(body?.message || "Lead could not be saved.");
-  return leadId || body?.[0]?.id;
+  const savedLeadId = leadId || body?.[0]?.id;
+  const sessionId = compactText(payload.session_id, 80);
+  if (savedLeadId && sessionId) {
+    await fetch(`${supabaseUrl}/rest/v1/performance_sprint_events?session_id=eq.${encodeURIComponent(sessionId)}&lead_id=is.null`, {
+      method: "PATCH",
+      headers: {
+        apikey: serviceKey,
+        Authorization: `Bearer ${serviceKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ lead_id: savedLeadId }),
+    });
+  }
+  return savedLeadId;
+}
+
+async function trackEvent(payload: Record<string, unknown>) {
+  const supabaseUrl = Deno.env.get("SUPABASE_URL");
+  const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+  if (!supabaseUrl || !serviceKey) throw new Error("Event storage is not configured.");
+  const sessionId = compactText(payload.session_id, 80);
+  const eventType = compactText(payload.event_type, 60);
+  const stage = compactText(payload.stage, 60);
+  if (!sessionId || !eventType || !stage) throw new Error("Event is incomplete.");
+  const response = await fetch(`${supabaseUrl}/rest/v1/performance_sprint_events`, {
+    method: "POST",
+    headers: {
+      apikey: serviceKey,
+      Authorization: `Bearer ${serviceKey}`,
+      "Content-Type": "application/json",
+      Prefer: "return=minimal",
+    },
+    body: JSON.stringify({
+      session_id: sessionId,
+      lead_id: compactText(payload.lead_id, 80) || null,
+      event_type: eventType,
+      stage,
+      metadata: payload.metadata || {},
+      source_data: payload.source_data || {},
+    }),
+  });
+  if (!response.ok) {
+    const body = await response.json().catch(() => ({}));
+    throw new Error(body?.message || "Event could not be saved.");
+  }
 }
 
 Deno.serve(async (request) => {
@@ -219,9 +266,15 @@ Deno.serve(async (request) => {
     const contentType = request.headers.get("content-type") || "";
     if (contentType.includes("application/json")) {
       const payload = await request.json();
-      if (payload?.action !== "save_lead") return json(request, { error: "Unknown action." }, 400);
-      const leadId = await saveLead(payload);
-      return json(request, { ok: true, lead_id: leadId });
+      if (payload?.action === "save_lead") {
+        const leadId = await saveLead(payload);
+        return json(request, { ok: true, lead_id: leadId });
+      }
+      if (payload?.action === "track_event") {
+        await trackEvent(payload);
+        return json(request, { ok: true });
+      }
+      return json(request, { error: "Unknown action." }, 400);
     }
 
     const form = await request.formData();

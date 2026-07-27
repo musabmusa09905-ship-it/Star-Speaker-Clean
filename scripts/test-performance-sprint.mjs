@@ -26,6 +26,7 @@ assert.match(page, /data-screen="method"/);
 assert.match(page, /data-screen="feedback"/);
 assert.match(page, /data-screen="result"/);
 assert.match(page, /data-whatsapp-cta/);
+assert.match(page, /name="budget"/);
 assert.match(page, /autocomplete="tel"/);
 assert.match(page, /name="consent" required/);
 
@@ -45,6 +46,8 @@ assert.match(script, /getUserMedia/);
 assert.match(script, /functions\/v1\/ai-speaking-coach/);
 assert.match(script, /data-whatsapp-cta/);
 assert.match(script, /saveLead\("whatsapp_clicked"\)/);
+assert.match(script, /trackEvent\("budget_selected"/);
+assert.match(script, /session_abandoned/);
 assert.match(script, /URLSearchParams\(location\.search\)\.get\("demo"\) === "1"/);
 assert.doesNotMatch(script, /OPENAI_API_KEY/);
 assert.doesNotMatch(script, /sk-[A-Za-z0-9]/);
@@ -59,9 +62,12 @@ assert.match(edgeFunction, /gpt-5\.6-luna/);
 assert.match(edgeFunction, /json_schema/);
 assert.match(edgeFunction, /audio\.size > 8_000_000/);
 assert.match(edgeFunction, /allowedOrigins/);
+assert.match(edgeFunction, /performance_sprint_events/);
 assert.doesNotMatch(edgeFunction, /sk-[A-Za-z0-9]/);
 
 assert.match(schema, /create table if not exists public\.performance_sprint_leads/);
+assert.match(schema, /create table if not exists public\.performance_sprint_events/);
+assert.match(schema, /performance_sprint_leads_admin_all/);
 assert.match(schema, /enable row level security/);
 assert.match(schema, /revoke all on table public\.performance_sprint_leads from anon, authenticated/);
 

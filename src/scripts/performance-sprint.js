@@ -178,6 +178,10 @@ const state = {
   contact: {},
   leadId: null,
   retryFocus: "",
+  budgetRange: "",
+  sessionId: crypto.randomUUID(),
+  sourceData: getSourceData(),
+  lastTrackedStage: "",
   isDemo: new URLSearchParams(location.search).get("demo") === "1",
 };
 
@@ -211,6 +215,60 @@ function showScreen(name) {
     $("[data-progress-fill]").style.width = `${(step / 6) * 100}%`;
   }
   window.scrollTo({ top: 0, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+  trackStage(name);
+}
+
+function getSourceData() {
+  const params = new URLSearchParams(location.search);
+  return {
+    source: params.get("utm_source") || "",
+    medium: params.get("utm_medium") || "",
+    campaign: params.get("utm_campaign") || "",
+    content: params.get("utm_content") || "",
+    referrer: document.referrer || "",
+    device: matchMedia("(max-width: 767px)").matches ? "mobile" : "desktop",
+  };
+}
+
+const stageEvents = {
+  intro: "page_opened",
+  setup: "test_started",
+  mic: "setup_completed",
+  contact: "baseline_submitted",
+  diagnosis: "diagnosis_received",
+  method: "training_started",
+  result: "result_viewed",
+};
+
+function trackStage(stage) {
+  const eventType = stageEvents[stage];
+  if (!eventType || state.lastTrackedStage === stage) return;
+  state.lastTrackedStage = stage;
+  trackEvent(eventType, stage);
+}
+
+async function trackEvent(eventType, stage, metadata = {}) {
+  if (state.isDemo) return;
+  const config = window.STAR_SPEAKER_SUPABASE_CONFIG || {};
+  if (!config.url || !config.anonKey) return;
+  fetch(`${config.url}/functions/v1/ai-speaking-coach`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      apikey: config.anonKey,
+      Authorization: `Bearer ${config.anonKey}`,
+    },
+    body: JSON.stringify({
+      action: "track_event",
+      session_id: state.sessionId,
+      lead_id: state.leadId,
+      event_type: eventType,
+      stage,
+      metadata,
+      source_data: state.sourceData,
+    }),
+    keepalive: true,
+  }).catch(() => {});
 }
 
 function renderQuestion() {
@@ -367,6 +425,7 @@ async function useRecording() {
     return;
   }
   const phase = state.phase;
+  trackEvent("recording_submitted", phase, { duration_seconds: 45 - state.remaining });
   const blob = state.blob;
   const prompt = promptForPhase();
   state.pending[phase] = analyzeRecording(blob, phase, prompt);
@@ -639,6 +698,9 @@ async function saveLead(stage) {
     transcripts: Object.fromEntries(
       Object.entries(state.analyses).map(([key, value]) => [key, value.transcript || ""]),
     ),
+    session_id: state.sessionId,
+    budget_range: state.budgetRange || null,
+    source_data: state.sourceData,
   };
   const response = await fetch(`${config.url}/functions/v1/ai-speaking-coach`, {
     method: "POST",
@@ -685,6 +747,16 @@ $("[data-start]").addEventListener("click", () => {
   renderQuestion();
   showScreen("setup");
 });
+$("[data-budget]").addEventListener("change", (event) => {
+  if (event.target.name !== "budget") return;
+  state.budgetRange = event.target.value;
+  const cta = $("[data-whatsapp-cta]");
+  cta.classList.remove("is-disabled");
+  cta.setAttribute("aria-disabled", "false");
+  $("[data-budget-error]").hidden = true;
+  trackEvent("budget_selected", "result", { budget_range: state.budgetRange });
+  saveLead("completed").catch(() => {});
+});
 $("[data-setup-back]").addEventListener("click", () => {
   state.questionIndex = Math.max(0, state.questionIndex - 1);
   renderQuestion();
@@ -708,10 +780,21 @@ $("[data-retry-with-feedback]").addEventListener("click", (event) => {
   preparePrompt();
   showScreen("record");
 });
-$("[data-whatsapp-cta]").addEventListener("click", () => {
+$("[data-whatsapp-cta]").addEventListener("click", (event) => {
+  if (!state.budgetRange) {
+    event.preventDefault();
+    $("[data-budget-error]").hidden = false;
+    return;
+  }
+  trackEvent("whatsapp_clicked", "result", { budget_range: state.budgetRange });
   saveLead("whatsapp_clicked").catch(() => {});
 });
 
 window.addEventListener("beforeunload", () => {
+  if (!state.isDemo && state.lastTrackedStage && state.lastTrackedStage !== "result") {
+    trackEvent("session_abandoned", state.lastTrackedStage);
+  }
   state.stream?.getTracks().forEach((track) => track.stop());
 });
+
+trackStage("intro");
