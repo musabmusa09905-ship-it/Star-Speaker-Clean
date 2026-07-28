@@ -19,8 +19,11 @@ export const homepageCopy = {
   aboutUs: { tr: "Hakkımızda", en: "About Us" },
   faq: { tr: "SSS", en: "FAQ" },
   languageSelection: { tr: "Dil seçimi", en: "Language selection" },
-  freeSpeakingAnalysis: { tr: "Ücretsiz Konuşma Analizi", en: "Free Speaking Analysis" },
-  performanceSessionCta: { tr: "Ücretsiz Performans Seansı", en: "Free Performance Session" },
+  freeSpeakingAnalysis: { tr: "Ücretsiz Performans Testi", en: "Free Speaking Analysis" },
+  performanceSessionCta: {
+    tr: "Ücretsiz Performans Testini Başlat",
+    en: "Free Speaking Analysis",
+  },
   heroTitleOne: { tr: "İngilizcen, ne kadar", en: "Your English should not hide" },
   heroTitleTwo: {
     tr: "iyi bir mühendis olduğunu gizlemesin.",

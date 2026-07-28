@@ -64,14 +64,12 @@ function translatePage(source, locale) {
   );
   if (locale === "en") {
     output = output.replace(
-      /class="stage-home-action stage-home-primary"\s+data-performance-link\s+href="\/tr\/performans-testi\/"/,
-      `class="stage-home-action stage-home-primary"
-                data-whatsapp-link
-                href="https://wa.me/905525247746?text=${encodeURIComponent(homepageLocales.en.whatsappMessage)}"
-                target="_blank"
-                rel="noopener noreferrer"`,
+      /^([ \t]*)data-performance-link\s+href="\/tr\/performans-testi\/"/gm,
+      (_, indentation) => `${indentation}data-whatsapp-link
+${indentation}href="https://wa.me/905525247746?text=${encodeURIComponent(homepageLocales.en.whatsappMessage)}"
+${indentation}target="_blank"
+${indentation}rel="noopener noreferrer"`,
     );
-    output = output.replace("<span>Free Performance Session</span>", "<span>Free Speaking Analysis</span>");
   }
   return output;
 }

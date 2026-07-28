@@ -5095,6 +5095,8 @@ body.stage-one-home.nav-open {
   border-color: #e6d7a8;
   background: #d8c39a;
   color: #070707;
+  text-align: center;
+  white-space: normal;
 }
 
 .stage-one-home .stage-home-whatsapp {

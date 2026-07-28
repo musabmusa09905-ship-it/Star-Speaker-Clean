@@ -146,10 +146,26 @@ for (const locale of supportedHomepageLocales) {
 }
 
 assert.match(pages.tr, /Star Speaker Engineer Flow/);
-assert.match(pages.tr, /data-performance-link/);
-assert.match(pages.tr, /href="\/tr\/performans-testi\/"/);
-assert.match(pages.tr, /Ücretsiz Performans Seansı/);
+const turkishPerformanceCtas = [
+  ...pages.tr.matchAll(
+    /<a(?=[^>]*data-performance-link)(?=[^>]*href="([^"]+)")[^>]*>([\s\S]*?)<\/a>/g,
+  ),
+];
+assert.equal(turkishPerformanceCtas.length, 3, "Desktop header, mobile header, and hero must use the Performance Test.");
+assert(turkishPerformanceCtas.every(([, target]) => target === "/tr/performans-testi/"));
+assert(turkishPerformanceCtas.every(([cta]) => !/\btarget="_blank"/.test(cta)));
+assert.equal(
+  turkishPerformanceCtas.filter(([, , content]) => /Ücretsiz Performans Testi/.test(content)).length,
+  3,
+);
+assert.match(pages.tr, /<span>Ücretsiz Performans Testini Başlat<\/span>/);
 assert.doesNotMatch(pages.en, /data-performance-link|\/tr\/performans-testi\//);
+assert.equal(
+  (pages.en.match(/class="stage-home-nav-cta"/g) ?? []).length,
+  2,
+  "English desktop and mobile header CTAs must remain localized.",
+);
+assert.equal((pages.en.match(/Free Speaking Analysis/g) ?? []).length, 3);
 assert.match(pages.tr, /17\.000 TL/);
 assert.match(pages.tr, /23\.000 TL/);
 assert.match(pages.tr, /12\.000 TL/);
