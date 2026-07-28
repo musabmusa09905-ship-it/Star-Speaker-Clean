@@ -163,6 +163,18 @@ const waitingInsights = [
   "Konuşma gelişimi, aynı beceriyi geri bildirimle tekrar ettiğinde görünür hale gelir.",
 ];
 
+function persistentSessionId() {
+  try {
+    const existing = sessionStorage.getItem("performanceSprintSessionId");
+    if (existing) return existing;
+    const created = crypto.randomUUID();
+    sessionStorage.setItem("performanceSprintSessionId", created);
+    return created;
+  } catch {
+    return crypto.randomUUID();
+  }
+}
+
 const state = {
   answers: {},
   questionIndex: 0,
@@ -179,10 +191,15 @@ const state = {
   leadId: null,
   retryFocus: "",
   budgetRange: "",
-  sessionId: crypto.randomUUID(),
+  sessionId: persistentSessionId(),
   sourceData: getSourceData(),
   lastTrackedStage: "",
   isDemo: new URLSearchParams(location.search).get("demo") === "1",
+  bookingSlots: [],
+  selectedBookingStart: "",
+  booking: null,
+  bookingSubmitting: false,
+  bookingMode: "create",
 };
 
 const $ = (selector, root = document) => root.querySelector(selector);
@@ -674,6 +691,9 @@ function renderResult() {
       : "Ücretsiz konuşma analizi hakkında bilgi almak istiyorum.",
   ].join("\n");
   $("[data-whatsapp-cta]").href = `https://wa.me/905525247746?text=${encodeURIComponent(message)}`;
+  $("[data-booking-fallback-whatsapp]").href = `https://wa.me/905525247746?text=${encodeURIComponent(
+    "Merhaba, ücretsiz Konuşma Performansı Görüşmesi için uygun bir saat bulamadım. Yardımcı olabilir misiniz?",
+  )}`;
 }
 
 function qualifyLead() {
@@ -715,6 +735,228 @@ async function saveLead(stage) {
   if (response.ok && body.lead_id) state.leadId = body.lead_id;
 }
 
+function bookingApi(payload) {
+  const config = window.STAR_SPEAKER_SUPABASE_CONFIG || {};
+  if (!config.url || !config.anonKey) throw new Error("Randevu servisi yapılandırılmamış.");
+  return fetch(`${config.url}/functions/v1/performance-sprint-booking`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      apikey: config.anonKey,
+      Authorization: `Bearer ${config.anonKey}`,
+    },
+    body: JSON.stringify(payload),
+  }).then(async (response) => {
+    const body = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(body.error || "Randevu işlemi tamamlanamadı.");
+    return body;
+  });
+}
+
+function formatBookingDate(value, includeTime = false) {
+  return new Intl.DateTimeFormat("tr-TR", {
+    timeZone: "Europe/Istanbul",
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    ...(includeTime ? { hour: "2-digit", minute: "2-digit" } : {}),
+  }).format(new Date(value));
+}
+
+function formatBookingTime(value) {
+  return new Intl.DateTimeFormat("tr-TR", {
+    timeZone: "Europe/Istanbul",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(new Date(value));
+}
+
+function setBookingError(message = "") {
+  const root = $("[data-booking-error]");
+  root.textContent = message;
+  root.hidden = !message;
+}
+
+function renderBookingSlots() {
+  const datesRoot = $("[data-booking-dates]");
+  const slotsRoot = $("[data-booking-slots]");
+  datesRoot.replaceChildren();
+  slotsRoot.replaceChildren();
+  const groups = new Map();
+  state.bookingSlots.forEach((slot) => {
+    if (!groups.has(slot.booking_date)) groups.set(slot.booking_date, []);
+    groups.get(slot.booking_date).push(slot);
+  });
+  if (!groups.size) {
+    slotsRoot.textContent = "Önümüzdeki yedi gün içinde uygun randevu görünmüyor.";
+    return;
+  }
+  let activeDate = [...groups.keys()][0];
+  const drawTimes = (date) => {
+    activeDate = date;
+    state.selectedBookingStart = "";
+    $("[data-booking-review]").hidden = true;
+    $$("button", datesRoot).forEach((button) => {
+      button.classList.toggle("is-selected", button.dataset.date === date);
+    });
+    slotsRoot.replaceChildren();
+    groups.get(date).forEach((slot) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "sprint-booking__slot";
+      button.textContent = formatBookingTime(slot.appointment_start);
+      button.addEventListener("click", () => {
+        state.selectedBookingStart = slot.appointment_start;
+        $$("button", slotsRoot).forEach((item) => item.classList.toggle("is-selected", item === button));
+        $("[data-booking-selection]").textContent =
+          `${formatBookingDate(slot.appointment_start, true)} · Türkiye saati`;
+        $("[data-booking-review]").hidden = false;
+        trackEvent("booking_slot_selected", "booking", { booking_date: slot.booking_date });
+      });
+      slotsRoot.append(button);
+    });
+  };
+  groups.forEach((slots, date) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.dataset.date = date;
+    button.className = "sprint-booking__date";
+    button.textContent = formatBookingDate(slots[0].appointment_start);
+    button.addEventListener("click", () => {
+      drawTimes(date);
+      trackEvent("booking_date_selected", "booking", { booking_date: date });
+    });
+    datesRoot.append(button);
+  });
+  drawTimes(activeDate);
+}
+
+async function loadBookingSlots() {
+  const bookingRoot = $("[data-booking]");
+  bookingRoot.hidden = false;
+  $("[data-booking-loading]").hidden = false;
+  $("[data-booking-picker]").hidden = true;
+  setBookingError();
+  trackEvent("booking_viewed", "booking");
+  try {
+    const body = await bookingApi({ action: "slots" });
+    state.bookingSlots = body.slots || [];
+    renderBookingSlots();
+    $("[data-booking-picker]").hidden = false;
+  } catch {
+    setBookingError("Uygun saatler şu anda yüklenemiyor. Lütfen biraz sonra tekrar dene.");
+  } finally {
+    $("[data-booking-loading]").hidden = true;
+  }
+}
+
+function renderBookingSuccess() {
+  const booking = state.booking;
+  if (!booking) return;
+  $("[data-booking-picker]").hidden = true;
+  $("[data-booking-success]").hidden = false;
+  $("[data-booking-confirmation]").textContent =
+    `${formatBookingDate(booking.appointment_start, true)} · Türkiye saati`;
+  const message = `Merhaba, ücretsiz Konuşma Performansı Görüşmemi ${formatBookingDate(
+    booking.appointment_start,
+  )} tarihinde saat ${formatBookingTime(booking.appointment_start)} için planladım. Randevumu onaylamak istiyorum.`;
+  $("[data-booking-whatsapp]").href =
+    `https://wa.me/905525247746?text=${encodeURIComponent(message)}`;
+}
+
+function storeBooking() {
+  try {
+    sessionStorage.setItem("performanceSprintBooking", JSON.stringify(state.booking));
+  } catch {
+    // The database remains authoritative when browser storage is unavailable.
+  }
+}
+
+function restoreBooking() {
+  try {
+    const saved = JSON.parse(sessionStorage.getItem("performanceSprintBooking") || "null");
+    if (!saved?.booking_id || !saved?.management_token || !saved?.appointment_start) return;
+    state.booking = saved;
+    $("[data-booking]").hidden = false;
+    renderBookingSuccess();
+    showScreen("result");
+  } catch {
+    // Ignore unavailable or malformed browser storage.
+  }
+}
+
+async function confirmBooking() {
+  if (!state.selectedBookingStart || state.bookingSubmitting) return;
+  const button = $("[data-booking-confirm]");
+  state.bookingSubmitting = true;
+  button.disabled = true;
+  button.textContent = "Randevun planlanıyor…";
+  setBookingError();
+  trackEvent("booking_submitted", "booking", { mode: state.bookingMode });
+  try {
+    if (state.bookingMode === "reschedule" && state.booking) {
+      const body = await bookingApi({
+        action: "reschedule",
+        booking_id: state.booking.booking_id,
+        management_token: state.booking.management_token,
+        appointment_start: state.selectedBookingStart,
+      });
+      state.booking = { ...state.booking, ...body.booking };
+    } else {
+      const body = await bookingApi({
+        action: "create",
+        lead_id: state.leadId,
+        session_id: state.sessionId,
+        appointment_start: state.selectedBookingStart,
+      });
+      state.booking = { ...body.booking, management_token: body.management_token };
+    }
+    state.bookingMode = "create";
+    storeBooking();
+    renderBookingSuccess();
+  } catch (cause) {
+    const message = cause.message;
+    trackEvent("booking_failed", "booking", { mode: state.bookingMode });
+    await loadBookingSlots();
+    setBookingError(message);
+  } finally {
+    state.bookingSubmitting = false;
+    button.disabled = false;
+    button.textContent = "Randevuyu Onayla";
+  }
+}
+
+async function startReschedule() {
+  if (!state.booking) return;
+  state.bookingMode = "reschedule";
+  $("[data-booking-success]").hidden = true;
+  trackEvent("booking_reschedule_started", "booking");
+  await loadBookingSlots();
+}
+
+async function cancelBooking() {
+  if (!state.booking || !window.confirm("Randevunu iptal etmek istediğine emin misin?")) return;
+  const button = $("[data-booking-cancel]");
+  button.disabled = true;
+  try {
+    await bookingApi({
+      action: "cancel",
+      booking_id: state.booking.booking_id,
+      management_token: state.booking.management_token,
+    });
+    state.booking = null;
+    try { sessionStorage.removeItem("performanceSprintBooking"); } catch { /* Storage is optional. */ }
+    state.bookingMode = "create";
+    $("[data-booking-success]").hidden = true;
+    toast("Randevun iptal edildi. İstersen yeni bir saat seçebilirsin.");
+    await loadBookingSlots();
+  } catch (cause) {
+    setBookingError(cause.message);
+  } finally {
+    button.disabled = false;
+  }
+}
+
 function demoAnalysis(phase) {
   const base = {
     "baseline-1": [64, 47, 51, 58],
@@ -747,7 +989,7 @@ $("[data-start]").addEventListener("click", () => {
   renderQuestion();
   showScreen("setup");
 });
-$("[data-budget]").addEventListener("change", (event) => {
+$("[data-budget]").addEventListener("change", async (event) => {
   if (event.target.name !== "budget") return;
   state.budgetRange = event.target.value;
   const cta = $("[data-whatsapp-cta]");
@@ -755,7 +997,13 @@ $("[data-budget]").addEventListener("change", (event) => {
   cta.setAttribute("aria-disabled", "false");
   $("[data-budget-error]").hidden = true;
   trackEvent("budget_selected", "result", { budget_range: state.budgetRange });
-  saveLead("completed").catch(() => {});
+  try {
+    await saveLead("completed");
+    await loadBookingSlots();
+  } catch {
+    $("[data-booking]").hidden = false;
+    setBookingError("Randevu adımı hazırlanamadı. Lütfen bağlantını kontrol edip tekrar dene.");
+  }
 });
 $("[data-setup-back]").addEventListener("click", () => {
   state.questionIndex = Math.max(0, state.questionIndex - 1);
@@ -789,6 +1037,15 @@ $("[data-whatsapp-cta]").addEventListener("click", (event) => {
   trackEvent("whatsapp_clicked", "result", { budget_range: state.budgetRange });
   saveLead("whatsapp_clicked").catch(() => {});
 });
+$("[data-booking-confirm]").addEventListener("click", confirmBooking);
+$("[data-booking-reschedule]").addEventListener("click", startReschedule);
+$("[data-booking-cancel]").addEventListener("click", cancelBooking);
+$("[data-booking-whatsapp]").addEventListener("click", () => {
+  trackEvent("booking_whatsapp_clicked", "booking");
+});
+$("[data-booking-fallback-whatsapp]").addEventListener("click", () => {
+  trackEvent("booking_no_slot_whatsapp_clicked", "booking");
+});
 
 window.addEventListener("beforeunload", () => {
   if (!state.isDemo && state.lastTrackedStage && state.lastTrackedStage !== "result") {
@@ -798,3 +1055,4 @@ window.addEventListener("beforeunload", () => {
 });
 
 trackStage("intro");
+restoreBooking();

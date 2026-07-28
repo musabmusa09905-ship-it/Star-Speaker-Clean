@@ -316,11 +316,45 @@
               <label><input type="radio" name="budget" value="need_solution_first"><span>Önce doğru çözümü görmem gerekiyor</span></label>
             </fieldset>
             <p class="sprint-inline-error" role="alert" data-budget-error hidden>Lütfen sana en yakın seçeneği işaretle.</p>
-            <a class="sprint-whatsapp-cta is-disabled" href="#" target="_blank" rel="noopener noreferrer" aria-disabled="true" data-whatsapp-cta>
-              WhatsApp’tan Ücretsiz Analiz Talep Et
-              <span aria-hidden="true">→</span>
+            <section class="sprint-booking" data-booking hidden aria-labelledby="booking-title">
+              <div class="sprint-booking__intro">
+                <p class="sprint-kicker">ÜCRETSİZ KONUŞMA PERFORMANSI GÖRÜŞMESİ</p>
+                <h3 id="booking-title">Ücretsiz Görüşmeni Planla</h3>
+                <p>Sonucunu bir uzmanla değerlendirmek ve sana uygun gelişim yolunu görmek için ücretsiz 15 dakikalık görüşmeni planla.</p>
+                <small>15 dakika · Online · Türkiye saati</small>
+              </div>
+              <div class="sprint-booking__loading" data-booking-loading>Uygun saatler yükleniyor…</div>
+              <div class="sprint-booking__error sprint-inline-error" role="alert" data-booking-error hidden></div>
+              <div class="sprint-booking__picker" data-booking-picker hidden>
+                <div class="sprint-booking__dates" data-booking-dates aria-label="Randevu günü"></div>
+                <div class="sprint-booking__slots" data-booking-slots aria-label="Randevu saati"></div>
+                <div class="sprint-booking__review" data-booking-review hidden>
+                  <span>SEÇİMİN</span>
+                  <strong data-booking-selection></strong>
+                  <button class="sprint-primary" type="button" data-booking-confirm>Randevuyu Onayla</button>
+                </div>
+              </div>
+              <div class="sprint-booking__success" data-booking-success hidden>
+                <span class="sprint-result-celebration" aria-hidden="true">✦</span>
+                <h3>Görüşmen planlandı.</h3>
+                <p>Seçtiğin tarih ve saatte 15 dakikalık ücretsiz Konuşma Performansı Görüşmesi gerçekleştireceğiz.</p>
+                <strong data-booking-confirmation></strong>
+                <div class="sprint-booking__actions">
+                  <a class="sprint-whatsapp-cta" href="#" target="_blank" rel="noopener noreferrer" data-booking-whatsapp>
+                    Randevuyu WhatsApp’tan Onayla <span aria-hidden="true">→</span>
+                  </a>
+                  <button class="sprint-secondary" type="button" data-booking-reschedule>Randevuyu Değiştir</button>
+                  <button class="sprint-text-button" type="button" data-booking-cancel>Randevuyu İptal Et</button>
+                </div>
+              </div>
+              <p class="sprint-booking__fallback">
+                Uygun bir saat bulamadın mı?
+                <a href="#" target="_blank" rel="noopener noreferrer" data-booking-fallback-whatsapp>WhatsApp’tan bize ulaş.</a>
+              </p>
+            </section>
+            <a class="sprint-whatsapp-cta sprint-whatsapp-cta--general is-disabled" href="#" target="_blank" rel="noopener noreferrer" aria-disabled="true" data-whatsapp-cta>
+              WhatsApp’tan Soru Sor <span aria-hidden="true">→</span>
             </a>
-            <small>15 dakika · Online · Satın alma zorunluluğu yok</small>
           </div>
         </div>
       </section>
