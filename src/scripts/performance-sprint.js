@@ -1,166 +1,39 @@
-const questions = [
-  {
-    key: "field",
-    title: "Hangi mühendislik alanında çalışıyorsun?",
-    help: "Konuşma senaryolarını sana göre uyarlayacağız.",
-    options: [
-      ["mechanical", "Makine / Mekatronik"],
-      ["software", "Yazılım / Bilgisayar"],
-      ["civil", "İnşaat / Mimarlık"],
-      ["electrical", "Elektrik / Elektronik"],
-      ["industrial", "Endüstri / Üretim"],
-      ["chemical", "Kimya / Malzeme / Enerji"],
-      ["other", "Diğer mühendislik alanı"],
-    ],
-  },
-  {
-    key: "role",
-    title: "Şu an kariyerinin hangi aşamasındasın?",
-    help: "Soruların seviyesi unvanına değil, gerçek sorumluluklarına göre ayarlanacak.",
-    options: [
-      ["student", "Öğrenci / Yeni mezun"],
-      ["junior", "0–3 yıl deneyim"],
-      ["mid", "4–8 yıl deneyim"],
-      ["senior", "9+ yıl deneyim"],
-      ["lead", "Takım lideri / Yönetici"],
-    ],
-  },
-  {
-    key: "situation",
-    title: "İngilizce performansın en çok hangi durumda önemli?",
-    help: "İkinci konuşma görevin doğrudan bu duruma göre seçilecek.",
-    options: [
-      ["interview", "İş görüşmesi"],
-      ["meeting", "Toplantı / Teknik tartışma"],
-      ["presentation", "Sunum"],
-      ["international", "Uluslararası ekip / proje"],
-      ["daily", "Günlük iş iletişimi"],
-    ],
-  },
-  {
-    key: "deadline",
-    title: "Bu konuda ne kadar yakın bir hedefin var?",
-    help: "Yakın bir tarih yoksa da seansa devam edebilirsin.",
-    options: [
-      ["14", "Önümüzdeki 2 hafta içinde"],
-      ["30", "Önümüzdeki 30 gün içinde"],
-      ["90", "Önümüzdeki 3 ay içinde"],
-      ["ongoing", "Her hafta karşılaştığım bir problem"],
-      ["none", "Belirli bir tarihim yok"],
-    ],
-  },
-  {
-    key: "readiness",
-    title: "Sonucun gerçek bir problem gösterirse ne yapmak istiyorsun?",
-    help: "Bu cevap test sonucunu değiştirmez; sana doğru sonraki adımı göstermemizi sağlar.",
-    options: [
-      ["start", "Hemen çalışmaya başlamak istiyorum"],
-      ["explore", "Önce doğru çözümü görmek istiyorum"],
-      ["self", "Şimdilik kendim çalışmak istiyorum"],
-      ["curious", "Sadece merak ediyorum"],
-    ],
-  },
-];
-
 const labels = {
   clarity: "Netlik",
   structure: "Yapı",
-  pressure: "Baskı altında performans",
-  interaction: "Profesyonel etkileşim",
+  pressure: "Baskı altında sürdürme",
+  interaction: "Profesyonel etki",
 };
 
-const bottleneckCopy = {
-  clarity: {
-    title: "Teknik Netlik",
-    summary: "Teknik bilgin var; fakat ana mesajın dinleyicinin takip edebileceği kadar sade ve görünür olmayabiliyor.",
-    method: "Teknikten Netliğe",
-    intro: "Önce sonucu söyle, sonra yalnızca dinleyicinin karar vermesi için gereken teknik ayrıntıyı ekle.",
-    steps: [
-      ["Ana mesaj", "Dinleyicinin bilmesi gereken sonucu tek cümlede söyle."],
-      ["Neden", "Bu sonucun neden önemli olduğunu açıkla."],
-      ["Teknik kanıt", "Yalnızca bir ilgili veri veya teknik ayrıntı ekle."],
-      ["Etkisi", "İş, risk, zaman veya kalite üzerindeki etkisini bağla."],
-    ],
-    example: "The main issue was excessive heat loss. We traced it to the insulation layer, and fixing it reduced energy consumption by 12%.",
-    guide: "Main message → Why → One technical detail → Impact",
-    next: "Farklı dinleyiciler için teknik açıklama derinliğini ayarlamak",
-  },
-  structure: {
-    title: "Cevap Yapısı",
-    summary: "Ne söylemek istediğini biliyorsun; fakat ana fikir, gerekçe ve kanıt doğru sırada görünmeyince güçlü bilgin daha zayıf duyulabiliyor.",
-    method: "Nokta–Gerekçe–Kanıt–Aksiyon",
-    intro: "Cevabını dört görünür parçaya böl. Dinleyici daha ilk cümlede nereye gittiğini anlamalı.",
-    steps: [
-      ["Nokta", "Sorunun doğrudan cevabını ver."],
-      ["Gerekçe", "Bu cevabın nedenini açıkla."],
-      ["Kanıt", "Bir proje, veri veya teknik örnek ekle."],
-      ["Aksiyon", "Ne yaptığını veya ne önerdiğini söyle."],
-    ],
-    example: "I would prioritize reliability. The reason is that downtime is our biggest operational risk. In my last project, this approach reduced failures by 18%, so I would begin with a reliability review.",
-    guide: "Point → Reason → Evidence → Action",
-    next: "Takip sorularında yapıyı korumak",
-  },
-  pressure: {
-    title: "Baskı Altında Başlangıç",
-    summary: "Bilgin kaybolmuyor; cevaba başlamadan önce kusursuz cümleyi kurmaya çalışmak erişimini yavaşlatıyor.",
-    method: "5 Saniyelik Başlangıç",
-    intro: "Mükemmel cevabı bekleme. Beş saniye içinde güvenli bir ana cümleyle başla, sonra fikrini geliştir.",
-    steps: [
-      ["Ana kelime", "Sorunun merkezindeki bir kelimeyi seç."],
-      ["Net başlangıç", "I would… / The main reason is… kalıbıyla pozisyonunu söyle."],
-      ["Tek gerekçe", "Yalnızca bir nedeni geliştir."],
-      ["Somutlaştır", "Kısa bir örnekle cevabı tamamla."],
-    ],
-    example: "The main challenge was coordination. I solved it by creating a short daily handover, which helped us identify delays before they affected the schedule.",
-    guide: "Keyword → Direct start → One reason → Example",
-    next: "Beklenmedik takip sorularına daha hızlı cevap vermek",
-  },
-  interaction: {
-    title: "Profesyonel Etkileşim",
-    summary: "Hazırladığın açıklamalarda daha rahatsın; fakat belirsiz soru, itiraz veya takip sorusunda kontrol azalabiliyor.",
-    method: "Netleştir–Doğrula–Cevapla",
-    intro: "Soruyu tahmin ederek cevaplamak yerine kısa bir netleştirme ile kontrolü geri al.",
-    steps: [
-      ["Netleştir", "Sorunun hangi kısmına odaklanman gerektiğini sor."],
-      ["Doğrula", "Anladığın noktayı tek cümlede teyit et."],
-      ["Cevapla", "Ana pozisyonunu doğrudan söyle."],
-      ["Kontrol et", "Cevabının soruyu karşılayıp karşılamadığını doğrula."],
-    ],
-    example: "If I understand correctly, you are asking about the schedule risk rather than the technical feasibility. The main risk is supplier delay, and we have two mitigation options.",
-    guide: "Clarify → Confirm → Respond → Check",
-    next: "İtiraz ve anlaşmazlık anlarında profesyonel dil kullanmak",
-  },
+const bottleneckTitles = {
+  clarity: "Netlik",
+  structure: "Cevap yapısı",
+  pressure: "Baskı altında sürdürme",
+  interaction: "Profesyonel etki",
 };
 
 const scenarioPrompts = {
-  interview: {
-    title: "Tell me about a difficult technical problem you solved.",
-    context: "Explain the problem, your decision, and the result.",
-  },
   meeting: {
     title: "Your team must choose between speed and reliability. What do you recommend?",
-    context: "State your recommendation and explain the engineering reason behind it.",
+    context: "Give your recommendation, one reason, and the professional impact.",
+    guide: "Recommendation → Reason → Example → Impact",
+  },
+  interview: {
+    title: "Tell me about a difficult technical problem you solved.",
+    context: "Explain the problem, your action, and the result.",
+    guide: "Problem → Your action → Result",
   },
   presentation: {
     title: "Explain one important result from a recent project.",
-    context: "Make the result understandable to a manager who is not an engineer.",
-  },
-  international: {
-    title: "A project is falling behind schedule. Give your international team a short update.",
-    context: "Explain the cause, current risk, and the next action.",
-  },
-  daily: {
-    title: "Explain a technical decision you made recently.",
-    context: "State the decision, why you made it, and its impact.",
+    context: "State the result, what caused it, and why it matters.",
+    guide: "Result → Evidence → Why it matters",
   },
 };
 
 const waitingInsights = [
   "Güçlü bir profesyonel cevap, karmaşık kelimelerden önce net bir ana fikirle başlar.",
-  "Duraksama her zaman kelime eksikliği değildir; bazen cevap yapısının görünür olmamasıdır.",
+  "Kısa bir cevapta tek bir ana mesajı desteklemek, çok sayıda ayrıntı vermekten daha etkilidir.",
   "Teknik ayrıntı ancak dinleyicinin kararını destekliyorsa değerlidir.",
-  "İyi bir cevapta ilk cümle yönü, son cümle ise profesyonel etkisini gösterir.",
-  "Konuşma gelişimi, aynı beceriyi geri bildirimle tekrar ettiğinde görünür hale gelir.",
 ];
 
 function persistentSessionId() {
@@ -175,66 +48,6 @@ function persistentSessionId() {
   }
 }
 
-const state = {
-  answers: {},
-  questionIndex: 0,
-  stream: null,
-  recorder: null,
-  chunks: [],
-  blob: null,
-  timerId: null,
-  remaining: 45,
-  phase: "baseline-1",
-  analyses: {},
-  pending: {},
-  contact: {},
-  leadId: null,
-  retryFocus: "",
-  budgetRange: "",
-  sessionId: persistentSessionId(),
-  sourceData: getSourceData(),
-  lastTrackedStage: "",
-  isDemo: new URLSearchParams(location.search).get("demo") === "1",
-  bookingSlots: [],
-  selectedBookingStart: "",
-  booking: null,
-  bookingSubmitting: false,
-  bookingMode: "create",
-};
-
-const $ = (selector, root = document) => root.querySelector(selector);
-const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
-
-const screens = Object.fromEntries($$("[data-screen]").map((screen) => [screen.dataset.screen, screen]));
-const progressShell = $("[data-progress-shell]");
-const progressMap = {
-  setup: [1, "Profesyonel bağlam"],
-  mic: [2, "Konuşma örnekleri"],
-  record: [2, "Konuşma örnekleri"],
-  contact: [3, "Kişisel analiz"],
-  analysis: [3, "AI analizi"],
-  diagnosis: [4, "Darboğaz"],
-  method: [5, "İlk düzeltme"],
-  feedback: [5, "Uygulama"],
-  result: [6, "Sonuç"],
-};
-
-function showScreen(name) {
-  Object.values(screens).forEach((screen) => {
-    screen.classList.toggle("is-active", screen.dataset.screen === name);
-  });
-  progressShell.hidden = name === "intro";
-  if (progressMap[name]) {
-    const [step, label] = progressMap[name];
-    $("[data-progress-label]").textContent = label;
-    $("[data-progress-count]").textContent = `${step} / 6`;
-    $("[data-progress]").setAttribute("aria-valuenow", String(step));
-    $("[data-progress-fill]").style.width = `${(step / 6) * 100}%`;
-  }
-  window.scrollTo({ top: 0, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
-  trackStage(name);
-}
-
 function getSourceData() {
   const params = new URLSearchParams(location.search);
   return {
@@ -247,25 +60,75 @@ function getSourceData() {
   };
 }
 
-const stageEvents = {
-  intro: "page_opened",
-  setup: "test_started",
-  mic: "setup_completed",
-  contact: "baseline_submitted",
-  diagnosis: "diagnosis_received",
-  method: "training_started",
-  result: "result_viewed",
+const state = {
+  situation: "",
+  stream: null,
+  recorder: null,
+  demoRecording: false,
+  chunks: [],
+  blob: null,
+  timerId: null,
+  remaining: 45,
+  phase: "first",
+  recordings: {},
+  analyses: {},
+  pending: {},
+  submitting: false,
+  retryFocus: "",
+  contact: {},
+  leadId: null,
+  sessionId: persistentSessionId(),
+  sourceData: getSourceData(),
+  trackedEvents: new Set(),
+  currentScreen: "intro",
+  isDemo: new URLSearchParams(location.search).get("demo") === "1",
+  bookingSlots: [],
+  selectedBookingStart: "",
+  booking: null,
+  bookingSubmitting: false,
+  bookingMode: "create",
 };
 
-function trackStage(stage) {
-  const eventType = stageEvents[stage];
-  if (!eventType || state.lastTrackedStage === stage) return;
-  state.lastTrackedStage = stage;
-  trackEvent(eventType, stage);
+const $ = (selector, root = document) => root.querySelector(selector);
+const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
+const screens = Object.fromEntries($$("[data-screen]").map((screen) => [screen.dataset.screen, screen]));
+const progressShell = $("[data-progress-shell]");
+const progressMap = {
+  situation: [1, "Durumunu seç"],
+  mic: [2, "Sesli cevap"],
+  record: [state.phase === "retry" ? 4 : 2, state.phase === "retry" ? "Tekrar dene" : "Sesli cevap"],
+  analysis: [state.phase === "retry" ? 5 : 3, "Analiz"],
+  correction: [3, "Kişisel düzeltme"],
+  result: [5, "Sonuç"],
+};
+
+function showScreen(name) {
+  Object.values(screens).forEach((screen) => {
+    screen.classList.toggle("is-active", screen.dataset.screen === name);
+  });
+  state.currentScreen = name;
+  progressShell.hidden = name === "intro";
+  if (name === "record" || name === "analysis") {
+    progressMap[name] = [
+      state.phase === "retry" ? (name === "record" ? 4 : 5) : (name === "record" ? 2 : 3),
+      state.phase === "retry" ? (name === "record" ? "Tekrar dene" : "Sonuç") : (name === "record" ? "Sesli cevap" : "Analiz"),
+    ];
+  }
+  if (progressMap[name]) {
+    const [step, label] = progressMap[name];
+    $("[data-progress-label]").textContent = label;
+    $("[data-progress-count]").textContent = `${step} / 5`;
+    $("[data-progress]").setAttribute("aria-valuenow", String(step));
+    $("[data-progress-fill]").style.width = `${(step / 5) * 100}%`;
+  }
+  window.scrollTo({ top: 0, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
 }
 
-async function trackEvent(eventType, stage, metadata = {}) {
+async function trackEvent(eventType, stage, metadata = {}, onceKey = "") {
   if (state.isDemo) return;
+  const dedupeKey = onceKey || `${eventType}:${stage}`;
+  if (state.trackedEvents.has(dedupeKey)) return;
+  state.trackedEvents.add(dedupeKey);
   const config = window.STAR_SPEAKER_SUPABASE_CONFIG || {};
   if (!config.url || !config.anonKey) return;
   fetch(`${config.url}/functions/v1/ai-speaking-coach`, {
@@ -288,94 +151,51 @@ async function trackEvent(eventType, stage, metadata = {}) {
   }).catch(() => {});
 }
 
-function renderQuestion() {
-  const question = questions[state.questionIndex];
-  $("[data-question-number]").textContent = `Soru ${state.questionIndex + 1} / ${questions.length}`;
-  $("[data-question-title]").textContent = question.title;
-  $("[data-question-help]").textContent = question.help;
-  const options = $("[data-options]");
-  options.replaceChildren();
-  question.options.forEach(([value, text], index) => {
-    const button = document.createElement("button");
-    button.type = "button";
-    button.className = "sprint-option";
-    button.innerHTML = `<span>${String.fromCharCode(65 + index)}</span><strong>${text}</strong>`;
-    button.addEventListener("click", () => {
-      state.answers[question.key] = value;
-      if (state.questionIndex < questions.length - 1) {
-        state.questionIndex += 1;
-        renderQuestion();
-      } else {
-        showScreen("mic");
-      }
-    });
-    options.append(button);
-  });
-  $("[data-setup-back]").hidden = state.questionIndex === 0;
+function promptForSituation() {
+  return scenarioPrompts[state.situation] || scenarioPrompts.meeting;
+}
+
+function preparePrompt() {
+  const prompt = promptForSituation();
+  const isRetry = state.phase === "retry";
+  $("[data-record-kicker]").textContent = isRetry ? "TEKRAR DENE · 30–45 SANİYE" : "İLK CEVAP · 30–45 SANİYE";
+  $("[data-prompt-title]").textContent = prompt.title;
+  $("[data-prompt-context]").textContent = prompt.context;
+  $("[data-prompt-guide]").textContent = prompt.guide;
+  $("[data-correction-reminder]").hidden = !isRetry;
+  if (isRetry) {
+    $("[data-retry-focus]").textContent = state.retryFocus;
+    $("[data-retry-opening]").textContent = state.analyses.first?.improved_opening_tr || "";
+  }
+  resetRecorder();
 }
 
 async function ensureMicrophone() {
   const error = $("[data-mic-error]");
   error.hidden = true;
   try {
+    if (state.isDemo) {
+      state.phase = "first";
+      preparePrompt();
+      showScreen("record");
+      return;
+    }
     if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === "undefined") {
       throw new Error("Bu tarayıcı ses kaydını desteklemiyor. Güncel Chrome, Edge veya Safari ile tekrar dene.");
     }
     state.stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     state.stream.getTracks().forEach((track) => { track.enabled = true; });
-    state.phase = "baseline-1";
+    trackEvent("microphone_granted", "microphone", {}, "microphone_granted");
+    state.phase = "first";
     preparePrompt();
     showScreen("record");
   } catch (cause) {
+    trackEvent("microphone_denied", "microphone", { reason: cause?.name || "unknown" }, "microphone_denied");
     error.textContent = cause?.message?.includes("tarayıcı")
       ? cause.message
       : "Mikrofon izni alınamadı. Tarayıcıdaki kilit simgesinden mikrofonu açıp tekrar dene.";
     error.hidden = false;
   }
-}
-
-function promptForPhase() {
-  if (state.phase === "baseline-1") {
-    return {
-      kicker: "KONUŞMA 1 / 2 · BAŞLANGIÇ",
-      title: "Tell me about an engineering project you are proud of.",
-      context: "Explain the goal, your responsibility, and one decision you made.",
-      guide: "Goal → Your role → Decision → Result",
-    };
-  }
-  if (state.phase === "baseline-2") {
-    return {
-      kicker: "KONUŞMA 2 / 2 · PROFESYONEL SENARYO",
-      ...scenarioPrompts[state.answers.situation || "daily"],
-      guide: "Direct answer → Reason → Example → Professional impact",
-    };
-  }
-  const bottleneck = getPrimaryBottleneck();
-  const method = bottleneckCopy[bottleneck];
-  const base = scenarioPrompts[state.answers.situation || "daily"];
-  if (state.phase === "challenge") {
-    return {
-      kicker: "SON GÖREV · BİR ADIM DAHA ZOR",
-      title: `${base.title} Then explain one risk or trade-off.`,
-      context: "Use the method, then add one realistic risk and the action you would take.",
-      guide: `${method.guide} → Risk → Action`,
-    };
-  }
-  return {
-    kicker: state.phase === "retry" ? "YENİDEN DENE · GERİ BİLDİRİMİ UYGULA" : "İLK UYGULAMA",
-    title: base.title,
-    context: base.context,
-    guide: method.guide,
-  };
-}
-
-function preparePrompt() {
-  const prompt = promptForPhase();
-  $("[data-record-kicker]").textContent = prompt.kicker;
-  $("[data-prompt-title]").textContent = prompt.title;
-  $("[data-prompt-context]").textContent = prompt.context;
-  $("[data-prompt-guide] strong").textContent = prompt.guide;
-  resetRecorder();
 }
 
 function resetRecorder() {
@@ -390,6 +210,7 @@ function resetRecorder() {
   $("[data-record-actions]").hidden = true;
   $("[data-record-error]").hidden = true;
   $("[data-record-button]").disabled = false;
+  $("[data-use-recording]").disabled = false;
 }
 
 function selectMimeType() {
@@ -397,6 +218,27 @@ function selectMimeType() {
 }
 
 function startRecording() {
+  if (state.isDemo) {
+    if (state.demoRecording) return;
+    state.demoRecording = true;
+    state.remaining = 45;
+    $("[data-recorder]").classList.add("is-recording");
+    $("[data-record-label]").textContent = "Kaydı Bitir";
+    $("[data-record-hint]").textContent = "Yerel demo cevabı kaydediliyor.";
+    trackEvent(
+      state.phase === "retry" ? "retry_recording_started" : "first_recording_started",
+      state.phase,
+      {},
+      `recording_started:${state.phase}`,
+    );
+    state.timerId = setInterval(() => {
+      state.remaining -= 1;
+      $("[data-timer]").textContent = `00:${String(Math.max(0, state.remaining)).padStart(2, "0")}`;
+      if (state.remaining <= 0) stopRecording();
+    }, 1000);
+    return;
+  }
+  if (!state.stream || state.recorder?.state === "recording") return;
   state.chunks = [];
   const mimeType = selectMimeType();
   state.recorder = new MediaRecorder(state.stream, mimeType ? { mimeType } : undefined);
@@ -409,8 +251,14 @@ function startRecording() {
     $("[data-record-label]").textContent = "Kayıt Tamamlandı";
     $("[data-record-hint]").textContent = `${45 - state.remaining} saniyelik cevap hazır.`;
     $("[data-record-actions]").hidden = false;
-  });
+  }, { once: true });
   state.recorder.start(250);
+  trackEvent(
+    state.phase === "retry" ? "retry_recording_started" : "first_recording_started",
+    state.phase,
+    {},
+    `recording_started:${state.phase}`,
+  );
   $("[data-recorder]").classList.add("is-recording");
   $("[data-record-label]").textContent = "Kaydı Bitir";
   $("[data-record-hint]").textContent = "Doğal konuş. Kusursuz olmaya çalışma.";
@@ -423,46 +271,56 @@ function startRecording() {
 
 function stopRecording() {
   clearInterval(state.timerId);
+  if (state.isDemo && state.demoRecording) {
+    state.demoRecording = false;
+    state.blob = new Blob([new Uint8Array(2000)], { type: "audio/webm" });
+    $("[data-recorder]").classList.remove("is-recording");
+    $("[data-record-label]").textContent = "Demo Kaydı Tamamlandı";
+    $("[data-record-hint]").textContent = `${45 - state.remaining} saniyelik demo cevabı hazır.`;
+    $("[data-record-actions]").hidden = false;
+    return;
+  }
   if (state.recorder?.state === "recording") state.recorder.stop();
 }
 
 function handleRecordButton() {
-  if (state.recorder?.state === "recording") {
+  if (state.isDemo && state.demoRecording) {
     stopRecording();
-  } else {
-    startRecording();
+    return;
   }
+  if (state.recorder?.state === "recording") stopRecording();
+  else startRecording();
 }
 
 async function useRecording() {
   const error = $("[data-record-error]");
+  if (state.submitting) return;
   if (!state.blob || state.blob.size < 1500 || 45 - state.remaining < 4) {
     error.textContent = "Analiz için en az birkaç saniye konuşman gerekiyor. Lütfen yeniden kaydet.";
     error.hidden = false;
     return;
   }
+  state.submitting = true;
+  $("[data-use-recording]").disabled = true;
   const phase = state.phase;
-  trackEvent("recording_submitted", phase, { duration_seconds: 45 - state.remaining });
   const blob = state.blob;
-  const prompt = promptForPhase();
-  state.pending[phase] = analyzeRecording(blob, phase, prompt);
-
-  if (phase === "baseline-1") {
-    state.phase = "baseline-2";
-    preparePrompt();
-    toast("İlk cevabın arka planda inceleniyor. Sen ikinci göreve devam edebilirsin.");
-    return;
-  }
-  if (phase === "baseline-2") {
-    showScreen("contact");
-    return;
-  }
+  state.recordings[phase] = blob;
+  const duration = 45 - state.remaining;
+  trackEvent("recording_submitted", phase, { duration_seconds: duration }, `recording_submitted:${phase}`);
+  trackEvent(
+    phase === "retry" ? "retry_submitted" : "first_answer_submitted",
+    phase,
+    { duration_seconds: duration },
+    `answer_submitted:${phase}`,
+  );
+  state.pending[phase] = analyzeRecording(blob, phase, promptForSituation());
   await waitForAnalysis(phase);
+  state.submitting = false;
 }
 
 async function analyzeRecording(blob, phase, prompt) {
   if (state.isDemo) {
-    await new Promise((resolve) => setTimeout(resolve, 900));
+    await new Promise((resolve) => setTimeout(resolve, 700));
     return demoAnalysis(phase);
   }
   const config = window.STAR_SPEAKER_SUPABASE_CONFIG || {};
@@ -471,14 +329,11 @@ async function analyzeRecording(blob, phase, prompt) {
   form.append("audio", blob, `answer-${phase}.${blob.type.includes("mp4") ? "m4a" : "webm"}`);
   form.append("phase", phase);
   form.append("prompt", JSON.stringify(prompt));
-  form.append("context", JSON.stringify(state.answers));
+  form.append("context", JSON.stringify({ situation: state.situation }));
   if (state.retryFocus) form.append("retry_focus", state.retryFocus);
   const response = await fetch(`${config.url}/functions/v1/ai-speaking-coach`, {
     method: "POST",
-    headers: {
-      apikey: config.anonKey,
-      Authorization: `Bearer ${config.anonKey}`,
-    },
+    headers: { apikey: config.anonKey, Authorization: `Bearer ${config.anonKey}` },
     body: form,
   });
   const body = await response.json().catch(() => ({}));
@@ -491,6 +346,7 @@ async function waitForAnalysis(phase) {
   const status = $("[data-analysis-status]");
   const error = $("[data-analysis-error]");
   const retry = $("[data-analysis-retry]");
+  status.textContent = "Konuşma örneğin yazıya dönüştürülüyor…";
   error.hidden = true;
   retry.hidden = true;
   rotateInsights();
@@ -498,16 +354,15 @@ async function waitForAnalysis(phase) {
   try {
     state.analyses[phase] = await state.pending[phase];
     stopAnalysisAnimations();
-    if (phase === "practice" || phase === "retry") {
-      renderFeedback(state.analyses[phase], phase);
-      showScreen("feedback");
-    } else if (phase === "challenge") {
-      renderResult();
-      showScreen("result");
-      saveLead("completed").catch(() => {});
+    if (phase === "first") {
+      renderCorrection();
+      trackEvent("personal_correction_viewed", "correction", {}, "personal_correction_viewed");
+      trackEvent("diagnosis_received", "correction", {}, "diagnosis_received");
+      showScreen("correction");
     } else {
-      renderDiagnosis();
-      showScreen("diagnosis");
+      renderResult();
+      trackEvent("result_viewed", "result", {}, "result_viewed");
+      showScreen("result");
     }
   } catch (cause) {
     stopAnalysisAnimations();
@@ -516,7 +371,8 @@ async function waitForAnalysis(phase) {
     error.hidden = false;
     retry.hidden = false;
     retry.onclick = () => {
-      state.pending[phase] = analyzeRecording(state.blob, phase, promptForPhase());
+      retry.hidden = true;
+      state.pending[phase] = analyzeRecording(state.recordings[phase], phase, promptForSituation());
       waitForAnalysis(phase);
     };
   }
@@ -533,11 +389,10 @@ function rotateInsights() {
     $("[data-waiting-insight]").textContent = waitingInsights[index];
   }, 2300);
 }
+
 function animateAnalysisSteps() {
   const steps = $$("[data-analysis-step]");
-  steps.forEach((step, index) => {
-    step.className = index === 0 ? "is-active" : "";
-  });
+  steps.forEach((step, index) => { step.className = index === 0 ? "is-active" : ""; });
   stepTimers.forEach(clearTimeout);
   stepTimers = steps.slice(1).map((step, index) => setTimeout(() => {
     steps[index].className = "is-complete";
@@ -547,11 +402,72 @@ function animateAnalysisSteps() {
       "Netlik ve profesyonel etki karşılaştırılıyor…",
       "En değerli düzeltme seçiliyor…",
     ][index];
-  }, 900 + index * 1200));
+  }, 800 + index * 1100));
 }
+
 function stopAnalysisAnimations() {
   clearInterval(insightTimer);
   stepTimers.forEach(clearTimeout);
+}
+
+function scoreFrom(metrics) {
+  return Math.round(Object.values(metrics || {}).reduce((total, value) => total + Number(value || 0), 0) / 4);
+}
+
+function getPrimaryBottleneck() {
+  return Object.entries(state.analyses.first?.metrics || {})
+    .sort((a, b) => Number(a[1]) - Number(b[1]))[0]?.[0] || "structure";
+}
+
+function renderCorrection() {
+  const analysis = state.analyses.first;
+  const bottleneck = getPrimaryBottleneck();
+  const score = scoreFrom(analysis.metrics);
+  state.retryFocus = analysis.correction_tr;
+  $("[data-overall-score]").textContent = score;
+  $("[data-score-ring]").style.background =
+    `radial-gradient(circle closest-side, #0d0c0a 82%, transparent 84% 100%), conic-gradient(var(--champagne) ${score}%, rgba(255,255,255,.1) 0)`;
+  $("[data-bottleneck-title]").textContent = bottleneckTitles[bottleneck] || labels[bottleneck];
+  $("[data-feedback-strength]").textContent = analysis.strength_tr;
+  $("[data-feedback-correction]").textContent = analysis.correction_tr;
+  $("[data-evidence]").textContent = analysis.evidence_tr;
+  $("[data-feedback-opening]").textContent = analysis.improved_opening_tr;
+}
+
+function transcriptExcerpt(value) {
+  const text = String(value || "").trim();
+  if (!text) return "Transkript oluşturulamadı.";
+  return text.length > 280 ? `${text.slice(0, 277).trim()}…` : text;
+}
+
+function renderResult() {
+  const first = state.analyses.first;
+  const retry = state.analyses.retry;
+  const before = scoreFrom(first.metrics);
+  const after = scoreFrom(retry.metrics);
+  const difference = after - before;
+  const bottleneck = getPrimaryBottleneck();
+  $("[data-before-score]").textContent = before;
+  $("[data-after-score]").textContent = after;
+  $("[data-improvement-copy]").textContent = difference > 0
+    ? `Tekrar denemende genel gösterge ${difference} puan yükseldi. Bu fark yalnızca ikinci cevabında gerçekten görülen değişime dayanıyor.`
+    : difference === 0
+      ? "Genel gösterge aynı kaldı. Yine de artık hangi tek davranışa odaklanacağını ve cevabını nasıl başlatacağını biliyorsun."
+      : `Tekrar denemendeki genel gösterge ${Math.abs(difference)} puan daha düşük çıktı. Bu bir başarısızlık değil; kısa cevaplarda dalgalanma normaldir ve sonraki odağın artık nettir.`;
+  $("[data-first-transcript]").textContent = transcriptExcerpt(first.transcript);
+  $("[data-retry-transcript]").textContent = transcriptExcerpt(retry.transcript);
+  $("[data-result-bottleneck]").textContent = bottleneckTitles[bottleneck] || labels[bottleneck];
+  $("[data-result-correction]").textContent = first.correction_tr;
+  $("[data-result-next]").textContent = retry.next_action_tr;
+  const message = [
+    "Merhaba, 3 Dakikalık Konuşma Performans Analizi'ni tamamladım.",
+    `Ana odağım: ${bottleneckTitles[bottleneck] || labels[bottleneck]}.`,
+    "Sonucumu bir Star Speaker uzmanıyla değerlendirmek istiyorum.",
+  ].join("\n");
+  $("[data-whatsapp-cta]").href = `https://wa.me/905525247746?text=${encodeURIComponent(message)}`;
+  $("[data-booking-fallback-whatsapp]").href = `https://wa.me/905525247746?text=${encodeURIComponent(
+    "Merhaba, ücretsiz Konuşma Performansı Görüşmesi için uygun bir saat bulamadım. Yardımcı olabilir misiniz?",
+  )}`;
 }
 
 async function handleContactSubmit(event) {
@@ -571,155 +487,41 @@ async function handleContactSubmit(event) {
   };
   const submit = $("button[type='submit']", form);
   submit.disabled = true;
-  submit.textContent = "Sonucun hazırlanıyor…";
+  submit.textContent = "Uygun saatler hazırlanıyor…";
+  trackEvent("contact_submitted", "result", {}, "contact_submitted");
   try {
-    showScreen("analysis");
-    rotateInsights();
-    animateAnalysisSteps();
-    const results = await Promise.all([state.pending["baseline-1"], state.pending["baseline-2"]]);
-    state.analyses["baseline-1"] = results[0];
-    state.analyses["baseline-2"] = results[1];
-    stopAnalysisAnimations();
-    await saveLead("diagnosed").catch(() => {});
-    renderDiagnosis();
-    showScreen("diagnosis");
+    await saveLead("completed");
+    if (!state.leadId) throw new Error("İletişim kaydı oluşturulamadı.");
+    form.hidden = true;
+    await loadBookingSlots();
   } catch (cause) {
-    stopAnalysisAnimations();
-    showScreen("contact");
     submit.disabled = false;
-    submit.innerHTML = 'Kişisel Sonucumu Göster <span aria-hidden="true">→</span>';
-    error.textContent = `${cause.message} Lütfen tekrar dene; kayıtların kaybolmadı.`;
+    submit.innerHTML = 'Uygun Saatleri Göster <span aria-hidden="true">→</span>';
+    error.textContent = `${cause.message} Lütfen tekrar dene. Sonucun ekranda kalmaya devam edecek.`;
     error.hidden = false;
   }
-}
-
-function averageMetrics(...items) {
-  const keys = Object.keys(labels);
-  return Object.fromEntries(keys.map((key) => [
-    key,
-    Math.round(items.reduce((total, item) => total + Number(item?.metrics?.[key] || 0), 0) / items.length),
-  ]));
-}
-
-function getBaselineMetrics() {
-  return averageMetrics(state.analyses["baseline-1"], state.analyses["baseline-2"]);
-}
-
-function getPrimaryBottleneck() {
-  const metrics = getBaselineMetrics();
-  return Object.entries(metrics).sort((a, b) => a[1] - b[1])[0]?.[0] || "structure";
-}
-
-function scoreFrom(metrics) {
-  return Math.round(Object.values(metrics).reduce((total, value) => total + Number(value || 0), 0) / 4);
-}
-
-function renderDiagnosis() {
-  const metrics = getBaselineMetrics();
-  const bottleneck = getPrimaryBottleneck();
-  const copy = bottleneckCopy[bottleneck];
-  const score = scoreFrom(metrics);
-  $("[data-overall-score]").textContent = score;
-  $("[data-score-ring]").style.background =
-    `radial-gradient(circle closest-side, #0d0c0a 82%, transparent 84% 100%), conic-gradient(var(--champagne) ${score}%, rgba(255,255,255,.1) 0)`;
-  $("[data-bottleneck-title]").textContent = copy.title;
-  $("[data-diagnosis-summary]").textContent = copy.summary;
-  $("[data-evidence]").textContent =
-    state.analyses["baseline-2"]?.evidence_tr || state.analyses["baseline-1"]?.evidence_tr || "Cevabının ana yönü dinleyici için yeterince erken görünür olmadı.";
-  const metricsRoot = $("[data-metrics]");
-  metricsRoot.replaceChildren();
-  Object.entries(labels).forEach(([key, label]) => {
-    const metric = document.createElement("div");
-    metric.className = "sprint-metric";
-    metric.innerHTML = `<span>${label}</span><strong>${metrics[key]}</strong>`;
-    metricsRoot.append(metric);
-  });
-}
-
-function renderMethod() {
-  const copy = bottleneckCopy[getPrimaryBottleneck()];
-  $("[data-method-title]").textContent = copy.method;
-  $("[data-method-intro]").textContent = copy.intro;
-  $("[data-method-example]").textContent = copy.example;
-  const root = $("[data-method-steps]");
-  root.replaceChildren();
-  copy.steps.forEach(([title, detail]) => {
-    const item = document.createElement("div");
-    item.className = "sprint-method-step";
-    item.innerHTML = `<div><strong>${title}</strong><span>${detail}</span></div>`;
-    root.append(item);
-  });
-}
-
-function renderFeedback(analysis, phase) {
-  $("[data-feedback-strength]").textContent = analysis.strength_tr;
-  $("[data-feedback-correction]").textContent = analysis.correction_tr;
-  $("[data-feedback-opening]").textContent = analysis.improved_opening_tr;
-  state.retryFocus = analysis.correction_tr;
-  const button = $("[data-retry-with-feedback]");
-  button.innerHTML = phase === "retry"
-    ? 'Son Profesyonel Göreve Geç <span aria-hidden="true">→</span>'
-    : 'Geri Bildirimle Tekrar Dene <span aria-hidden="true">→</span>';
-  button.dataset.nextPhase = phase === "retry" ? "challenge" : "retry";
-}
-
-function renderResult() {
-  const baselineMetrics = getBaselineMetrics();
-  const finalMetrics = state.analyses.challenge.metrics;
-  const before = scoreFrom(baselineMetrics);
-  const after = scoreFrom(finalMetrics);
-  const difference = after - before;
-  const bottleneck = getPrimaryBottleneck();
-  const copy = bottleneckCopy[bottleneck];
-  $("[data-before-score]").textContent = before;
-  $("[data-after-score]").textContent = after;
-  $("[data-improvement-copy]").textContent = difference > 0
-    ? `Bu kısa seans içinde performans göstergen ${difference} puan yükseldi. En önemli fark, öğrendiğin yöntemi cevabında görünür biçimde kullanman oldu.`
-    : "Yöntemi ilk kez uyguladın. Puan değişmemiş olsa bile artık bir sonraki çalışmanda hangi davranışa odaklanacağını biliyorsun.";
-  $("[data-result-bottleneck]").textContent = copy.title;
-  $("[data-result-method]").textContent = copy.method;
-  $("[data-result-next]").textContent = state.analyses.challenge.next_action_tr || copy.next;
-  const qualification = qualifyLead();
-  const message = [
-    `Merhaba, ben ${state.contact.fullName}.`,
-    "Mühendislik İngilizcesi Performans Seansı'nı tamamladım.",
-    `Ana darboğazım: ${copy.title}.`,
-    `İlk skor: ${before}/100, son skor: ${after}/100.`,
-    `Profesyonel hedefim: ${state.answers.situation}; zamanlama: ${state.answers.deadline}.`,
-    qualification === "priority"
-      ? "Ücretsiz 15 dakikalık konuşma analizinde uygun saatleri görmek istiyorum."
-      : "Ücretsiz konuşma analizi hakkında bilgi almak istiyorum.",
-  ].join("\n");
-  $("[data-whatsapp-cta]").href = `https://wa.me/905525247746?text=${encodeURIComponent(message)}`;
-  $("[data-booking-fallback-whatsapp]").href = `https://wa.me/905525247746?text=${encodeURIComponent(
-    "Merhaba, ücretsiz Konuşma Performansı Görüşmesi için uygun bir saat bulamadım. Yardımcı olabilir misiniz?",
-  )}`;
-}
-
-function qualifyLead() {
-  const urgent = ["14", "30", "ongoing"].includes(state.answers.deadline);
-  const ready = ["start", "explore"].includes(state.answers.readiness);
-  return urgent && ready ? "priority" : ready ? "nurture" : "low_intent";
 }
 
 async function saveLead(stage) {
   if (state.isDemo) return;
   const config = window.STAR_SPEAKER_SUPABASE_CONFIG || {};
+  if (!config.url || !config.anonKey) throw new Error("İletişim servisi yapılandırılmamış.");
   const payload = {
     action: "save_lead",
     stage,
     lead_id: state.leadId,
     contact: state.contact,
-    context: state.answers,
-    qualification: qualifyLead(),
-    bottleneck: state.analyses["baseline-1"] ? getPrimaryBottleneck() : null,
-    baseline_metrics: state.analyses["baseline-1"] ? getBaselineMetrics() : null,
-    final_metrics: state.analyses.challenge?.metrics || null,
-    transcripts: Object.fromEntries(
-      Object.entries(state.analyses).map(([key, value]) => [key, value.transcript || ""]),
-    ),
+    context: { situation: state.situation },
+    qualification: "nurture",
+    bottleneck: getPrimaryBottleneck(),
+    baseline_metrics: state.analyses.first?.metrics || null,
+    final_metrics: state.analyses.retry?.metrics || null,
+    transcripts: {
+      first: state.analyses.first?.transcript || "",
+      retry: state.analyses.retry?.transcript || "",
+    },
     session_id: state.sessionId,
-    budget_range: state.budgetRange || null,
+    budget_range: null,
     source_data: state.sourceData,
   };
   const response = await fetch(`${config.url}/functions/v1/ai-speaking-coach`, {
@@ -732,7 +534,8 @@ async function saveLead(stage) {
     body: JSON.stringify(payload),
   });
   const body = await response.json().catch(() => ({}));
-  if (response.ok && body.lead_id) state.leadId = body.lead_id;
+  if (!response.ok) throw new Error(body.error || "İletişim kaydı oluşturulamadı.");
+  if (body.lead_id) state.leadId = body.lead_id;
 }
 
 function bookingApi(payload) {
@@ -791,9 +594,7 @@ function renderBookingSlots() {
     slotsRoot.textContent = "Önümüzdeki yedi gün içinde uygun randevu görünmüyor.";
     return;
   }
-  let activeDate = [...groups.keys()][0];
   const drawTimes = (date) => {
-    activeDate = date;
     state.selectedBookingStart = "";
     $("[data-booking-review]").hidden = true;
     $$("button", datesRoot).forEach((button) => {
@@ -808,10 +609,9 @@ function renderBookingSlots() {
       button.addEventListener("click", () => {
         state.selectedBookingStart = slot.appointment_start;
         $$("button", slotsRoot).forEach((item) => item.classList.toggle("is-selected", item === button));
-        $("[data-booking-selection]").textContent =
-          `${formatBookingDate(slot.appointment_start, true)} · Türkiye saati`;
+        $("[data-booking-selection]").textContent = `${formatBookingDate(slot.appointment_start, true)} · Türkiye saati`;
         $("[data-booking-review]").hidden = false;
-        trackEvent("booking_slot_selected", "booking", { booking_date: slot.booking_date });
+        trackEvent("booking_slot_selected", "booking", { booking_date: slot.booking_date }, `booking_slot:${slot.appointment_start}`);
       });
       slotsRoot.append(button);
     });
@@ -824,11 +624,11 @@ function renderBookingSlots() {
     button.textContent = formatBookingDate(slots[0].appointment_start);
     button.addEventListener("click", () => {
       drawTimes(date);
-      trackEvent("booking_date_selected", "booking", { booking_date: date });
+      trackEvent("booking_date_selected", "booking", { booking_date: date }, `booking_date:${date}`);
     });
     datesRoot.append(button);
   });
-  drawTimes(activeDate);
+  drawTimes([...groups.keys()][0]);
 }
 
 async function loadBookingSlots() {
@@ -837,7 +637,7 @@ async function loadBookingSlots() {
   $("[data-booking-loading]").hidden = false;
   $("[data-booking-picker]").hidden = true;
   setBookingError();
-  trackEvent("booking_viewed", "booking");
+  trackEvent("booking_viewed", "booking", {}, "booking_viewed");
   try {
     const body = await bookingApi({ action: "slots" });
     state.bookingSlots = body.slots || [];
@@ -851,25 +651,19 @@ async function loadBookingSlots() {
 }
 
 function renderBookingSuccess() {
-  const booking = state.booking;
-  if (!booking) return;
+  if (!state.booking) return;
   $("[data-booking-picker]").hidden = true;
   $("[data-booking-success]").hidden = false;
   $("[data-booking-confirmation]").textContent =
-    `${formatBookingDate(booking.appointment_start, true)} · Türkiye saati`;
+    `${formatBookingDate(state.booking.appointment_start, true)} · Türkiye saati`;
   const message = `Merhaba, ücretsiz Konuşma Performansı Görüşmemi ${formatBookingDate(
-    booking.appointment_start,
-  )} tarihinde saat ${formatBookingTime(booking.appointment_start)} için planladım. Randevumu onaylamak istiyorum.`;
-  $("[data-booking-whatsapp]").href =
-    `https://wa.me/905525247746?text=${encodeURIComponent(message)}`;
+    state.booking.appointment_start,
+  )} tarihinde saat ${formatBookingTime(state.booking.appointment_start)} için planladım. Randevumu onaylamak istiyorum.`;
+  $("[data-booking-whatsapp]").href = `https://wa.me/905525247746?text=${encodeURIComponent(message)}`;
 }
 
 function storeBooking() {
-  try {
-    sessionStorage.setItem("performanceSprintBooking", JSON.stringify(state.booking));
-  } catch {
-    // The database remains authoritative when browser storage is unavailable.
-  }
+  try { sessionStorage.setItem("performanceSprintBooking", JSON.stringify(state.booking)); } catch { /* optional */ }
 }
 
 function restoreBooking() {
@@ -881,7 +675,7 @@ function restoreBooking() {
     renderBookingSuccess();
     showScreen("result");
   } catch {
-    // Ignore unavailable or malformed browser storage.
+    // Browser storage is optional.
   }
 }
 
@@ -892,7 +686,7 @@ async function confirmBooking() {
   button.disabled = true;
   button.textContent = "Randevun planlanıyor…";
   setBookingError();
-  trackEvent("booking_submitted", "booking", { mode: state.bookingMode });
+  trackEvent("booking_submitted", "booking", { mode: state.bookingMode }, `booking_submit:${state.bookingMode}`);
   try {
     if (state.bookingMode === "reschedule" && state.booking) {
       const body = await bookingApi({
@@ -915,10 +709,9 @@ async function confirmBooking() {
     storeBooking();
     renderBookingSuccess();
   } catch (cause) {
-    const message = cause.message;
-    trackEvent("booking_failed", "booking", { mode: state.bookingMode });
+    trackEvent("booking_failed", "booking", { mode: state.bookingMode }, `booking_failed:${Date.now()}`);
     await loadBookingSlots();
-    setBookingError(message);
+    setBookingError(cause.message);
   } finally {
     state.bookingSubmitting = false;
     button.disabled = false;
@@ -930,7 +723,7 @@ async function startReschedule() {
   if (!state.booking) return;
   state.bookingMode = "reschedule";
   $("[data-booking-success]").hidden = true;
-  trackEvent("booking_reschedule_started", "booking");
+  trackEvent("booking_reschedule_started", "booking", {}, `booking_reschedule:${Date.now()}`);
   await loadBookingSlots();
 }
 
@@ -945,7 +738,7 @@ async function cancelBooking() {
       management_token: state.booking.management_token,
     });
     state.booking = null;
-    try { sessionStorage.removeItem("performanceSprintBooking"); } catch { /* Storage is optional. */ }
+    try { sessionStorage.removeItem("performanceSprintBooking"); } catch { /* optional */ }
     state.bookingMode = "create";
     $("[data-booking-success]").hidden = true;
     toast("Randevun iptal edildi. İstersen yeni bir saat seçebilirsin.");
@@ -958,23 +751,19 @@ async function cancelBooking() {
 }
 
 function demoAnalysis(phase) {
-  const base = {
-    "baseline-1": [64, 47, 51, 58],
-    "baseline-2": [61, 45, 48, 54],
-    practice: [67, 60, 62, 59],
-    retry: [72, 70, 68, 64],
-    challenge: [76, 74, 72, 69],
-  }[phase] || [60, 50, 55, 58];
+  const base = phase === "retry" ? [76, 73, 70, 72] : [62, 48, 54, 57];
   return {
-    transcript: "Demo transcript for local experience testing.",
+    transcript: phase === "retry"
+      ? "The main decision I made was to prioritize reliability because downtime was our biggest operational risk. I compared both options, aligned the team, and the release remained stable."
+      : "We had a project and there were different options. I think reliability was important and we discussed it with the team before the release.",
     metrics: { clarity: base[0], structure: base[1], pressure: base[2], interaction: base[3] },
     strength_tr: "Teknik kararının nedenini somut bir proje ayrıntısıyla destekledin.",
-    correction_tr: phase.startsWith("baseline")
+    correction_tr: phase === "first"
       ? "Ana cevabını ilk cümlede söyle; ayrıntıları daha sonra ekle."
       : "Son cümlede kararının profesyonel etkisini açıkça bağla.",
-    evidence_tr: "Ana mesajın ikinci yarıda ortaya çıktı; dinleyici ilk cümlelerde cevabının yönünü tahmin etmek zorunda kaldı.",
+    evidence_tr: "Ana mesajın cevabın ikinci yarısında ortaya çıktı; dinleyici ilk cümlelerde yönü tahmin etmek zorunda kaldı.",
     improved_opening_tr: "The main decision I made was to prioritize reliability, because downtime was our biggest operational risk.",
-    next_action_tr: "Takip sorularında aynı yapıyı bozmadan daha kısa cevap vermek",
+    next_action_tr: "Bir sonraki cevabında aynı doğrudan açılışı koruyup sonucu tek cümlede bağla.",
   };
 }
 
@@ -986,73 +775,56 @@ function toast(message) {
 }
 
 $("[data-start]").addEventListener("click", () => {
-  renderQuestion();
-  showScreen("setup");
+  trackEvent("start_clicked", "intro", {}, "start_clicked");
+  trackEvent("test_started", "intro", {}, "test_started");
+  showScreen("situation");
 });
-$("[data-budget]").addEventListener("change", async (event) => {
-  if (event.target.name !== "budget") return;
-  state.budgetRange = event.target.value;
-  const cta = $("[data-whatsapp-cta]");
-  cta.classList.remove("is-disabled");
-  cta.setAttribute("aria-disabled", "false");
-  $("[data-budget-error]").hidden = true;
-  trackEvent("budget_selected", "result", { budget_range: state.budgetRange });
-  try {
-    await saveLead("completed");
-    await loadBookingSlots();
-  } catch {
-    $("[data-booking]").hidden = false;
-    setBookingError("Randevu adımı hazırlanamadı. Lütfen bağlantını kontrol edip tekrar dene.");
-  }
+
+$$("[data-situation]").forEach((button) => {
+  button.addEventListener("click", () => {
+    state.situation = button.dataset.situation;
+    trackEvent("situation_selected", "situation", { situation: state.situation }, "situation_selected");
+    showScreen("mic");
+  });
 });
-$("[data-setup-back]").addEventListener("click", () => {
-  state.questionIndex = Math.max(0, state.questionIndex - 1);
-  renderQuestion();
-});
+
 $("[data-enable-mic]").addEventListener("click", ensureMicrophone);
 $("[data-record-button]").addEventListener("click", handleRecordButton);
 $("[data-record-again]").addEventListener("click", resetRecorder);
 $("[data-use-recording]").addEventListener("click", useRecording);
+$("[data-start-retry]").addEventListener("click", () => {
+  trackEvent("retry_started", "correction", {}, "retry_started");
+  state.phase = "retry";
+  preparePrompt();
+  showScreen("record");
+});
+$("[data-open-contact]").addEventListener("click", () => {
+  $("[data-contact-form]").hidden = false;
+  $("[data-open-contact]").hidden = true;
+  trackEvent("booking_intent_clicked", "result", {}, "booking_intent_clicked");
+});
 $("[data-contact-form]").addEventListener("submit", handleContactSubmit);
-$("[data-start-training]").addEventListener("click", () => {
-  renderMethod();
-  showScreen("method");
-});
-$("[data-method-continue]").addEventListener("click", () => {
-  state.phase = "practice";
-  preparePrompt();
-  showScreen("record");
-});
-$("[data-retry-with-feedback]").addEventListener("click", (event) => {
-  state.phase = event.currentTarget.dataset.nextPhase || "retry";
-  preparePrompt();
-  showScreen("record");
-});
-$("[data-whatsapp-cta]").addEventListener("click", (event) => {
-  if (!state.budgetRange) {
-    event.preventDefault();
-    $("[data-budget-error]").hidden = false;
-    return;
-  }
-  trackEvent("whatsapp_clicked", "result", { budget_range: state.budgetRange });
-  saveLead("whatsapp_clicked").catch(() => {});
+$("[data-whatsapp-cta]").addEventListener("click", () => {
+  trackEvent("whatsapp_clicked", "result", {}, "whatsapp_clicked");
 });
 $("[data-booking-confirm]").addEventListener("click", confirmBooking);
 $("[data-booking-reschedule]").addEventListener("click", startReschedule);
 $("[data-booking-cancel]").addEventListener("click", cancelBooking);
 $("[data-booking-whatsapp]").addEventListener("click", () => {
-  trackEvent("booking_whatsapp_clicked", "booking");
+  trackEvent("booking_whatsapp_clicked", "booking", {}, `booking_whatsapp:${Date.now()}`);
 });
 $("[data-booking-fallback-whatsapp]").addEventListener("click", () => {
-  trackEvent("booking_no_slot_whatsapp_clicked", "booking");
+  trackEvent("booking_no_slot_whatsapp_clicked", "booking", {}, `booking_fallback:${Date.now()}`);
 });
 
 window.addEventListener("beforeunload", () => {
-  if (!state.isDemo && state.lastTrackedStage && state.lastTrackedStage !== "result") {
-    trackEvent("session_abandoned", state.lastTrackedStage);
+  if (!state.isDemo && state.currentScreen !== "intro" && state.currentScreen !== "result") {
+    trackEvent("session_abandoned", state.currentScreen, {}, `session_abandoned:${state.currentScreen}`);
   }
   state.stream?.getTracks().forEach((track) => track.stop());
 });
 
-trackStage("intro");
+trackEvent("landing_viewed", "intro", {}, "landing_viewed");
+trackEvent("page_opened", "intro", {}, "page_opened");
+if (state.isDemo) $("[data-demo-badge]").hidden = false;
 restoreBooking();

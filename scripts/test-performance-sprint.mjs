@@ -20,42 +20,64 @@ const schema = await readFile(
 
 assert.match(page, /<html lang="tr">/);
 assert.match(page, /rel="canonical" href="https:\/\/starspeakerstudio\.com\/tr\/performans-testi\/"/);
-assert.match(page, /İngilizcen değil,\s*<em>performansın<\/em> test edilecek\./);
+assert.match(page, /MÜHENDİSLERE ÖZEL · ÜCRETSİZ · 3 DAKİKA/);
+assert.match(page, /Konuşmanı yavaşlatan<br><em>ana problemi<\/em> gör\./);
+assert.match(page, /Bir profesyonel soruyu sesli yanıtla, kişisel düzeltmeni al ve cevabını daha güçlü şekilde tekrar dene\./);
+assert.match(page, /3 Dakikalık Analize Başla/);
+assert.match(page, /Seviye sınavı değil · Hazırlık gerektirmez · Sonucun hemen hazır/);
 assert.match(page, /data-screen="intro"/);
-assert.match(page, /data-screen="setup"/);
+assert.match(page, /data-screen="situation"/);
 assert.match(page, /data-screen="record"/);
 assert.match(page, /data-screen="analysis"/);
-assert.match(page, /data-screen="diagnosis"/);
-assert.match(page, /data-screen="method"/);
-assert.match(page, /data-screen="feedback"/);
+assert.match(page, /data-screen="correction"/);
 assert.match(page, /data-screen="result"/);
+assert.doesNotMatch(page, /data-screen="contact"/);
+assert.doesNotMatch(page, /Yaklaşık 15 dakika/);
+assert.doesNotMatch(page, /BU SEANSTA/);
+assert.doesNotMatch(page, /Performans Sprint/i);
+assert.ok(
+  page.indexOf('data-screen="result"') < page.indexOf("data-contact-form"),
+  "The optional contact form must remain inside the completed result.",
+);
+for (const situation of ["meeting", "interview", "presentation"]) {
+  assert.match(page, new RegExp(`data-situation="${situation}"`));
+  assert.match(script, new RegExp(`${situation}:\\s*\\{`));
+}
 assert.match(page, /data-whatsapp-cta/);
 assert.match(page, /data-booking-confirm/);
 assert.match(page, /data-booking-reschedule/);
 assert.match(page, /data-booking-cancel/);
 assert.match(page, /Ücretsiz Görüşmeni Planla/);
 assert.match(page, /Türkiye saati/);
-assert.match(page, /name="budget"/);
 assert.match(page, /autocomplete="tel"/);
 assert.match(page, /name="consent" required/);
 
-for (const phase of ["baseline-1", "baseline-2", "practice", "retry", "challenge"]) {
+for (const phase of ["first", "retry"]) {
   assert.match(script, new RegExp(`["']${phase}["']`));
 }
 for (const metric of ["clarity", "structure", "pressure", "interaction"]) {
   assert.match(script, new RegExp(`${metric}:`));
   assert.match(edgeFunction, new RegExp(`${metric}:`));
 }
-for (const bottleneck of ["clarity", "structure", "pressure", "interaction"]) {
-  assert.match(script, new RegExp(`${bottleneck}:\\s*\\{`));
-}
-
 assert.match(script, /MediaRecorder/);
 assert.match(script, /getUserMedia/);
 assert.match(script, /functions\/v1\/ai-speaking-coach/);
 assert.match(script, /data-whatsapp-cta/);
-assert.match(script, /saveLead\("whatsapp_clicked"\)/);
-assert.match(script, /trackEvent\("budget_selected"/);
+for (const eventName of [
+  "landing_viewed",
+  "start_clicked",
+  "situation_selected",
+  "microphone_granted",
+  "microphone_denied",
+  "first_recording_started",
+  "first_answer_submitted",
+  "personal_correction_viewed",
+  "retry_started",
+  "retry_submitted",
+  "result_viewed",
+  "whatsapp_clicked",
+  "contact_submitted",
+]) assert.match(script, new RegExp(eventName));
 for (const eventName of [
   "booking_viewed",
   "booking_date_selected",
@@ -75,6 +97,12 @@ assert.match(script, /performanceSprintBooking/);
 assert.match(script, /restoreBooking\(\)/);
 assert.match(script, /session_abandoned/);
 assert.match(script, /URLSearchParams\(location\.search\)\.get\("demo"\) === "1"/);
+assert.match(script, /state\.recordings\[phase\]/);
+assert.match(script, /state\.submitting/);
+assert.match(page, /data-demo-badge hidden/);
+assert.match(script, /if \(state\.isDemo\) \$\("\[data-demo-badge\]"\)\.hidden = false/);
+assert.match(script, /state\.analyses\.first\?\.improved_opening_tr/);
+assert.match(script, /state\.phase === "retry"/);
 assert.doesNotMatch(script, /OPENAI_API_KEY/);
 assert.doesNotMatch(script, /sk-[A-Za-z0-9]/);
 
