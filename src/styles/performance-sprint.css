@@ -211,7 +211,8 @@ img, svg { display: block; }
 }
 .sprint-primary:hover { transform: translateY(-2px); box-shadow: 0 16px 40px rgba(191,164,106,.22); }
 .sprint-primary:focus-visible, .sprint-secondary:focus-visible, .sprint-option:focus-visible,
-.sprint-record-button:focus-visible, input:focus-visible, .sprint-whatsapp-cta:focus-visible {
+.sprint-record-button:focus-visible, .sprint-situation-option:focus-visible,
+.sprint-level-options button:focus-visible, input:focus-visible, .sprint-whatsapp-cta:focus-visible {
   outline: 3px solid rgba(230,211,163,.38);
   outline-offset: 3px;
 }
@@ -304,23 +305,47 @@ img, svg { display: block; }
 .sprint-option strong { font-size: .92rem; font-weight: 600; }
 .sprint-text-button { margin-top: 1.3rem; border: 0; padding: .5rem 0; background: none; color: var(--muted); cursor: pointer; }
 
+.sprint-setup-card { width: min(100%, 820px); }
+.sprint-setup-card h2 { margin-bottom: 1.35rem; }
+.sprint-name-field {
+  display: grid;
+  gap: .5rem;
+  margin-bottom: 1.2rem;
+}
+.sprint-name-field > span,
+.sprint-setup-group legend {
+  color: #eee7da;
+  font-size: .86rem;
+  font-weight: 750;
+  line-height: 1.4;
+}
+.sprint-name-field input {
+  width: 100%;
+  min-height: 52px;
+  border: 1px solid rgba(230,211,163,.25);
+  border-radius: 3px;
+  background: rgba(255,255,255,.025);
+  color: var(--ivory);
+  padding: .8rem .9rem;
+}
+.sprint-setup-group { margin: 0 0 1.2rem; padding: 0; border: 0; }
+.sprint-setup-group legend { margin-bottom: .7rem; }
 .sprint-situation-options {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: .75rem;
-  margin-top: 1.7rem;
 }
 .sprint-situation-option {
-  min-height: 165px;
+  min-height: 76px;
   border: 1px solid rgba(230,211,163,.2);
   background: rgba(255,255,255,.018);
   color: var(--ivory);
   cursor: pointer;
   display: grid;
-  align-content: center;
-  justify-items: start;
-  gap: .55rem;
-  padding: 1.2rem;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: .75rem;
+  padding: .9rem 1rem;
   text-align: left;
   transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
 }
@@ -329,9 +354,31 @@ img, svg { display: block; }
   border-color: var(--line-strong);
   background: rgba(230,211,163,.05);
 }
+.sprint-situation-option[aria-pressed="true"],
+.sprint-level-options button[aria-pressed="true"] {
+  border-color: var(--champagne);
+  background: rgba(230,211,163,.11);
+  box-shadow: inset 0 0 0 1px rgba(230,211,163,.14);
+}
 .sprint-situation-option > span { color: var(--champagne-dark); font: .8rem Georgia, serif; }
-.sprint-situation-option > strong { font: 1.45rem Georgia, serif; }
+.sprint-situation-option > strong { font: 1.15rem Georgia, serif; }
 .sprint-situation-option > small { color: var(--muted); line-height: 1.45; }
+.sprint-level-options {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: .55rem;
+}
+.sprint-level-options button {
+  min-height: 50px;
+  border: 1px solid rgba(230,211,163,.2);
+  background: rgba(255,255,255,.018);
+  color: var(--ivory);
+  cursor: pointer;
+  font-weight: 750;
+}
+.sprint-level-options button:hover { border-color: var(--line-strong); background: rgba(230,211,163,.05); }
+.sprint-level-note { margin: .65rem 0 0; color: var(--muted); font-size: .72rem; line-height: 1.45; }
+.sprint-setup-submit { width: 100%; }
 
 .sprint-mic-card { text-align: center; }
 .sprint-icon-ring {
@@ -739,7 +786,28 @@ img, svg { display: block; }
   .sprint-flow-arrow { font-size: 1.2rem; }
   .sprint-intro-cta { min-height: 56px; padding-block: .7rem; }
   .sprint-situation-options { grid-template-columns: 1fr; }
-  .sprint-situation-option { min-height: 105px; }
+  .sprint-situation-option { min-height: 54px; }
+  .sprint-setup-card .sprint-situation-options { grid-template-columns: repeat(3, 1fr); gap: .45rem; }
+  .sprint-setup-card .sprint-situation-option {
+    min-height: 60px;
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: .2rem;
+    padding: .5rem .35rem;
+    text-align: center;
+  }
+  .sprint-setup-card .sprint-situation-option > strong { font-size: 1rem; }
+  .sprint-level-options { grid-template-columns: repeat(3, 1fr); }
+  .sprint-name-field:focus-within ~ .sprint-setup-submit {
+    position: fixed;
+    z-index: 80;
+    left: .75rem;
+    right: .75rem;
+    bottom: max(.75rem, env(safe-area-inset-bottom));
+    width: auto;
+    transform: none !important;
+    box-shadow: 0 16px 45px rgba(0,0,0,.72);
+  }
   .sprint-option { min-height: 54px; }
   .sprint-record-actions, .sprint-feedback-grid { grid-template-columns: 1fr; }
   .sprint-analysis-steps { gap: .25rem; }

@@ -4,6 +4,7 @@ import { resolve } from "node:path";
 
 const page = await readFile(resolve("tr", "performans-testi", "index.html"), "utf8");
 const script = await readFile(resolve("src", "scripts", "performance-sprint.js"), "utf8");
+const config = await readFile(resolve("src", "scripts", "performance-analysis-config.js"), "utf8");
 const styles = await readFile(resolve("src", "styles", "performance-sprint.css"), "utf8");
 const edgeFunction = await readFile(
   resolve("supabase", "functions", "ai-speaking-coach", "index.ts"),
@@ -26,7 +27,7 @@ assert.match(page, /Bir profesyonel soruyu sesli yanıtla, kişisel düzeltmeni 
 assert.match(page, /3 Dakikalık Analize Başla/);
 assert.match(page, /Seviye sınavı değil · Hazırlık gerektirmez · Sonucun hemen hazır/);
 assert.match(page, /data-screen="intro"/);
-assert.match(page, /data-screen="situation"/);
+assert.match(page, /data-screen="setup"/);
 assert.match(page, /data-screen="record"/);
 assert.match(page, /data-screen="analysis"/);
 assert.match(page, /data-screen="correction"/);
@@ -41,7 +42,7 @@ assert.ok(
 );
 for (const situation of ["meeting", "interview", "presentation"]) {
   assert.match(page, new RegExp(`data-situation="${situation}"`));
-  assert.match(script, new RegExp(`${situation}:\\s*\\{`));
+  assert.match(config, new RegExp(`${situation}:\\s*Object\\.freeze\\(\\{`));
 }
 assert.match(page, /data-whatsapp-cta/);
 assert.match(page, /data-booking-confirm/);

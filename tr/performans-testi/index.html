@@ -13,7 +13,7 @@
     <link rel="canonical" href="https://starspeakerstudio.com/tr/performans-testi/">
     <link rel="icon" href="/public/favicon/favicon.ico" sizes="any">
     <link rel="apple-touch-icon" sizes="180x180" href="/public/favicon/apple-touch-icon.png">
-    <link rel="stylesheet" href="/src/styles/performance-sprint.css?v=20260731-1">
+    <link rel="stylesheet" href="/src/styles/performance-sprint.css?v=20260801-1">
   </head>
   <body class="performance-sprint">
     <a class="sprint-skip-link" href="#sprint-main">İçeriğe geç</a>
@@ -81,29 +81,57 @@
         </div>
       </section>
 
-      <section class="sprint-screen" data-screen="situation" aria-labelledby="situation-title">
-        <div class="sprint-card sprint-question-card">
-          <p class="sprint-kicker">1 · DURUMUNU SEÇ</p>
-          <h2 id="situation-title">İngilizce konuşurken en çok hangi durumda zorlanıyorsun?</h2>
-          <p>Seçimine göre tek bir profesyonel soru hazırlayacağız.</p>
-          <div class="sprint-situation-options" role="group" aria-label="Profesyonel durum">
-            <button class="sprint-situation-option" type="button" data-situation="meeting">
-              <span aria-hidden="true">01</span>
-              <strong>Toplantı</strong>
-              <small>Bir karar veya öneriyi net anlat</small>
-            </button>
-            <button class="sprint-situation-option" type="button" data-situation="interview">
-              <span aria-hidden="true">02</span>
-              <strong>Mülakat</strong>
-              <small>Teknik deneyimini güçlü şekilde aktar</small>
-            </button>
-            <button class="sprint-situation-option" type="button" data-situation="presentation">
-              <span aria-hidden="true">03</span>
-              <strong>Sunum</strong>
-              <small>Bir sonucu anlaşılır şekilde açıkla</small>
-            </button>
-          </div>
-        </div>
+      <section class="sprint-screen" data-screen="setup" aria-labelledby="setup-title">
+        <form class="sprint-card sprint-setup-card" data-setup-form novalidate>
+          <p class="sprint-kicker">1 · HIZLI BAŞLANGIÇ</p>
+          <h2 id="setup-title">Sorunu sana uygun hale getirelim.</h2>
+
+          <label class="sprint-name-field">
+            <span>Adın nedir?</span>
+            <input
+              type="text"
+              name="firstName"
+              autocomplete="given-name"
+              maxlength="40"
+              inputmode="text"
+              aria-describedby="setup-error"
+              required
+            >
+          </label>
+
+          <fieldset class="sprint-setup-group">
+            <legend>Hangi durumda İngilizce konuşmak istiyorsun?</legend>
+            <div class="sprint-situation-options">
+              <button class="sprint-situation-option" type="button" aria-pressed="false" data-situation="meeting">
+                <span aria-hidden="true">01</span><strong>Toplantı</strong>
+              </button>
+              <button class="sprint-situation-option" type="button" aria-pressed="false" data-situation="interview">
+                <span aria-hidden="true">02</span><strong>Mülakat</strong>
+              </button>
+              <button class="sprint-situation-option" type="button" aria-pressed="false" data-situation="presentation">
+                <span aria-hidden="true">03</span><strong>Sunum</strong>
+              </button>
+            </div>
+          </fieldset>
+
+          <fieldset class="sprint-setup-group">
+            <legend>İngilizce konuşma seviyen hangisine daha yakın?</legend>
+            <div class="sprint-level-options">
+              <button type="button" aria-pressed="false" data-level="b1">B1</button>
+              <button type="button" aria-pressed="false" data-level="b1_plus">B1+</button>
+              <button type="button" aria-pressed="false" data-level="b2">B2</button>
+              <button type="button" aria-pressed="false" data-level="b2_plus">B2+</button>
+              <button type="button" aria-pressed="false" data-level="c1">C1</button>
+              <button type="button" aria-pressed="false" data-level="unsure">Emin değilim</button>
+            </div>
+            <p class="sprint-level-note">Emin değilsen sorun değil. Sana uygun bir başlangıç sorusu göstereceğiz.</p>
+          </fieldset>
+
+          <button class="sprint-primary sprint-setup-submit" type="submit">
+            Sorunu Gör <span aria-hidden="true">→</span>
+          </button>
+          <p id="setup-error" class="sprint-inline-error" role="alert" data-setup-error hidden></p>
+        </form>
       </section>
 
       <section class="sprint-screen" data-screen="mic" aria-labelledby="mic-title">
@@ -324,6 +352,6 @@
     <div class="sprint-toast" role="status" aria-live="polite" data-toast hidden></div>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="/src/scripts/supabase-config.js"></script>
-    <script type="module" src="/src/scripts/performance-sprint.js?v=20260731-1"></script>
+    <script type="module" src="/src/scripts/performance-sprint.js?v=20260801-1"></script>
   </body>
 </html>

@@ -69,6 +69,110 @@ function compactText(value: unknown, max = 1200) {
   return String(value || "").replace(/\s+/g, " ").trim().slice(0, max);
 }
 
+const experienceVersion = "speaking_analysis_v2";
+const validSituations = new Set(["meeting", "interview", "presentation"]);
+const validReportedLevels = new Set(["b1", "b1_plus", "b2", "b2_plus", "c1", "unsure"]);
+const normalizedLevels: Record<string, string> = {
+  b1: "b1", b1_plus: "b1_plus", b2: "b2", b2_plus: "b2_plus", c1: "c1", unsure: "b1_plus",
+};
+const questionIds: Record<string, string> = {
+  "meeting:b1": "meeting-b1-regular-update",
+  "meeting:b1_plus": "meeting-b1-plus-small-problem",
+  "meeting:b2": "meeting-b2-team-decision",
+  "meeting:b2_plus": "meeting-b2-plus-speed-reliability",
+  "meeting:c1": "meeting-c1-delay-launch",
+  "meeting:unsure": "meeting-unsure-improvement-suggestion",
+  "interview:b1": "interview-b1-role-task",
+  "interview:b1_plus": "interview-b1-plus-project",
+  "interview:b2": "interview-b2-technical-problem",
+  "interview:b2_plus": "interview-b2-plus-solution-tradeoff",
+  "interview:c1": "interview-c1-challenged-decision",
+  "interview:unsure": "interview-unsure-contribution",
+  "presentation:b1": "presentation-b1-familiar-project",
+  "presentation:b1_plus": "presentation-b1-plus-process",
+  "presentation:b2": "presentation-b2-project-result",
+  "presentation:b2_plus": "presentation-b2-plus-unexpected-result",
+  "presentation:c1": "presentation-c1-strategy-change",
+  "presentation:unsure": "presentation-unsure-recent-result",
+};
+const firstNamePattern = /^[A-Za-zÇĞİÖŞÜçğıöşüÂâÎîÛû]+(?:[ '-][A-Za-zÇĞİÖŞÜçğıöşüÂâÎîÛû]+)*$/u;
+
+function serviceConfig() {
+  const url = Deno.env.get("SUPABASE_URL");
+  const key = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+  if (!url || !key) throw new Error("Persistence is not configured.");
+  return { url, key };
+}
+
+async function callRpc(name: string, args: Record<string, unknown>) {
+  const { url, key } = serviceConfig();
+  const response = await fetch(`${url}/rest/v1/rpc/${name}`, {
+    method: "POST",
+    headers: {
+      apikey: key,
+      Authorization: `Bearer ${key}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(args),
+  });
+  const body = await response.json().catch(() => null);
+  if (!response.ok) throw new Error(body?.message || `${name} failed.`);
+  return Array.isArray(body) ? body[0] : body;
+}
+
+async function upsertParticipant(payload: Record<string, unknown>) {
+  const firstName = compactText(payload.first_name, 40).normalize("NFC");
+  const situation = compactText(payload.situation, 30);
+  const reportedLevel = compactText(payload.reported_level, 30);
+  const sessionId = compactText(payload.session_id, 80);
+  const version = compactText(payload.experience_version, 50);
+  const question = (payload.question || {}) as Record<string, unknown>;
+  const questionId = compactText(payload.question_id, 100);
+  if (!sessionId || !firstNamePattern.test(firstName) || !validSituations.has(situation)
+    || !validReportedLevels.has(reportedLevel) || version !== experienceVersion
+    || questionIds[`${situation}:${reportedLevel}`] !== questionId) {
+    throw new Error("Participant setup is invalid.");
+  }
+  const saved = await callRpc("upsert_performance_analysis_participant", {
+    p_session_id: sessionId,
+    p_first_name: firstName,
+    p_situation: situation,
+    p_reported_level: reportedLevel,
+    p_normalized_level: normalizedLevels[reportedLevel],
+    p_experience_version: version,
+    p_question_id: questionId,
+    p_question_snapshot: {
+      id: questionId,
+      title: compactText(question.title, 500),
+      context: compactText(question.context, 500),
+      guide: compactText(question.guide, 300),
+    },
+    p_is_demo: false,
+    p_is_internal: Boolean(payload.is_internal),
+    p_source_data: payload.source_data || {},
+  });
+  return saved;
+}
+
+async function advanceParticipant(payload: Record<string, unknown>) {
+  const sessionId = compactText(payload.session_id, 80);
+  if (!sessionId) throw new Error("Participant session is missing.");
+  return callRpc("advance_performance_analysis_participant", {
+    p_session_id: sessionId,
+    p_stage: payload.stage || null,
+    p_first_recording_status: payload.first_recording_status || null,
+    p_retry_status: payload.retry_status || null,
+    p_result_status: payload.result_status || null,
+    p_contact_status: payload.contact_status || null,
+    p_first_transcript: payload.first_transcript || null,
+    p_first_analysis: payload.first_analysis || null,
+    p_retry_transcript: payload.retry_transcript || null,
+    p_retry_analysis: payload.retry_analysis || null,
+    p_primary_bottleneck: payload.primary_bottleneck || null,
+    p_lead_id: payload.lead_id || null,
+  });
+}
+
 function outputText(response: Record<string, unknown>) {
   if (typeof response.output_text === "string") return response.output_text;
   const output = Array.isArray(response.output) ? response.output : [];
@@ -126,6 +230,7 @@ Scoring calibration:
 
 Output rules:
 - Turkish feedback, except improved_opening_tr must be one natural English opening the learner can adapt.
+- Treat self-reported level only as the intended task difficulty. Do not certify, downgrade, or penalize the speaker against a higher CEFR level.
 - Mention one genuine strength only.
 - Give exactly one high-leverage correction, not a list.
 - evidence_tr must refer to a visible behavior in this answer without quoting more than 12 words.
@@ -188,6 +293,7 @@ async function saveLead(payload: Record<string, unknown>) {
     session_id: compactText(payload.session_id, 80) || null,
     budget_range: compactText(payload.budget_range, 80) || null,
     source_data: payload.source_data || {},
+    participant_id: compactText(payload.participant_id, 80) || null,
     updated_at: new Date().toISOString(),
   };
   const leadId = compactText(payload.lead_id, 80);
@@ -218,6 +324,13 @@ async function saveLead(payload: Record<string, unknown>) {
       },
       body: JSON.stringify({ lead_id: savedLeadId }),
     });
+    if (payload.participant_id) {
+      await advanceParticipant({
+        session_id: sessionId,
+        lead_id: savedLeadId,
+        contact_status: "contact_submitted",
+      });
+    }
   }
   return savedLeadId;
 }
@@ -230,6 +343,19 @@ async function trackEvent(payload: Record<string, unknown>) {
   const eventType = compactText(payload.event_type, 60);
   const stage = compactText(payload.stage, 60);
   if (!sessionId || !eventType || !stage) throw new Error("Event is incomplete.");
+  if (compactText(payload.experience_version, 50) === experienceVersion) {
+    await callRpc("track_performance_analysis_event", {
+      p_session_id: sessionId,
+      p_event_type: eventType,
+      p_stage: stage,
+      p_event_key: compactText(payload.event_key, 100),
+      p_metadata: payload.metadata || {},
+      p_source_data: payload.source_data || {},
+      p_experience_version: experienceVersion,
+      p_is_demo: Boolean(payload.is_demo),
+    });
+    return;
+  }
   const response = await fetch(`${supabaseUrl}/rest/v1/performance_sprint_events`, {
     method: "POST",
     headers: {
@@ -274,6 +400,16 @@ Deno.serve(async (request) => {
         await trackEvent(payload);
         return json(request, { ok: true });
       }
+      if (payload?.action === "save_participant") {
+        if (payload?.is_demo) return json(request, { ok: true, demo: true });
+        const participant = await upsertParticipant(payload);
+        return json(request, { ok: true, participant_id: participant?.id, stage: participant?.furthest_stage });
+      }
+      if (payload?.action === "advance_participant") {
+        if (payload?.is_demo) return json(request, { ok: true, demo: true });
+        const participant = await advanceParticipant(payload);
+        return json(request, { ok: true, participant_id: participant?.id, stage: participant?.furthest_stage });
+      }
       return json(request, { error: "Unknown action." }, 400);
     }
 
@@ -290,12 +426,46 @@ Deno.serve(async (request) => {
     const prompt = safeJson(form.get("prompt"), {}) as Record<string, unknown>;
     const context = safeJson(form.get("context"), {}) as Record<string, unknown>;
     const retryFocus = compactText(form.get("retry_focus"), 400);
-    const transcript = await transcribeAudio(audio, apiKey);
-    if (transcript.split(/\s+/).length < 3) {
-      return json(request, { error: "Konuşma net şekilde algılanamadı. Lütfen mikrofona biraz daha yakın konuş." }, 422);
+    const sessionId = compactText(form.get("session_id"), 80);
+    if (sessionId) {
+      await advanceParticipant({
+        session_id: sessionId,
+        stage: phase === "retry" ? "retry_submitted" : "first_answer_submitted",
+        first_recording_status: phase === "retry" ? null : "submitted",
+        retry_status: phase === "retry" ? "submitted" : null,
+      });
     }
-    const evaluation = await evaluateTranscript({ transcript, phase, prompt, context, retryFocus }, apiKey);
-    return json(request, { transcript, ...evaluation });
+    try {
+      const transcript = await transcribeAudio(audio, apiKey);
+      if (transcript.split(/\s+/).length < 3) {
+        if (sessionId) await advanceParticipant({
+          session_id: sessionId,
+          first_recording_status: phase === "retry" ? null : "analysis_failed",
+          retry_status: phase === "retry" ? "analysis_failed" : null,
+        });
+        return json(request, { error: "Konuşma net şekilde algılanamadı. Lütfen mikrofona biraz daha yakın konuş." }, 422);
+      }
+      const evaluation = await evaluateTranscript({ transcript, phase, prompt, context, retryFocus }, apiKey);
+      const bottleneck = Object.entries(evaluation.metrics || {}).sort((a, b) => Number(a[1]) - Number(b[1]))[0]?.[0];
+      if (sessionId) await advanceParticipant({
+        session_id: sessionId,
+        first_recording_status: phase === "retry" ? null : "analyzed",
+        retry_status: phase === "retry" ? "analyzed" : null,
+        first_transcript: phase === "retry" ? null : transcript,
+        first_analysis: phase === "retry" ? null : evaluation,
+        retry_transcript: phase === "retry" ? transcript : null,
+        retry_analysis: phase === "retry" ? evaluation : null,
+        primary_bottleneck: phase === "retry" ? null : bottleneck,
+      });
+      return json(request, { transcript, ...evaluation });
+    } catch (cause) {
+      if (sessionId) await advanceParticipant({
+        session_id: sessionId,
+        first_recording_status: phase === "retry" ? null : "analysis_failed",
+        retry_status: phase === "retry" ? "analysis_failed" : null,
+      }).catch(() => {});
+      throw cause;
+    }
   } catch (cause) {
     console.error("ai-speaking-coach", cause);
     return json(request, { error: "Analiz şu anda tamamlanamadı. Lütfen birkaç saniye sonra tekrar dene." }, 500);

@@ -1,3 +1,11 @@
+import {
+  EXPERIENCE_VERSION,
+  normalizeReportedLevel,
+  resolveQuestion,
+  resolveQuestionById,
+  validateFirstName,
+} from "./performance-analysis-config.js";
+
 const labels = {
   clarity: "Netlik",
   structure: "Yapı",
@@ -10,24 +18,6 @@ const bottleneckTitles = {
   structure: "Cevap yapısı",
   pressure: "Baskı altında sürdürme",
   interaction: "Profesyonel etki",
-};
-
-const scenarioPrompts = {
-  meeting: {
-    title: "Your team must choose between speed and reliability. What do you recommend?",
-    context: "Give your recommendation, one reason, and the professional impact.",
-    guide: "Recommendation → Reason → Example → Impact",
-  },
-  interview: {
-    title: "Tell me about a difficult technical problem you solved.",
-    context: "Explain the problem, your action, and the result.",
-    guide: "Problem → Your action → Result",
-  },
-  presentation: {
-    title: "Explain one important result from a recent project.",
-    context: "State the result, what caused it, and why it matters.",
-    guide: "Result → Evidence → Why it matters",
-  },
 };
 
 const waitingInsights = [
@@ -60,8 +50,29 @@ function getSourceData() {
   };
 }
 
+function readStoredFlow() {
+  try {
+    const stored = JSON.parse(sessionStorage.getItem("performanceAnalysisFlow") || "null");
+    if (!stored || stored.experienceVersion !== EXPERIENCE_VERSION) return {};
+    const question = resolveQuestionById(stored.questionId);
+    if (!question) return {};
+    return { ...stored, question };
+  } catch {
+    return {};
+  }
+}
+
+const storedFlow = readStoredFlow();
+
 const state = {
-  situation: "",
+  firstName: storedFlow.firstName || "",
+  situation: storedFlow.situation || "",
+  reportedLevel: storedFlow.reportedLevel || "",
+  normalizedLevel: storedFlow.normalizedLevel || "",
+  question: storedFlow.question || null,
+  participantId: storedFlow.participantId || null,
+  participantSaved: Boolean(storedFlow.participantSaved),
+  setupSubmitting: false,
   stream: null,
   recorder: null,
   demoRecording: false,
@@ -71,12 +82,12 @@ const state = {
   remaining: 45,
   phase: "first",
   recordings: {},
-  analyses: {},
+  analyses: storedFlow.analyses || {},
   pending: {},
   submitting: false,
-  retryFocus: "",
+  retryFocus: storedFlow.retryFocus || "",
   contact: {},
-  leadId: null,
+  leadId: storedFlow.leadId || null,
   sessionId: persistentSessionId(),
   sourceData: getSourceData(),
   trackedEvents: new Set(),
@@ -89,12 +100,32 @@ const state = {
   bookingMode: "create",
 };
 
+function storeFlow() {
+  try {
+    sessionStorage.setItem("performanceAnalysisFlow", JSON.stringify({
+      experienceVersion: EXPERIENCE_VERSION,
+      firstName: state.firstName,
+      situation: state.situation,
+      reportedLevel: state.reportedLevel,
+      normalizedLevel: state.normalizedLevel,
+      questionId: state.question?.id || "",
+      participantId: state.participantId,
+      participantSaved: state.participantSaved,
+      analyses: state.analyses,
+      retryFocus: state.retryFocus,
+      leadId: state.leadId,
+    }));
+  } catch {
+    // Session persistence is a recovery aid; the database remains authoritative.
+  }
+}
+
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 const screens = Object.fromEntries($$("[data-screen]").map((screen) => [screen.dataset.screen, screen]));
 const progressShell = $("[data-progress-shell]");
 const progressMap = {
-  situation: [1, "Durumunu seç"],
+  setup: [1, "Hızlı başlangıç"],
   mic: [2, "Sesli cevap"],
   record: [state.phase === "retry" ? 4 : 2, state.phase === "retry" ? "Tekrar dene" : "Sesli cevap"],
   analysis: [state.phase === "retry" ? 5 : 3, "Analiz"],
@@ -131,7 +162,40 @@ async function trackEvent(eventType, stage, metadata = {}, onceKey = "") {
   state.trackedEvents.add(dedupeKey);
   const config = window.STAR_SPEAKER_SUPABASE_CONFIG || {};
   if (!config.url || !config.anonKey) return;
-  fetch(`${config.url}/functions/v1/ai-speaking-coach`, {
+  try {
+    const response = await fetch(`${config.url}/functions/v1/ai-speaking-coach`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        apikey: config.anonKey,
+        Authorization: `Bearer ${config.anonKey}`,
+      },
+      body: JSON.stringify({
+        action: "track_event",
+        session_id: state.sessionId,
+        participant_id: state.participantId,
+        lead_id: state.leadId,
+        event_type: eventType,
+        event_key: dedupeKey,
+        experience_version: EXPERIENCE_VERSION,
+        is_demo: false,
+        stage,
+        metadata,
+        source_data: state.sourceData,
+      }),
+      keepalive: true,
+    });
+    if (!response.ok) state.trackedEvents.delete(dedupeKey);
+  } catch {
+    state.trackedEvents.delete(dedupeKey);
+  }
+}
+
+async function participantApi(payload) {
+  if (state.isDemo) return { ok: true, demo: true, participant_id: null };
+  const config = window.STAR_SPEAKER_SUPABASE_CONFIG || {};
+  if (!config.url || !config.anonKey) throw new Error("Katılımcı kaydı yapılandırılmamış.");
+  const response = await fetch(`${config.url}/functions/v1/ai-speaking-coach`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -139,20 +203,114 @@ async function trackEvent(eventType, stage, metadata = {}, onceKey = "") {
       Authorization: `Bearer ${config.anonKey}`,
     },
     body: JSON.stringify({
-      action: "track_event",
+      ...payload,
       session_id: state.sessionId,
-      lead_id: state.leadId,
-      event_type: eventType,
-      stage,
-      metadata,
-      source_data: state.sourceData,
+      participant_id: state.participantId,
+      experience_version: EXPERIENCE_VERSION,
+      is_demo: state.isDemo,
     }),
-    keepalive: true,
-  }).catch(() => {});
+    keepalive: Boolean(payload.keepalive),
+  });
+  const body = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(body.error || "Katılımcı kaydı tamamlanamadı.");
+  if (body.participant_id) state.participantId = body.participant_id;
+  return body;
+}
+
+async function saveParticipant() {
+  const body = await participantApi({
+    action: "save_participant",
+    first_name: state.firstName,
+    situation: state.situation,
+    reported_level: state.reportedLevel,
+    normalized_level: state.normalizedLevel,
+    question_id: state.question.id,
+    question: state.question,
+    source_data: state.sourceData,
+  });
+  state.participantSaved = true;
+  if (body.participant_id) state.participantId = body.participant_id;
+  storeFlow();
+}
+
+async function advanceParticipant(changes) {
+  if (!state.participantSaved) throw new Error("Katılımcı kaydı bulunamadı.");
+  const body = await participantApi({ action: "advance_participant", ...changes });
+  if (body.participant_id) state.participantId = body.participant_id;
+  storeFlow();
+  return body;
 }
 
 function promptForSituation() {
-  return scenarioPrompts[state.situation] || scenarioPrompts.meeting;
+  return state.question || resolveQuestion(state.situation, state.reportedLevel);
+}
+
+function renderSetupSelection() {
+  $$('[data-situation]').forEach((button) => {
+    button.setAttribute("aria-pressed", String(button.dataset.situation === state.situation));
+  });
+  $$('[data-level]').forEach((button) => {
+    button.setAttribute("aria-pressed", String(button.dataset.level === state.reportedLevel));
+  });
+}
+
+async function handleSetupSubmit(event) {
+  event.preventDefault();
+  if (state.setupSubmitting) return;
+  const error = $("[data-setup-error]");
+  const submit = $(".sprint-setup-submit", event.currentTarget);
+  error.hidden = true;
+  const nameResult = validateFirstName(event.currentTarget.elements.firstName.value);
+  if (!nameResult.valid) {
+    error.textContent = nameResult.message;
+    error.hidden = false;
+    event.currentTarget.elements.firstName.focus();
+    return;
+  }
+  if (!state.situation) {
+    error.textContent = "Lütfen konuşmak istediğin durumu seç.";
+    error.hidden = false;
+    return;
+  }
+  if (!state.reportedLevel) {
+    error.textContent = "Lütfen sana en yakın konuşma seviyesini seç.";
+    error.hidden = false;
+    return;
+  }
+  const selectedQuestion = resolveQuestion(state.situation, state.reportedLevel);
+  if (!selectedQuestion) {
+    error.textContent = "Bu seçim için soru hazırlanamadı. Lütfen tekrar dene.";
+    error.hidden = false;
+    return;
+  }
+  state.firstName = nameResult.value;
+  state.normalizedLevel = normalizeReportedLevel(state.reportedLevel);
+  state.question = selectedQuestion;
+  state.setupSubmitting = true;
+  submit.disabled = true;
+  submit.textContent = "Sorun hazırlanıyor…";
+  try {
+    await saveParticipant();
+    await trackEvent("situation_selected", "setup", {
+      situation: state.situation,
+      reported_level: state.reportedLevel,
+      question_id: state.question.id,
+    }, "situation_selected");
+    await trackEvent("setup_completed", "setup", {
+      situation: state.situation,
+      reported_level: state.reportedLevel,
+      normalized_level: state.normalizedLevel,
+      question_id: state.question.id,
+    }, "setup_completed");
+    showScreen("mic");
+  } catch (cause) {
+    error.textContent = `${cause.message} Lütfen bağlantını kontrol edip tekrar dene.`;
+    error.hidden = false;
+  } finally {
+    state.setupSubmitting = false;
+    submit.disabled = false;
+    submit.innerHTML = 'Sorunu Gör <span aria-hidden="true">→</span>';
+  }
 }
 
 function preparePrompt() {
@@ -170,7 +328,8 @@ function preparePrompt() {
   resetRecorder();
 }
 
-async function ensureMicrophone() {
+async function ensureMicrophone(event) {
+  if (event?.detail > 1) return;
   const error = $("[data-mic-error]");
   error.hidden = true;
   try {
@@ -231,6 +390,9 @@ function startRecording() {
       {},
       `recording_started:${state.phase}`,
     );
+    advanceParticipant(state.phase === "retry"
+      ? { retry_status: "recording" }
+      : { first_recording_status: "recording" }).catch(() => {});
     state.timerId = setInterval(() => {
       state.remaining -= 1;
       $("[data-timer]").textContent = `00:${String(Math.max(0, state.remaining)).padStart(2, "0")}`;
@@ -253,6 +415,9 @@ function startRecording() {
     $("[data-record-actions]").hidden = false;
   }, { once: true });
   state.recorder.start(250);
+  advanceParticipant(state.phase === "retry"
+    ? { retry_status: "recording" }
+    : { first_recording_status: "recording" }).catch(() => {});
   trackEvent(
     state.phase === "retry" ? "retry_recording_started" : "first_recording_started",
     state.phase,
@@ -306,8 +471,19 @@ async function useRecording() {
   const blob = state.blob;
   state.recordings[phase] = blob;
   const duration = 45 - state.remaining;
-  trackEvent("recording_submitted", phase, { duration_seconds: duration }, `recording_submitted:${phase}`);
-  trackEvent(
+  try {
+    await advanceParticipant(phase === "retry"
+      ? { stage: "retry_submitted", retry_status: "submitted" }
+      : { stage: "first_answer_submitted", first_recording_status: "submitted" });
+  } catch (cause) {
+    error.textContent = `${cause.message} Kaydın bu ekranda duruyor; tekrar kaydetmen gerekmiyor.`;
+    error.hidden = false;
+    state.submitting = false;
+    $("[data-use-recording]").disabled = false;
+    return;
+  }
+  await trackEvent("recording_submitted", phase, { duration_seconds: duration }, `recording_submitted:${phase}`);
+  await trackEvent(
     phase === "retry" ? "retry_submitted" : "first_answer_submitted",
     phase,
     { duration_seconds: duration },
@@ -328,8 +504,15 @@ async function analyzeRecording(blob, phase, prompt) {
   const form = new FormData();
   form.append("audio", blob, `answer-${phase}.${blob.type.includes("mp4") ? "m4a" : "webm"}`);
   form.append("phase", phase);
+  form.append("session_id", state.sessionId);
   form.append("prompt", JSON.stringify(prompt));
-  form.append("context", JSON.stringify({ situation: state.situation }));
+  form.append("context", JSON.stringify({
+    situation: state.situation,
+    reported_level: state.reportedLevel,
+    normalized_level: state.normalizedLevel,
+    level_is_self_reported: true,
+    question_id: state.question.id,
+  }));
   if (state.retryFocus) form.append("retry_focus", state.retryFocus);
   const response = await fetch(`${config.url}/functions/v1/ai-speaking-coach`, {
     method: "POST",
@@ -353,18 +536,24 @@ async function waitForAnalysis(phase) {
   animateAnalysisSteps();
   try {
     state.analyses[phase] = await state.pending[phase];
+    storeFlow();
     stopAnalysisAnimations();
     if (phase === "first") {
       renderCorrection();
-      trackEvent("personal_correction_viewed", "correction", {}, "personal_correction_viewed");
-      trackEvent("diagnosis_received", "correction", {}, "diagnosis_received");
+      await advanceParticipant({ stage: "correction_viewed", first_recording_status: "analyzed" });
       showScreen("correction");
+      await trackEvent("personal_correction_viewed", "correction", {}, "personal_correction_viewed");
+      await trackEvent("diagnosis_received", "correction", {}, "diagnosis_received");
     } else {
       renderResult();
-      trackEvent("result_viewed", "result", {}, "result_viewed");
+      await advanceParticipant({ stage: "result_viewed", retry_status: "analyzed", result_status: "viewed" });
       showScreen("result");
+      await trackEvent("result_viewed", "result", {}, "result_viewed");
     }
   } catch (cause) {
+    advanceParticipant(phase === "retry"
+      ? { retry_status: "analysis_failed" }
+      : { first_recording_status: "analysis_failed" }).catch(() => {});
     stopAnalysisAnimations();
     status.textContent = "Analiz tamamlanamadı.";
     error.textContent = `${cause.message} Kaydın bu ekranda duruyor; yeniden kayıt yapman gerekmiyor.`;
@@ -488,10 +677,11 @@ async function handleContactSubmit(event) {
   const submit = $("button[type='submit']", form);
   submit.disabled = true;
   submit.textContent = "Uygun saatler hazırlanıyor…";
-  trackEvent("contact_submitted", "result", {}, "contact_submitted");
   try {
     await saveLead("completed");
     if (!state.leadId) throw new Error("İletişim kaydı oluşturulamadı.");
+    await advanceParticipant({ contact_status: "contact_submitted", lead_id: state.leadId });
+    await trackEvent("contact_submitted", "result", {}, "contact_submitted");
     form.hidden = true;
     await loadBookingSlots();
   } catch (cause) {
@@ -511,7 +701,12 @@ async function saveLead(stage) {
     stage,
     lead_id: state.leadId,
     contact: state.contact,
-    context: { situation: state.situation },
+    context: {
+      situation: state.situation,
+      reported_level: state.reportedLevel,
+      normalized_level: state.normalizedLevel,
+      question_id: state.question.id,
+    },
     qualification: "nurture",
     bottleneck: getPrimaryBottleneck(),
     baseline_metrics: state.analyses.first?.metrics || null,
@@ -521,6 +716,7 @@ async function saveLead(stage) {
       retry: state.analyses.retry?.transcript || "",
     },
     session_id: state.sessionId,
+    participant_id: state.participantId,
     budget_range: null,
     source_data: state.sourceData,
   };
@@ -535,7 +731,10 @@ async function saveLead(stage) {
   });
   const body = await response.json().catch(() => ({}));
   if (!response.ok) throw new Error(body.error || "İletişim kaydı oluşturulamadı.");
-  if (body.lead_id) state.leadId = body.lead_id;
+  if (body.lead_id) {
+    state.leadId = body.lead_id;
+    storeFlow();
+  }
 }
 
 function bookingApi(payload) {
@@ -687,6 +886,7 @@ async function confirmBooking() {
   button.textContent = "Randevun planlanıyor…";
   setBookingError();
   trackEvent("booking_submitted", "booking", { mode: state.bookingMode }, `booking_submit:${state.bookingMode}`);
+  advanceParticipant({ contact_status: "booking_started" }).catch(() => {});
   try {
     if (state.bookingMode === "reschedule" && state.booking) {
       const body = await bookingApi({
@@ -708,6 +908,8 @@ async function confirmBooking() {
     state.bookingMode = "create";
     storeBooking();
     renderBookingSuccess();
+    await advanceParticipant({ contact_status: "booked" });
+    await trackEvent("booking_confirmed", "booking", {}, `booking_confirmed:${state.booking.booking_id}`);
   } catch (cause) {
     trackEvent("booking_failed", "booking", { mode: state.bookingMode }, `booking_failed:${Date.now()}`);
     await loadBookingSlots();
@@ -777,23 +979,31 @@ function toast(message) {
 $("[data-start]").addEventListener("click", () => {
   trackEvent("start_clicked", "intro", {}, "start_clicked");
   trackEvent("test_started", "intro", {}, "test_started");
-  showScreen("situation");
+  showScreen("setup");
 });
 
 $$("[data-situation]").forEach((button) => {
   button.addEventListener("click", () => {
     state.situation = button.dataset.situation;
-    trackEvent("situation_selected", "situation", { situation: state.situation }, "situation_selected");
-    showScreen("mic");
+    renderSetupSelection();
   });
 });
+
+$$('[data-level]').forEach((button) => {
+  button.addEventListener("click", () => {
+    state.reportedLevel = button.dataset.level;
+    renderSetupSelection();
+  });
+});
+
+$("[data-setup-form]").addEventListener("submit", handleSetupSubmit);
 
 $("[data-enable-mic]").addEventListener("click", ensureMicrophone);
 $("[data-record-button]").addEventListener("click", handleRecordButton);
 $("[data-record-again]").addEventListener("click", resetRecorder);
 $("[data-use-recording]").addEventListener("click", useRecording);
-$("[data-start-retry]").addEventListener("click", () => {
-  trackEvent("retry_started", "correction", {}, "retry_started");
+$("[data-start-retry]").addEventListener("click", async () => {
+  await trackEvent("retry_started", "correction", {}, "retry_started");
   state.phase = "retry";
   preparePrompt();
   showScreen("record");
@@ -802,10 +1012,12 @@ $("[data-open-contact]").addEventListener("click", () => {
   $("[data-contact-form]").hidden = false;
   $("[data-open-contact]").hidden = true;
   trackEvent("booking_intent_clicked", "result", {}, "booking_intent_clicked");
+  advanceParticipant({ contact_status: "booking_started" }).catch(() => {});
 });
 $("[data-contact-form]").addEventListener("submit", handleContactSubmit);
 $("[data-whatsapp-cta]").addEventListener("click", () => {
   trackEvent("whatsapp_clicked", "result", {}, "whatsapp_clicked");
+  advanceParticipant({ contact_status: "whatsapp_clicked", keepalive: true }).catch(() => {});
 });
 $("[data-booking-confirm]").addEventListener("click", confirmBooking);
 $("[data-booking-reschedule]").addEventListener("click", startReschedule);
@@ -827,4 +1039,17 @@ window.addEventListener("beforeunload", () => {
 trackEvent("landing_viewed", "intro", {}, "landing_viewed");
 trackEvent("page_opened", "intro", {}, "page_opened");
 if (state.isDemo) $("[data-demo-badge]").hidden = false;
+if (state.firstName) $("[name='firstName']").value = state.firstName;
+renderSetupSelection();
+if (state.participantSaved && state.question) {
+  if (state.analyses.first && state.analyses.retry) {
+    renderResult();
+    showScreen("result");
+  } else if (state.analyses.first) {
+    renderCorrection();
+    showScreen("correction");
+  } else {
+    showScreen("mic");
+  }
+}
 restoreBooking();

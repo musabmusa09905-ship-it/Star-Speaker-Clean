@@ -8,7 +8,7 @@
 4. Optional: set `OPENAI_EVALUATION_MODEL`. The default is `gpt-5.6-luna`.
 5. Open `/tr/performans-testi/` and complete one real microphone test.
 
-The browser never receives the OpenAI key. Audio is sent to the Edge Function for transcription and evaluation and is not stored by this implementation. Lead contact details, professional context, transcripts, scores, and funnel stage are stored in `performance_sprint_leads`.
+The browser never receives the OpenAI key. Audio is sent to the Edge Function for transcription and evaluation and is not stored by this implementation. For `speaking_analysis_v2`, setup identity and journey state are stored in `performance_analysis_participants`; a separate `performance_sprint_leads` row is created only after the optional post-result contact form is submitted. See `PERFORMANCE_ANALYSIS_PARTICIPANTS.md` for the versioned funnel and admin data contract.
 
 ## Local experience demo
 
