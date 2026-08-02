@@ -4907,13 +4907,22 @@ body.stage-one-home.nav-open {
 
 .stage-one-home .stage-home-language {
   display: inline-flex;
+  flex-wrap: nowrap;
   align-items: center;
-  gap: 7px;
-  color: rgba(244, 240, 232, 0.52);
+  justify-content: center;
+  min-width: 80px;
+  gap: 0;
+  color: rgba(244, 240, 232, 0.3);
+  line-height: 1;
+  white-space: nowrap;
 }
 
 .stage-one-home .stage-home-lang-button {
-  min-width: 30px;
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
   min-height: 44px;
   border: 0;
   background: transparent;
@@ -4923,11 +4932,32 @@ body.stage-one-home.nav-open {
   font-weight: 700;
   text-decoration: none;
   cursor: pointer;
-  padding: 0;
+  padding: 0 5px;
+  transition: color 160ms ease;
+}
+
+.stage-one-home .stage-home-language > span[aria-hidden="true"] {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  color: rgba(244, 240, 232, 0.28);
+  font-size: 0.82em;
+  line-height: 1;
 }
 
 .stage-one-home .stage-home-lang-button.is-active {
   color: #e6d7a8;
+}
+
+.stage-one-home .stage-home-lang-button:not(.is-active):hover {
+  color: rgba(244, 240, 232, 0.82);
+}
+
+.stage-one-home .stage-home-lang-button:focus-visible {
+  border-radius: 2px;
+  outline: 1px solid rgba(231, 216, 183, 0.82);
+  outline-offset: 2px;
 }
 
 .stage-one-home .stage-home-nav-cta {
@@ -5463,11 +5493,12 @@ body.stage-one-home.nav-open {
   }
 
   .stage-one-home .stage-home-mobile-tools .stage-home-language {
-    gap: 4px;
+    min-width: 70px;
+    gap: 0;
   }
 
   .stage-one-home .stage-home-mobile-tools .stage-home-lang-button {
-    min-width: 28px;
+    min-width: 0;
     font-size: 14px;
   }
 
