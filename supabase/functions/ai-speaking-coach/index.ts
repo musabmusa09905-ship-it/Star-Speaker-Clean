@@ -190,7 +190,7 @@ async function upsertParticipant(payload: Record<string, unknown>) {
     || !validReportedLevels.has(reportedLevel) || version !== experienceVersion
     || bankVersion !== QUESTION_BANK_VERSION
     || !validDurations.has(duration) || !validFeelings.has(feeling)) {
-    throw new Error("Participant setup is invalid.");
+    throw Object.assign(new Error("Participant setup is invalid."), { code: "participant_setup_invalid" });
   }
   const canonicalQuestion = questionById.get(questionId);
   if (!canonicalQuestion || !canonicalQuestion.active || canonicalQuestion.purpose !== situation || canonicalQuestion.level !== reportedLevel) {
