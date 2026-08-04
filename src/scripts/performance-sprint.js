@@ -504,6 +504,11 @@ async function handleSetupSubmit(event) {
   }
 }
 
+function setRecordStatus(message) {
+  const status = $("[data-record-status]");
+  if (status) status.textContent = message;
+}
+
 function preparePrompt() {
   const prompt = promptForSituation();
   const isRetry = state.phase === "retry";
@@ -513,6 +518,10 @@ function preparePrompt() {
   $("[data-prompt-translation]").textContent = prompt.translationTr || "";
   $("[data-prompt-guide]").textContent = prompt.guide;
   $("[data-correction-reminder]").hidden = !isRetry;
+  $("[data-record-advice-label]").textContent = isRetry ? "BU KEZ ŞUNA ODAKLAN" : "İPUCU";
+  $("[data-record-advice]").textContent = isRetry
+    ? state.retryFocus
+    : "Net, doğal ve kendin ol. Akıcılık, cümle uzunluğundan daha değerlidir.";
   if (isRetry) {
     $("[data-retry-focus]").textContent = state.retryFocus;
     $("[data-retry-opening]").textContent = state.analyses.first?.improved_opening_tr || "";
@@ -540,6 +549,7 @@ async function ensureMicrophone() {
       ? cause.message
       : "Mikrofon izni alınamadı. Tarayıcıdaki kilit simgesinden mikrofonu açıp tekrar dene.";
     error.hidden = false;
+    setRecordStatus("Mikrofon izni gerekli");
     return false;
   }
 }
@@ -551,6 +561,7 @@ function cancelCountdown() {
   $("[data-countdown]").hidden = true;
   $("[data-record-button]").disabled = false;
   $("[data-record-hint]").textContent = `Hazır olduğunda başla. En fazla ${state.recordingDuration} saniye.`;
+  setRecordStatus("Hazır");
   trackEvent("recording_countdown_cancelled", state.phase, {}, `countdown_cancelled:${state.phase}:${Date.now()}`);
 }
 
@@ -560,6 +571,7 @@ function beginCountdown() {
   $("[data-countdown]").hidden = false;
   $("[data-countdown-number]").textContent = String(seconds);
   $("[data-record-button]").disabled = true;
+  setRecordStatus("5 saniye içinde başlayacak");
   trackEvent("recording_countdown_started", state.phase, { seconds }, `countdown_started:${state.phase}`);
   state.countdownId = setInterval(() => {
     seconds -= 1;
@@ -584,6 +596,7 @@ function resetRecorder() {
   $("[data-recorder]").classList.remove("is-recording");
   $("[data-record-label]").textContent = "Kaydı Başlat";
   $("[data-record-hint]").textContent = `Hazır olduğunda başla. En fazla ${state.recordingDuration} saniye.`;
+  setRecordStatus("Hazır");
   $("[data-record-actions]").hidden = true;
   $("[data-record-error]").hidden = true;
   $("[data-record-button]").disabled = false;
@@ -602,6 +615,7 @@ function startRecording() {
     $("[data-recorder]").classList.add("is-recording");
     $("[data-record-label]").textContent = "Kaydı Bitir";
     $("[data-record-hint]").textContent = "Yerel demo cevabı kaydediliyor.";
+    setRecordStatus("Kayıt yapılıyor");
     trackEvent(
       state.phase === "retry" ? "retry_recording_started" : "first_recording_started",
       state.phase,
@@ -631,6 +645,7 @@ function startRecording() {
     $("[data-record-label]").textContent = "Kayıt Tamamlandı";
     $("[data-record-hint]").textContent = `${state.recordingDuration - state.remaining} saniyelik cevap hazır.`;
     $("[data-record-actions]").hidden = false;
+    setRecordStatus("Kayıt tamamlandı");
   }, { once: true });
   state.recorder.start(250);
   advanceParticipant(state.phase === "retry"
@@ -645,6 +660,7 @@ function startRecording() {
   $("[data-recorder]").classList.add("is-recording");
   $("[data-record-label]").textContent = "Kaydı Bitir";
   $("[data-record-hint]").textContent = "Doğal konuş. Kusursuz olmaya çalışma.";
+  setRecordStatus("Kayıt yapılıyor");
   state.timerId = setInterval(() => {
     state.remaining -= 1;
     $("[data-timer]").textContent = `${String(Math.floor(Math.max(0, state.remaining) / 60)).padStart(2, "0")}:${String(Math.max(0, state.remaining) % 60).padStart(2, "0")}`;
@@ -661,6 +677,7 @@ function stopRecording() {
     $("[data-record-label]").textContent = "Demo Kaydı Tamamlandı";
     $("[data-record-hint]").textContent = `${state.recordingDuration - state.remaining} saniyelik demo cevabı hazır.`;
     $("[data-record-actions]").hidden = false;
+    setRecordStatus("Kayıt tamamlandı");
     return;
   }
   if (state.recorder?.state === "recording") state.recorder.stop();
@@ -690,6 +707,7 @@ async function useRecording() {
   }
   state.submitting = true;
   $("[data-use-recording]").disabled = true;
+  setRecordStatus("Gönderiliyor");
   const phase = state.phase;
   const blob = state.blob;
   state.recordings[phase] = blob;
@@ -703,6 +721,7 @@ async function useRecording() {
     error.hidden = false;
     state.submitting = false;
     $("[data-use-recording]").disabled = false;
+    setRecordStatus("Gönderim hatası");
     return;
   }
   await trackEvent("recording_submitted", phase, { duration_seconds: duration }, `recording_submitted:${phase}`);
@@ -719,6 +738,7 @@ async function useRecording() {
     `recording_completed:${phase}`,
   );
   state.pending[phase] = analyzeRecording(blob, phase, promptForSituation());
+  setRecordStatus("Analiz ediliyor");
   await waitForAnalysis(phase);
   state.submitting = false;
 }

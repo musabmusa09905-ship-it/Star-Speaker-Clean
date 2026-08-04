@@ -172,42 +172,71 @@
 
       <section class="sprint-screen" data-screen="record" aria-labelledby="record-title">
         <div class="sprint-card sprint-record-card">
-          <div class="sprint-record-meta">
-            <p class="sprint-kicker" data-record-kicker>İLK CEVAP · 30–45 SANİYE</p>
-            <span class="sprint-timer" data-timer>00:45</span>
-          </div>
-          <h2 id="record-title" data-prompt-title></h2>
-          <p class="sprint-prompt-context" data-prompt-context></p>
-          <p class="sprint-prompt-translation" data-prompt-translation></p>
-          <div class="sprint-prompt-guide">
-            <span>DÜŞÜNME İPUCU</span>
-            <strong data-prompt-guide></strong>
-          </div>
-          <aside class="sprint-correction-reminder" data-correction-reminder hidden>
-            <span>BU KEZ TEK ODAĞIN</span>
-            <strong data-retry-focus></strong>
-            <p data-retry-opening></p>
-          </aside>
-          <div class="sprint-recorder" data-recorder>
-            <div class="sprint-countdown" data-countdown hidden role="status" aria-live="assertive">
-              <strong data-countdown-number>5</strong>
-              <span>Kayıt birazdan başlayacak</span>
-              <button type="button" class="sprint-text-button" data-countdown-cancel>İptal</button>
+          <div class="sprint-record-layout">
+            <div class="sprint-question-panel">
+              <div class="sprint-record-meta">
+                <p class="sprint-kicker" data-record-kicker>İLK CEVAP · 30–45 SANİYE</p>
+              </div>
+              <h2 id="record-title" data-prompt-title></h2>
+              <aside class="sprint-correction-reminder" data-correction-reminder hidden>
+                <span>BU KEZ TEK ODAĞIN</span>
+                <strong data-retry-focus></strong>
+                <p data-retry-opening></p>
+              </aside>
+              <p class="sprint-prompt-context" data-prompt-context></p>
+              <p class="sprint-prompt-translation" data-prompt-translation></p>
+              <div class="sprint-prompt-guide">
+                <span>DÜŞÜNME İPUCU</span>
+                <strong data-prompt-guide></strong>
+              </div>
             </div>
-            <div class="sprint-wave" aria-hidden="true">
-              <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
-            </div>
-            <button class="sprint-record-button" type="button" data-record-button>
-              <span class="sprint-record-button-icon" aria-hidden="true"></span>
-              <strong data-record-label>Kaydı Başlat</strong>
-            </button>
-            <p data-record-hint>Hazır olduğunda başla. En fazla 45 saniye.</p>
+
+            <aside class="sprint-record-control-panel" aria-label="Kayıt kontrolü">
+              <div class="sprint-record-control-header">
+                <svg viewBox="0 0 28 18" aria-hidden="true"><path d="M1 9h3l2-5 3 10 3-8 3 6 3-10 3 13 3-6h3"></path></svg>
+                <span>KAYIT KONTROLÜ</span>
+              </div>
+              <div class="sprint-record-dashboard">
+                <div class="sprint-record-timer-block">
+                  <span>Kalan süre</span>
+                  <strong class="sprint-timer" data-timer>00:45</strong>
+                </div>
+                <div class="sprint-record-status-block">
+                  <span>Kayıt durumu</span>
+                  <strong id="record-status" data-record-status role="status" aria-live="polite">Hazır</strong>
+                </div>
+              </div>
+              <div class="sprint-record-advice">
+                <span data-record-advice-label>İPUCU</span>
+                <p data-record-advice>Net, doğal ve kendin ol. Akıcılık, cümle uzunluğundan daha değerlidir.</p>
+              </div>
+              <div class="sprint-recorder" data-recorder>
+                <div class="sprint-countdown" data-countdown hidden role="status" aria-live="assertive" aria-atomic="true">
+                  <strong data-countdown-number>5</strong>
+                  <span>Kayıt birazdan başlayacak</span>
+                  <button type="button" class="sprint-text-button" data-countdown-cancel>İptal</button>
+                </div>
+                <div class="sprint-wave" aria-hidden="true">
+                  <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+                </div>
+                <button class="sprint-record-button" type="button" data-record-button aria-describedby="record-status record-hint">
+                  <span class="sprint-record-button-icon" aria-hidden="true"></span>
+                  <strong data-record-label>Kaydı Başlat</strong>
+                </button>
+                <p id="record-hint" data-record-hint>Hazır olduğunda başla. En fazla 45 saniye.</p>
+              </div>
+              <div class="sprint-record-actions" hidden data-record-actions>
+                <button class="sprint-secondary" type="button" data-record-again>Tekrar Kaydet</button>
+                <button class="sprint-primary" type="button" data-use-recording>Bu Kaydı Kullan <span aria-hidden="true">→</span></button>
+              </div>
+              <p class="sprint-inline-error" role="alert" data-record-error hidden></p>
+              <ul class="sprint-record-trust" aria-label="Kayıt özellikleri">
+                <li><span aria-hidden="true">◇</span>Gizliliğine saygılı</li>
+                <li><span aria-hidden="true">◇</span>Anında analiz</li>
+                <li><span aria-hidden="true">◇</span>Kişisel geri bildirim</li>
+              </ul>
+            </aside>
           </div>
-          <div class="sprint-record-actions" hidden data-record-actions>
-            <button class="sprint-secondary" type="button" data-record-again>Tekrar Kaydet</button>
-            <button class="sprint-primary" type="button" data-use-recording>Bu Kaydı Kullan <span aria-hidden="true">→</span></button>
-          </div>
-          <p class="sprint-inline-error" role="alert" data-record-error hidden></p>
         </div>
       </section>
 

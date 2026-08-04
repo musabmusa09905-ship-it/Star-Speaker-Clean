@@ -129,12 +129,28 @@ assert.equal((page.match(/sprint-choice-card__content/g) || []).length, 21);
 assert.equal((page.match(/class="sprint-level-mark /g) || []).length, 7);
 assert.equal((page.match(/class="sprint-duration-mark"/g) || []).length, 4);
 assert.equal((page.match(/sprint-choice-card--feeling/g) || []).length, 5);
+assert.equal((page.match(/class="sprint-record-layout"/g) || []).length, 1);
+assert.equal((page.match(/class="sprint-record-control-panel"/g) || []).length, 1);
+assert.equal((page.match(/data-record-button/g) || []).length, 1);
+assert.equal((page.match(/data-timer/g) || []).length, 1);
+assert.equal((page.match(/data-record-actions/g) || []).length, 1);
+assert.match(page, /aria-label="Kayıt kontrolü"/);
+assert.match(page, /data-record-status role="status" aria-live="polite"/);
+assert.match(page, /data-record-button aria-describedby="record-status record-hint"/);
 assert.match(styles, /\.sprint-choice-card\[aria-pressed="true"\]::after/);
 assert.match(styles, /\.sprint-choice-card\[aria-pressed="true"\][^{]*\{[^}]*transform:\s*none/s);
 assert.match(styles, /\.sprint-choice-card__content[^}]*justify-content:\s*center/s);
 assert.match(styles, /\.sprint-duration-options\s*\{\s*grid-template-columns:\s*repeat\(2,/s);
 assert.match(styles, /animation:\s*sprint-check-in 180ms/);
+assert.match(styles, /\.sprint-record-layout\s*\{[^}]*grid-template-columns:/s);
+assert.match(styles, /\.sprint-record-control-panel\s*\{[^}]*position:\s*sticky/s);
+assert.match(styles, /@media \(max-width: 960px\)[\s\S]*\.sprint-record-control-panel\s*\{[^}]*position:\s*fixed/s);
+assert.match(styles, /env\(safe-area-inset-bottom\)/);
+assert.match(styles, /sprint-screen\[data-screen="record"\]\.is-active\s*\{\s*animation:\s*none/);
 assert.doesNotMatch(styles, /overflow-x:\s*auto/);
+for (const status of ["Hazır", "5 saniye içinde başlayacak", "Kayıt yapılıyor", "Kayıt tamamlandı", "Gönderiliyor", "Analiz ediliyor"]) {
+  assert.match(script, new RegExp(status));
+}
 
 assert.match(edgeFunction, /Deno\.env\.get\("OPENAI_API_KEY"\)/);
 assert.match(edgeFunction, /gpt-4o-mini-transcribe/);
