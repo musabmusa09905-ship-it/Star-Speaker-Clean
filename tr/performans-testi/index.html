@@ -85,6 +85,12 @@
         <form class="sprint-card sprint-setup-card" data-setup-form novalidate>
           <p class="sprint-kicker">1 · HIZLI BAŞLANGIÇ</p>
           <h2 id="setup-title">Sorunu sana uygun hale getirelim.</h2>
+          <ol class="sprint-setup-progress" aria-label="Hazırlık seçimleri" data-setup-progress>
+            <li data-setup-step="situation"><span>1</span>Durum</li>
+            <li data-setup-step="level"><span>2</span>Seviye</li>
+            <li data-setup-step="duration"><span>3</span>Süre</li>
+            <li data-setup-step="feeling"><span>4</span>His</li>
+          </ol>
 
           <label class="sprint-name-field">
             <span>Adın nedir?</span>
@@ -101,18 +107,19 @@
 
           <fieldset class="sprint-setup-group">
             <legend>Hangi durumda İngilizce konuşmak istiyorsun?</legend>
+            <p class="sprint-setup-helper">Sana en yakın seçeneği seç.</p>
             <div class="sprint-situation-options">
               <button class="sprint-situation-option" type="button" aria-pressed="false" data-situation="meeting">
-                <span aria-hidden="true">01</span><strong>Toplantı</strong>
+                <span class="sprint-choice-emoji" aria-hidden="true">💬</span><strong>Toplantı</strong>
               </button>
               <button class="sprint-situation-option" type="button" aria-pressed="false" data-situation="interview">
-                <span aria-hidden="true">02</span><strong>Mülakat</strong>
+                <span class="sprint-choice-emoji" aria-hidden="true">🤝</span><strong>Mülakat</strong>
               </button>
               <button class="sprint-situation-option" type="button" aria-pressed="false" data-situation="presentation">
-                <span aria-hidden="true">03</span><strong>Sunum</strong>
+                <span class="sprint-choice-emoji" aria-hidden="true">🎤</span><strong>Sunum</strong>
               </button>
               <button class="sprint-situation-option" type="button" aria-pressed="false" data-situation="other">
-                <span aria-hidden="true">04</span><strong>Başka Bir Amaç</strong>
+                <span class="sprint-choice-emoji" aria-hidden="true">✨</span><strong>Başka Bir Amaç</strong>
               </button>
             </div>
           </fieldset>
@@ -135,10 +142,10 @@
           <fieldset class="sprint-setup-group">
             <legend>Ne kadar konuşmak istersin?</legend>
             <div class="sprint-level-options sprint-duration-options">
-              <button type="button" aria-pressed="false" data-duration="45">45 sn</button>
-              <button type="button" aria-pressed="false" data-duration="60">60 sn</button>
-              <button type="button" aria-pressed="false" data-duration="90">90 sn</button>
-              <button type="button" aria-pressed="false" data-duration="120">120 sn</button>
+              <button type="button" aria-pressed="false" data-duration="45"><strong>45 sn</strong><small>Kısa</small></button>
+              <button type="button" aria-pressed="false" data-duration="60"><strong>60 sn</strong><small>Önerilen</small></button>
+              <button type="button" aria-pressed="false" data-duration="90"><strong>90 sn</strong><small>Detaylı</small></button>
+              <button type="button" aria-pressed="false" data-duration="120"><strong>120 sn</strong><small>Uzun</small></button>
             </div>
             <p class="sprint-level-note" data-duration-note>Seviyeni seçtiğinde uygun süreyi öneririz; istersen değiştirebilirsin.</p>
           </fieldset>
@@ -146,16 +153,17 @@
           <fieldset class="sprint-setup-group">
             <legend>Bugün İngilizce konuşurken nasıl hissediyorsun?</legend>
             <div class="sprint-feeling-options">
-              <button type="button" aria-pressed="false" data-feeling="fantastic">Harika</button>
-              <button type="button" aria-pressed="false" data-feeling="confident">Kendime güveniyorum</button>
-              <button type="button" aria-pressed="false" data-feeling="calm">Sakinim</button>
-              <button type="button" aria-pressed="false" data-feeling="nervous">Gerginim</button>
-              <button type="button" aria-pressed="false" data-feeling="tired">Yorgunum</button>
+              <button type="button" aria-pressed="false" data-feeling="fantastic"><span aria-hidden="true">🤩</span>Harika</button>
+              <button type="button" aria-pressed="false" data-feeling="confident"><span aria-hidden="true">😎</span>Kendime güveniyorum</button>
+              <button type="button" aria-pressed="false" data-feeling="calm"><span aria-hidden="true">😌</span>Sakinim</button>
+              <button type="button" aria-pressed="false" data-feeling="nervous"><span aria-hidden="true">😬</span>Gerginim</button>
+              <button type="button" aria-pressed="false" data-feeling="tired"><span aria-hidden="true">😴</span>Yorgunum</button>
             </div>
             <p class="sprint-level-note">Bu seçim yalnızca geri bildirimin tonunu kişiselleştirir; puanını etkilemez.</p>
           </fieldset>
 
-          <button class="sprint-primary sprint-setup-submit" type="submit">
+          <p class="sprint-setup-ready-copy">Hazırsan sana uygun soruyu gösterelim.</p>
+          <button class="sprint-primary sprint-setup-submit" type="submit" disabled>
             Sorunu Gör <span aria-hidden="true">→</span>
           </button>
           <p id="setup-error" class="sprint-inline-error" role="alert" data-setup-error hidden></p>

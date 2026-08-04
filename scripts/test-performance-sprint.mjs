@@ -55,6 +55,10 @@ assert.match(page, /name="consent" required/);
 for (const level of ["a2_1", "a2_2", "b1_1", "b1_2", "b2_1", "b2_2", "c1_1", "unsure"]) assert.match(page, new RegExp(`data-level="${level}"`));
 for (const duration of [45, 60, 90, 120]) assert.match(page, new RegExp(`data-duration="${duration}"`));
 for (const feeling of ["fantastic", "confident", "calm", "nervous", "tired"]) assert.match(page, new RegExp(`data-feeling="${feeling}"`));
+for (const cue of ["💬", "🤝", "🎤", "✨", "🤩", "😎", "😌", "😬", "😴"]) assert.match(page, new RegExp(cue));
+for (const step of ["situation", "level", "duration", "feeling"]) assert.match(page, new RegExp(`data-setup-step="${step}"`));
+assert.match(page, /Hazırsan sana uygun soruyu gösterelim/);
+assert.match(page, /sprint-setup-submit" type="submit" disabled/);
 for (const qualification of ["under_5000", "5000_10000", "10000_15000", "15000_25000", "25000_plus", "unsure"]) assert.match(page, new RegExp(`data-budget="${qualification}"`));
 assert.match(script, /recording_countdown_started/);
 assert.match(script, /consent_version/);
@@ -104,6 +108,8 @@ assert.match(script, /state\.bookingSubmitting/);
 assert.match(script, /performanceSprintBooking/);
 assert.match(script, /restoreBooking\(\)/);
 assert.match(script, /session_abandoned/);
+assert.match(script, /setup_abandoned/);
+assert.match(script, /completed_steps/);
 assert.match(script, /URLSearchParams\(location\.search\)\.get\("demo"\) === "1"/);
 assert.match(script, /state\.recordings\[phase\]/);
 assert.match(script, /state\.submitting/);
@@ -116,6 +122,8 @@ assert.doesNotMatch(script, /sk-[A-Za-z0-9]/);
 
 assert.match(styles, /@media \(max-width: 560px\)/);
 assert.match(styles, /@media \(prefers-reduced-motion: reduce\)/);
+assert.match(styles, /sprint-feeling-options button:last-child/);
+assert.match(styles, /sprint-setup-submit\[data-ready="true"\]/);
 assert.doesNotMatch(styles, /overflow-x:\s*auto/);
 
 assert.match(edgeFunction, /Deno\.env\.get\("OPENAI_API_KEY"\)/);

@@ -399,6 +399,27 @@ function renderSetupSelection() {
   });
   $$('[data-duration]').forEach((button) => button.setAttribute("aria-pressed", String(Number(button.dataset.duration) === state.recordingDuration)));
   $$('[data-feeling]').forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.feeling === state.emotionalState)));
+  const setupSteps = {
+    situation: Boolean(state.situation),
+    level: Boolean(state.reportedLevel),
+    duration: Boolean(state.recordingDuration),
+    feeling: Boolean(state.emotionalState),
+  };
+  const stepKeys = Object.keys(setupSteps);
+  const completedSteps = Object.values(setupSteps).filter(Boolean).length;
+  $$('[data-setup-step]').forEach((step) => {
+    const stepIndex = stepKeys.indexOf(step.dataset.setupStep);
+    const complete = setupSteps[step.dataset.setupStep];
+    step.classList.toggle("is-complete", complete);
+    if (!complete && !stepKeys.slice(0, stepIndex).some((key) => !setupSteps[key])) step.setAttribute("aria-current", "step");
+    else step.removeAttribute("aria-current");
+  });
+  $("[data-setup-progress]")?.setAttribute("aria-label", `Hazırlık ${completedSteps}/4`);
+  const form = $("[data-setup-form]");
+  const submit = $(".sprint-setup-submit", form);
+  const ready = validateFirstName(form.elements.firstName.value).valid && completedSteps === 4;
+  submit.dataset.ready = String(ready);
+  submit.disabled = !ready || state.setupSubmitting;
 }
 
 async function handleSetupSubmit(event) {
@@ -437,12 +458,6 @@ async function handleSetupSubmit(event) {
   submit.textContent = "Sorun hazırlanıyor…";
   try {
     await selectAndSaveParticipant();
-    await trackEvent("purpose_selected", "setup", {
-      situation: state.situation,
-      reported_level: state.reportedLevel,
-      question_id: state.question.id,
-      question_bank_version: QUESTION_BANK_VERSION,
-    }, "purpose_selected");
     if (state.situation === "other") await trackEvent("other_purpose_selected", "setup", { reported_level: state.reportedLevel }, "other_purpose_selected");
     await trackEvent("question_selected", "setup", {
       situation: state.situation,
@@ -484,8 +499,8 @@ async function handleSetupSubmit(event) {
     trackEvent("setup_failed", "setup", { failure_code: failureCode, correlation_id: correlationId }, `setup_failed:${Date.now()}`);
   } finally {
     state.setupSubmitting = false;
-    submit.disabled = false;
     submit.innerHTML = 'Sorunu Gör <span aria-hidden="true">→</span>';
+    renderSetupSelection();
   }
 }
 
@@ -1265,9 +1280,12 @@ $$("[data-situation]").forEach((button) => {
   button.addEventListener("click", () => {
     if (state.situation !== button.dataset.situation) state.question = null;
     state.situation = button.dataset.situation;
+    trackEvent("purpose_selected", "setup", { situation: state.situation }, `purpose:${state.situation}`);
     renderSetupSelection();
   });
 });
+
+$("[data-setup-form] [name='firstName']").addEventListener("input", renderSetupSelection);
 
 $$('[data-level]').forEach((button) => {
   button.addEventListener("click", () => {
@@ -1352,6 +1370,10 @@ $("[data-booking-fallback-whatsapp]").addEventListener("click", () => {
 window.addEventListener("beforeunload", (event) => {
   if (!state.isDemo && state.currentScreen !== "intro" && state.currentScreen !== "result") {
     trackEvent("session_abandoned", state.currentScreen, {}, `session_abandoned:${state.currentScreen}`);
+  }
+  if (!state.isDemo && state.currentScreen === "setup" && !state.participantSaved) {
+    const completedSteps = [state.situation, state.reportedLevel, state.recordingDuration, state.emotionalState].filter(Boolean).length;
+    trackEvent("setup_abandoned", "setup", { completed_steps: completedSteps }, "setup_abandoned");
   }
   state.stream?.getTracks().forEach((track) => track.stop());
   if (state.blob && !state.submitting && state.currentScreen === "record") {
