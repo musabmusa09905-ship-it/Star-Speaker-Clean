@@ -7,6 +7,7 @@ import {
   resolveQuestionById,
   validateFirstName,
 } from "./performance-analysis-config.js";
+import { persistSetupAttempt } from "./performance-setup-recovery.js";
 
 const labels = {
   clarity: "Netlik",
@@ -28,10 +29,16 @@ const waitingInsights = [
   "Bir örnek, ana fikrini dinleyici için daha anlaşılır ve akılda kalıcı yapar.",
 ];
 
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+function isValidUuid(value) {
+  return UUID_PATTERN.test(String(value || ""));
+}
+
 function persistentSessionId() {
   try {
     const existing = sessionStorage.getItem("performanceSprintSessionId");
-    if (existing) return existing;
+    if (isValidUuid(existing)) return existing;
     const created = crypto.randomUUID();
     sessionStorage.setItem("performanceSprintSessionId", created);
     return created;
@@ -46,7 +53,7 @@ const ANONYMOUS_ID_KEY = "starSpeakerAnonymousParticipantId";
 function persistentAnonymousId() {
   try {
     const existing = localStorage.getItem(ANONYMOUS_ID_KEY);
-    if (existing) return existing;
+    if (isValidUuid(existing)) return existing;
     const created = crypto.randomUUID();
     localStorage.setItem(ANONYMOUS_ID_KEY, created);
     return created;
@@ -112,6 +119,8 @@ const state = {
   questionPreviouslySeen: Boolean(storedFlow.questionPreviouslySeen),
   questionPriorServeCount: Number(storedFlow.questionPriorServeCount || 0),
   questionSelectionFallback: Boolean(storedFlow.questionSelectionFallback),
+  questionHistoryStatus: storedFlow.questionHistoryStatus || "unknown",
+  questionSelectionWarning: storedFlow.questionSelectionWarning || "",
   participantId: storedFlow.participantId || null,
   participantSaved: Boolean(storedFlow.participantSaved),
   setupSubmitting: false,
@@ -164,6 +173,8 @@ function storeFlow() {
       questionPreviouslySeen: state.questionPreviouslySeen,
       questionPriorServeCount: state.questionPriorServeCount,
       questionSelectionFallback: state.questionSelectionFallback,
+      questionHistoryStatus: state.questionHistoryStatus,
+      questionSelectionWarning: state.questionSelectionWarning,
       participantId: state.participantId,
       participantSaved: state.participantSaved,
       analyses: state.analyses,
@@ -272,6 +283,7 @@ async function participantApi(payload) {
   if (!response.ok) {
     const failure = new Error(body.error || "Katılımcı kaydı tamamlanamadı.");
     failure.code = body.code || `http_${response.status}`;
+    failure.correlationId = response.headers.get("x-correlation-id") || body.correlation_id || "";
     throw failure;
   }
   if (body.participant_id) state.participantId = body.participant_id;
@@ -305,8 +317,24 @@ async function selectQuestion() {
   state.questionPreviouslySeen = Boolean(body.previously_seen);
   state.questionPriorServeCount = Number(body.prior_serve_count || 0);
   state.questionSelectionFallback = Boolean(body.fallback);
+  state.questionHistoryStatus = body.history_status || "unknown";
+  state.questionSelectionWarning = body.warning_code || "";
   rememberQuestion(body.question.id);
   return body.question;
+}
+
+function rotateAttemptSession() {
+  const created = crypto.randomUUID();
+  try { sessionStorage.setItem("performanceSprintSessionId", created); } catch { /* in-memory fallback */ }
+  state.sessionId = created;
+  state.participantId = null;
+  state.participantSaved = false;
+  state.question = null;
+  state.questionPreviouslySeen = false;
+  state.questionPriorServeCount = 0;
+  state.questionSelectionFallback = false;
+  state.questionHistoryStatus = "unknown";
+  state.questionSelectionWarning = "";
 }
 
 async function saveParticipant() {
@@ -330,6 +358,24 @@ async function saveParticipant() {
   state.participantSaved = true;
   if (body.participant_id) state.participantId = body.participant_id;
   storeFlow();
+}
+
+async function selectAndSaveParticipant() {
+  const result = await persistSetupAttempt({
+    ensureQuestion: async () => {
+      state.question = state.question || await selectQuestion();
+      return state.question;
+    },
+    saveParticipant,
+    resetLockedAttempt: rotateAttemptSession,
+  });
+  if (result.recovered) {
+    await trackEvent("setup_recovered", "setup", {
+      recovery_reason: "participant_attempt_locked",
+      question_id: state.question.id,
+      question_bank_version: QUESTION_BANK_VERSION,
+    }, `setup_recovered:locked_attempt:${state.sessionId}`);
+  }
 }
 
 async function advanceParticipant(changes) {
@@ -390,8 +436,7 @@ async function handleSetupSubmit(event) {
   submit.disabled = true;
   submit.textContent = "Sorun hazırlanıyor…";
   try {
-    state.question = state.question || await selectQuestion();
-    await saveParticipant();
+    await selectAndSaveParticipant();
     await trackEvent("purpose_selected", "setup", {
       situation: state.situation,
       reported_level: state.reportedLevel,
@@ -409,6 +454,8 @@ async function handleSetupSubmit(event) {
       previously_seen: state.questionPreviouslySeen,
       prior_serve_count: state.questionPriorServeCount,
       fallback: state.questionSelectionFallback,
+      question_history_status: state.questionHistoryStatus,
+      selection_warning: state.questionSelectionWarning,
     }, "question_selected");
     await trackEvent("setup_completed", "setup", {
       situation: state.situation,
@@ -428,10 +475,13 @@ async function handleSetupSubmit(event) {
     state.setupHadFailure = false;
   } catch (cause) {
     const failureCode = cause?.code || "setup_unknown";
-    error.innerHTML = `Şu anda devam edemedik. Bağlantını kontrol edip tekrar dene. <button type="submit" class="sprint-inline-retry" data-setup-retry>Tekrar Dene</button>`;
+    const correlationId = cause?.correlationId || "";
+    error.innerHTML = `Şu anda devam edemedik. Lütfen tekrar dene. <button type="submit" class="sprint-inline-retry" data-setup-retry>Tekrar Dene</button>`;
+    error.dataset.failureCode = failureCode;
+    if (correlationId) error.dataset.correlationId = correlationId;
     error.hidden = false;
     state.setupHadFailure = true;
-    trackEvent("setup_failed", "setup", { failure_code: failureCode }, `setup_failed:${Date.now()}`);
+    trackEvent("setup_failed", "setup", { failure_code: failureCode, correlation_id: correlationId }, `setup_failed:${Date.now()}`);
   } finally {
     state.setupSubmitting = false;
     submit.disabled = false;

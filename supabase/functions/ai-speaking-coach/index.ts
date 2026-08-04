@@ -45,15 +45,16 @@ function corsHeaders(request: Request) {
     "Access-Control-Allow-Origin": allowedOrigin,
     "Access-Control-Allow-Headers": "authorization, apikey, content-type, x-client-info",
     "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Expose-Headers": "X-Correlation-ID",
     "Access-Control-Max-Age": "86400",
     "Vary": "Origin",
   };
 }
 
-function json(request: Request, body: unknown, status = 200) {
+function json(request: Request, body: unknown, status = 200, correlationId = crypto.randomUUID()) {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { ...corsHeaders(request), "Content-Type": "application/json; charset=utf-8" },
+    headers: { ...corsHeaders(request), "Content-Type": "application/json; charset=utf-8", "X-Correlation-ID": correlationId },
   });
 }
 
@@ -117,11 +118,19 @@ async function callRpc(name: string, args: Record<string, unknown>) {
     body: JSON.stringify(args),
   });
   const body = await response.json().catch(() => null);
-  if (!response.ok) throw new Error(body?.message || `${name} failed.`);
+  if (!response.ok) {
+    const databaseMessage = compactText(body?.message, 120);
+    const code = databaseMessage === "participant_version_or_stage_locked"
+      ? "participant_attempt_locked"
+      : databaseMessage === "invalid_career_english_setup"
+      ? "participant_setup_invalid"
+      : "database_failure";
+    throw Object.assign(new Error(`${name} failed.`), { code, rpc_status: response.status });
+  }
   return Array.isArray(body) ? body[0] : body;
 }
 
-async function selectQuestion(payload: Record<string, unknown>) {
+async function selectQuestion(payload: Record<string, unknown>, correlationId: string) {
   const situation = compactText(payload.situation, 30);
   const reportedLevel = compactText(payload.reported_level, 30);
   const sessionId = compactText(payload.session_id, 80);
@@ -137,15 +146,25 @@ async function selectQuestion(payload: Record<string, unknown>) {
   const eligible = QUESTIONS.filter((question) => question.active && question.purpose === situation && question.level === reportedLevel);
   if (!eligible.length) throw Object.assign(new Error("No eligible question."), { code: "no_eligible_question" });
   const { url, key } = serviceConfig();
-  const historyResponse = await fetch(`${url}/rest/v1/performance_analysis_question_history?anonymous_id=eq.${anonymousId}&purpose=eq.${situation}&reported_level=eq.${reportedLevel}&select=question_id,serve_count,last_served_at,session_id&order=last_served_at.desc`, {
-    headers: { apikey: key, Authorization: `Bearer ${key}` },
-  });
-  if (!historyResponse.ok) throw Object.assign(new Error("Question history is unavailable."), { code: "question_history_failed" });
-  const history = await historyResponse.json() as Array<Record<string, unknown>>;
+  let history: Array<Record<string, unknown>> = [];
+  let warningCode = "";
+  try {
+    const historyResponse = await fetch(`${url}/rest/v1/performance_analysis_question_history?anonymous_id=eq.${anonymousId}&purpose=eq.${situation}&reported_level=eq.${reportedLevel}&select=question_id,serve_count,last_served_at,session_id&order=last_served_at.desc`, {
+      headers: { apikey: key, Authorization: `Bearer ${key}` },
+    });
+    if (historyResponse.ok) history = await historyResponse.json() as Array<Record<string, unknown>>;
+    else {
+      warningCode = "question_history_read_failed";
+      console.error(JSON.stringify({ event: warningCode, correlation_id: correlationId, stage: "select_question", status: historyResponse.status, purpose: situation, reported_level: reportedLevel, question_bank_version: QUESTION_BANK_VERSION }));
+    }
+  } catch {
+    warningCode = "question_history_read_failed";
+    console.error(JSON.stringify({ event: warningCode, correlation_id: correlationId, stage: "select_question", purpose: situation, reported_level: reportedLevel, question_bank_version: QUESTION_BANK_VERSION }));
+  }
   const existingSession = history.find((entry) => entry.session_id === sessionId);
   if (existingSession) {
     const existingQuestion = questionById.get(String(existingSession.question_id));
-    if (existingQuestion) return { question: clientQuestion(existingQuestion), previously_seen: Number(existingSession.serve_count || 0) > 1, prior_serve_count: Math.max(0, Number(existingSession.serve_count || 1) - 1), fallback: false, preserved: true };
+    if (existingQuestion) return { question: clientQuestion(existingQuestion), previously_seen: Number(existingSession.serve_count || 0) > 1, prior_serve_count: Math.max(0, Number(existingSession.serve_count || 1) - 1), fallback: false, preserved: true, history_status: warningCode ? "degraded" : "preserved", warning_code: warningCode || null };
   }
 
   const random = new Uint32Array(1);
@@ -154,25 +173,33 @@ async function selectQuestion(payload: Record<string, unknown>) {
   if (!selected) throw Object.assign(new Error("No eligible question."), { code: "no_eligible_question" });
   const previous = history.find((entry) => String(entry.question_id) === selected.id);
   const priorServeCount = Number(previous?.serve_count || 0);
-  const writeResponse = await fetch(`${url}/rest/v1/performance_analysis_question_history`, {
-    method: "POST",
-    headers: { apikey: key, Authorization: `Bearer ${key}`, "Content-Type": "application/json", Prefer: "resolution=merge-duplicates,return=minimal" },
-    body: JSON.stringify({
-      anonymous_id: anonymousId,
-      session_id: sessionId,
-      purpose: situation,
-      reported_level: reportedLevel,
-      normalized_level: normalizedLevels[reportedLevel],
-      question_id: selected.id,
-      question_topic: selected.topic,
-      question_bank_version: QUESTION_BANK_VERSION,
-      previously_seen: priorServeCount > 0,
-      serve_count: priorServeCount + 1,
-      last_served_at: new Date().toISOString(),
-    }),
-  });
-  if (!writeResponse.ok) throw Object.assign(new Error("Question history could not be saved."), { code: "question_history_write_failed" });
-  return { question: clientQuestion(selected), previously_seen: priorServeCount > 0, prior_serve_count: priorServeCount, fallback: false, preserved: false };
+  try {
+    const writeResponse = await fetch(`${url}/rest/v1/performance_analysis_question_history`, {
+      method: "POST",
+      headers: { apikey: key, Authorization: `Bearer ${key}`, "Content-Type": "application/json", Prefer: "resolution=merge-duplicates,return=minimal" },
+      body: JSON.stringify({
+        anonymous_id: anonymousId,
+        session_id: sessionId,
+        purpose: situation,
+        reported_level: reportedLevel,
+        normalized_level: normalizedLevels[reportedLevel],
+        question_id: selected.id,
+        question_topic: selected.topic,
+        question_bank_version: QUESTION_BANK_VERSION,
+        previously_seen: priorServeCount > 0,
+        serve_count: priorServeCount + 1,
+        last_served_at: new Date().toISOString(),
+      }),
+    });
+    if (!writeResponse.ok) {
+      warningCode = "question_history_write_failed";
+      console.error(JSON.stringify({ event: warningCode, correlation_id: correlationId, stage: "select_question", status: writeResponse.status, purpose: situation, reported_level: reportedLevel, question_id: selected.id, question_bank_version: QUESTION_BANK_VERSION }));
+    }
+  } catch {
+    warningCode = "question_history_write_failed";
+    console.error(JSON.stringify({ event: warningCode, correlation_id: correlationId, stage: "select_question", purpose: situation, reported_level: reportedLevel, question_id: selected.id, question_bank_version: QUESTION_BANK_VERSION }));
+  }
+  return { question: clientQuestion(selected), previously_seen: priorServeCount > 0, prior_serve_count: priorServeCount, fallback: false, preserved: false, history_status: warningCode ? "degraded" : "saved", warning_code: warningCode || null };
 }
 
 async function upsertParticipant(payload: Record<string, unknown>) {
@@ -469,13 +496,14 @@ async function trackEvent(payload: Record<string, unknown>) {
 }
 
 Deno.serve(async (request) => {
+  const correlationId = crypto.randomUUID();
   if (request.method === "OPTIONS") {
-    return new Response(null, { status: 204, headers: corsHeaders(request) });
+    return new Response(null, { status: 204, headers: { ...corsHeaders(request), "X-Correlation-ID": correlationId } });
   }
-  if (request.method !== "POST") return json(request, { error: "Method not allowed." }, 405);
+  if (request.method !== "POST") return json(request, { error: "Method not allowed." }, 405, correlationId);
 
   const origin = request.headers.get("origin");
-  if (origin && !allowedOrigins.has(origin)) return json(request, { error: "Origin not allowed." }, 403);
+  if (origin && !allowedOrigins.has(origin)) return json(request, { error: "Origin not allowed." }, 403, correlationId);
 
   try {
     const contentType = request.headers.get("content-type") || "";
@@ -490,13 +518,13 @@ Deno.serve(async (request) => {
         return json(request, { ok: true });
       }
       if (payload?.action === "select_question") {
-        const selection = await selectQuestion(payload);
-        return json(request, { ok: true, ...selection });
+        const selection = await selectQuestion(payload, correlationId);
+        return json(request, { ok: true, ...selection }, 200, correlationId);
       }
       if (payload?.action === "save_participant") {
         if (payload?.is_demo) return json(request, { ok: true, demo: true });
         const participant = await upsertParticipant(payload);
-        return json(request, { ok: true, participant_id: participant?.id, stage: participant?.furthest_stage });
+        return json(request, { ok: true, participant_id: participant?.id, stage: participant?.furthest_stage }, 200, correlationId);
       }
       if (payload?.action === "advance_participant") {
         if (payload?.is_demo) return json(request, { ok: true, demo: true });
@@ -575,9 +603,12 @@ Deno.serve(async (request) => {
       throw cause;
     }
   } catch (cause) {
-    console.error("ai-speaking-coach", cause);
     const code = typeof cause === "object" && cause && "code" in cause ? String(cause.code) : "internal_error";
-    return json(request, { error: "Analiz şu anda tamamlanamadı. Lütfen birkaç saniye sonra tekrar dene.", code }, 500);
+    const status = code === "participant_attempt_locked" ? 409
+      : code === "participant_setup_invalid" || code === "question_invalid" ? 400
+      : 500;
+    console.error(JSON.stringify({ event: "ai_speaking_coach_failed", correlation_id: correlationId, code, function: "ai-speaking-coach", timestamp: new Date().toISOString() }));
+    return json(request, { error: "Analiz şu anda tamamlanamadı. Lütfen birkaç saniye sonra tekrar dene.", code, correlation_id: correlationId }, status, correlationId);
   }
 });
 import { QUESTIONS, QUESTION_BANK_VERSION } from "../_shared/performance-question-bank.ts";

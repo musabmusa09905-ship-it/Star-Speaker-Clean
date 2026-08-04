@@ -13,6 +13,7 @@ import {
   resolveQuestionById,
   validateFirstName,
 } from "../src/scripts/performance-analysis-config.js";
+import { persistSetupAttempt } from "../src/scripts/performance-setup-recovery.js";
 
 const page = await readFile(resolve("tr", "performans-testi", "index.html"), "utf8");
 const client = await readFile(resolve("src", "scripts", "performance-sprint.js"), "utf8");
@@ -23,6 +24,50 @@ const migration = await readFile(
 );
 
 assert.equal(EXPERIENCE_VERSION, "career_english_v3");
+
+let recoverySession = "locked-session";
+let recoveryQuestion = "preserved-question";
+let recoverySelectCount = 0;
+let recoverySaveCount = 0;
+let recoveryResetCount = 0;
+const recoveredAttempt = await persistSetupAttempt({
+  ensureQuestion: async () => {
+    recoverySelectCount += 1;
+    recoveryQuestion ||= "new-question";
+    return recoveryQuestion;
+  },
+  saveParticipant: async () => {
+    recoverySaveCount += 1;
+    if (recoverySession === "locked-session") throw Object.assign(new Error("locked"), { code: "participant_attempt_locked" });
+  },
+  resetLockedAttempt: () => {
+    recoveryResetCount += 1;
+    recoverySession = "fresh-session";
+    recoveryQuestion = "";
+  },
+});
+assert.deepEqual(recoveredAttempt, { recovered: true });
+assert.equal(recoverySelectCount, 2, "locked recovery must select once for each session");
+assert.equal(recoverySaveCount, 2, "locked recovery must retry participant creation exactly once");
+assert.equal(recoveryResetCount, 1, "locked recovery must create exactly one fresh session");
+
+await assert.rejects(
+  persistSetupAttempt({
+    ensureQuestion: async () => "question",
+    saveParticipant: async () => { throw Object.assign(new Error("offline"), { code: "network_failure" }); },
+    resetLockedAttempt: () => assert.fail("non-lock failures must not rotate the session"),
+  }),
+  (error) => error.code === "network_failure",
+);
+for (const setup of [
+  { situation: "meeting", reportedLevel: "b1_2", duration: 60, feeling: "calm" },
+  { situation: "other", reportedLevel: "unsure", duration: 60, feeling: "calm" },
+]) {
+  assert.equal(eligibleQuestions(setup.situation, setup.reportedLevel).length, 4);
+  assert.ok(normalizeReportedLevel(setup.reportedLevel));
+  assert.ok([45, 60, 90, 120].includes(setup.duration));
+  assert.ok(["fantastic", "confident", "calm", "nervous", "tired"].includes(setup.feeling));
+}
 
 for (const validName of ["Dilruba", "Çağla", "İrem", "Özgür", "Şükrü", "Gül", "Nur Ece", "Ali-Can"]) {
   const result = validateFirstName(`  ${validName}  `);
@@ -91,6 +136,11 @@ for (const contract of [
   "setup_completed",
 ]) assert.match(client, new RegExp(contract));
 assert.match(client, /if \(state\.setupSubmitting\) return/);
+assert.match(client, /rotateAttemptSession/);
+assert.match(client, /persistSetupAttempt/);
+assert.match(client, /await selectAndSaveParticipant\(\)/);
+assert.match(client, /questionHistoryStatus/);
+assert.match(client, /Şu anda devam edemedik\. Lütfen tekrar dene\./);
 assert.match(client, /beginCountdown/);
 assert.match(client, /cancelCountdown/);
 assert.match(client, /state\.question \|\| resolveQuestion/);
@@ -106,6 +156,12 @@ assert.match(edge, /questionById\.get\(questionId\)/);
 assert.match(edge, /upsert_career_english_participant/);
 assert.match(edge, /advance_career_english_participant/);
 assert.match(edge, /track_career_english_event/);
+assert.match(edge, /participant_attempt_locked/);
+assert.match(edge, /X-Correlation-ID/);
+assert.match(edge, /question_history_read_failed/);
+assert.match(edge, /question_history_write_failed/);
+assert.match(edge, /history_status: warningCode \? "degraded" : "saved"/);
+assert.doesNotMatch(edge, /throw Object\.assign\(new Error\("Question history (?:is unavailable|could not be saved)\."/);
 assert.match(edge, /level_is_self_reported|self-reported level/);
 
 assert.match(migration, /performance_analysis_question_history/);
