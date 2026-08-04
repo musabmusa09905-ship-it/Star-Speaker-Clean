@@ -21,14 +21,14 @@ const schema = await readFile(
 
 assert.match(page, /<html lang="tr">/);
 assert.match(page, /rel="canonical" href="https:\/\/starspeakerstudio\.com\/tr\/performans-testi\/"/);
-assert.match(page, /MÜHENDİSLERE ÖZEL · ÜCRETSİZ · 3 DAKİKA/);
-assert.match(page, /Konuşmanı yavaşlatan<br><em>ana problemi<\/em> gör\./);
-assert.match(page, /Bir profesyonel soruyu sesli yanıtla, kişisel düzeltmeni al ve cevabını daha güçlü şekilde tekrar dene\./);
-assert.match(page, /3 Dakikalık Analize Başla/);
+assert.match(page, /KARİYER İNGİLİZCESİ · ÜCRETSİZ/);
+assert.match(page, /İngilizce cevabını<br><em>daha güçlü<\/em> kur\./);
+assert.match(page, /Ücretsiz Analize Başla/);
 assert.match(page, /Seviye sınavı değil · Hazırlık gerektirmez · Sonucun hemen hazır/);
 assert.match(page, /data-screen="intro"/);
 assert.match(page, /data-screen="setup"/);
 assert.match(page, /data-screen="record"/);
+assert.doesNotMatch(page, /data-screen="mic"/);
 assert.match(page, /data-screen="analysis"/);
 assert.match(page, /data-screen="correction"/);
 assert.match(page, /data-screen="result"/);
@@ -52,6 +52,13 @@ assert.match(page, /Ücretsiz Görüşmeni Planla/);
 assert.match(page, /Türkiye saati/);
 assert.match(page, /autocomplete="tel"/);
 assert.match(page, /name="consent" required/);
+for (const level of ["a2_1", "a2_2", "b1_1", "b1_2", "b2_1", "b2_2", "c1_1", "unsure"]) assert.match(page, new RegExp(`data-level="${level}"`));
+for (const duration of [45, 60, 90, 120]) assert.match(page, new RegExp(`data-duration="${duration}"`));
+for (const feeling of ["fantastic", "confident", "calm", "nervous", "tired"]) assert.match(page, new RegExp(`data-feeling="${feeling}"`));
+for (const qualification of ["under_5000", "5000_10000", "10000_15000", "15000_25000", "25000_plus", "unsure"]) assert.match(page, new RegExp(`data-budget="${qualification}"`));
+assert.match(script, /recording_countdown_started/);
+assert.match(script, /consent_version/);
+assert.doesNotMatch(script, /budget_range:\s*null/);
 
 for (const phase of ["first", "retry"]) {
   assert.match(script, new RegExp(`["']${phase}["']`));
@@ -115,7 +122,8 @@ assert.match(edgeFunction, /Deno\.env\.get\("OPENAI_API_KEY"\)/);
 assert.match(edgeFunction, /gpt-4o-mini-transcribe/);
 assert.match(edgeFunction, /gpt-5\.6-luna/);
 assert.match(edgeFunction, /json_schema/);
-assert.match(edgeFunction, /audio\.size > 8_000_000/);
+assert.match(edgeFunction, /audio\.size > 16_000_000/);
+assert.match(edgeFunction, /audio_type_invalid/);
 assert.match(edgeFunction, /allowedOrigins/);
 assert.match(edgeFunction, /performance_sprint_events/);
 assert.doesNotMatch(edgeFunction, /sk-[A-Za-z0-9]/);

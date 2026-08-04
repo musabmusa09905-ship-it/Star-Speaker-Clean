@@ -1,6 +1,7 @@
 import {
   EXPERIENCE_VERSION,
   normalizeReportedLevel,
+  recommendedDuration,
   resolveQuestion,
   resolveQuestionById,
   validateFirstName,
@@ -23,7 +24,7 @@ const bottleneckTitles = {
 const waitingInsights = [
   "Güçlü bir profesyonel cevap, karmaşık kelimelerden önce net bir ana fikirle başlar.",
   "Kısa bir cevapta tek bir ana mesajı desteklemek, çok sayıda ayrıntı vermekten daha etkilidir.",
-  "Teknik ayrıntı ancak dinleyicinin kararını destekliyorsa değerlidir.",
+  "Bir örnek, ana fikrini dinleyici için daha anlaşılır ve akılda kalıcı yapar.",
 ];
 
 function persistentSessionId() {
@@ -69,6 +70,9 @@ const state = {
   situation: storedFlow.situation || "",
   reportedLevel: storedFlow.reportedLevel || "",
   normalizedLevel: storedFlow.normalizedLevel || "",
+  recordingDuration: storedFlow.recordingDuration || 60,
+  emotionalState: storedFlow.emotionalState || "",
+  emotionalSelectedAt: storedFlow.emotionalSelectedAt || "",
   question: storedFlow.question || null,
   participantId: storedFlow.participantId || null,
   participantSaved: Boolean(storedFlow.participantSaved),
@@ -98,6 +102,11 @@ const state = {
   booking: null,
   bookingSubmitting: false,
   bookingMode: "create",
+  budgetRange: storedFlow.budgetRange || "",
+  urgency: storedFlow.urgency || "",
+  bookingStep: storedFlow.bookingStep || "contact",
+  recordingIntent: false,
+  countdownId: null,
 };
 
 function storeFlow() {
@@ -108,12 +117,18 @@ function storeFlow() {
       situation: state.situation,
       reportedLevel: state.reportedLevel,
       normalizedLevel: state.normalizedLevel,
+      recordingDuration: state.recordingDuration,
+      emotionalState: state.emotionalState,
+      emotionalSelectedAt: state.emotionalSelectedAt,
       questionId: state.question?.id || "",
       participantId: state.participantId,
       participantSaved: state.participantSaved,
       analyses: state.analyses,
       retryFocus: state.retryFocus,
       leadId: state.leadId,
+      budgetRange: state.budgetRange,
+      urgency: state.urgency,
+      bookingStep: state.bookingStep,
     }));
   } catch {
     // Session persistence is a recovery aid; the database remains authoritative.
@@ -126,7 +141,6 @@ const screens = Object.fromEntries($$("[data-screen]").map((screen) => [screen.d
 const progressShell = $("[data-progress-shell]");
 const progressMap = {
   setup: [1, "Hızlı başlangıç"],
-  mic: [2, "Sesli cevap"],
   record: [state.phase === "retry" ? 4 : 2, state.phase === "retry" ? "Tekrar dene" : "Sesli cevap"],
   analysis: [state.phase === "retry" ? 5 : 3, "Analiz"],
   correction: [3, "Kişisel düzeltme"],
@@ -226,6 +240,9 @@ async function saveParticipant() {
     normalized_level: state.normalizedLevel,
     question_id: state.question.id,
     question: state.question,
+    recording_duration_seconds: state.recordingDuration,
+    emotional_state: state.emotionalState,
+    emotional_selected_at: state.emotionalSelectedAt,
     source_data: state.sourceData,
   });
   state.participantSaved = true;
@@ -252,6 +269,8 @@ function renderSetupSelection() {
   $$('[data-level]').forEach((button) => {
     button.setAttribute("aria-pressed", String(button.dataset.level === state.reportedLevel));
   });
+  $$('[data-duration]').forEach((button) => button.setAttribute("aria-pressed", String(Number(button.dataset.duration) === state.recordingDuration)));
+  $$('[data-feeling]').forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.feeling === state.emotionalState)));
 }
 
 async function handleSetupSubmit(event) {
@@ -274,6 +293,11 @@ async function handleSetupSubmit(event) {
   }
   if (!state.reportedLevel) {
     error.textContent = "Lütfen sana en yakın konuşma seviyesini seç.";
+    error.hidden = false;
+    return;
+  }
+  if (!state.emotionalState) {
+    error.textContent = "Lütfen bugün nasıl hissettiğini seç.";
     error.hidden = false;
     return;
   }
@@ -302,7 +326,9 @@ async function handleSetupSubmit(event) {
       normalized_level: state.normalizedLevel,
       question_id: state.question.id,
     }, "setup_completed");
-    showScreen("mic");
+    state.phase = "first";
+    preparePrompt();
+    showScreen("record");
   } catch (cause) {
     error.textContent = `${cause.message} Lütfen bağlantını kontrol edip tekrar dene.`;
     error.hidden = false;
@@ -316,9 +342,10 @@ async function handleSetupSubmit(event) {
 function preparePrompt() {
   const prompt = promptForSituation();
   const isRetry = state.phase === "retry";
-  $("[data-record-kicker]").textContent = isRetry ? "TEKRAR DENE · 30–45 SANİYE" : "İLK CEVAP · 30–45 SANİYE";
+  $("[data-record-kicker]").textContent = `${isRetry ? "TEKRAR DENE" : "İLK CEVAP"} · ${state.recordingDuration} SANİYE`;
   $("[data-prompt-title]").textContent = prompt.title;
   $("[data-prompt-context]").textContent = prompt.context;
+  $("[data-prompt-translation]").textContent = prompt.translationTr || "";
   $("[data-prompt-guide]").textContent = prompt.guide;
   $("[data-correction-reminder]").hidden = !isRetry;
   if (isRetry) {
@@ -328,16 +355,12 @@ function preparePrompt() {
   resetRecorder();
 }
 
-async function ensureMicrophone(event) {
-  if (event?.detail > 1) return;
-  const error = $("[data-mic-error]");
+async function ensureMicrophone() {
+  const error = $("[data-record-error]");
   error.hidden = true;
   try {
     if (state.isDemo) {
-      state.phase = "first";
-      preparePrompt();
-      showScreen("record");
-      return;
+      return true;
     }
     if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === "undefined") {
       throw new Error("Bu tarayıcı ses kaydını desteklemiyor. Güncel Chrome, Edge veya Safari ile tekrar dene.");
@@ -345,27 +368,57 @@ async function ensureMicrophone(event) {
     state.stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     state.stream.getTracks().forEach((track) => { track.enabled = true; });
     trackEvent("microphone_granted", "microphone", {}, "microphone_granted");
-    state.phase = "first";
-    preparePrompt();
-    showScreen("record");
+    return true;
   } catch (cause) {
     trackEvent("microphone_denied", "microphone", { reason: cause?.name || "unknown" }, "microphone_denied");
     error.textContent = cause?.message?.includes("tarayıcı")
       ? cause.message
       : "Mikrofon izni alınamadı. Tarayıcıdaki kilit simgesinden mikrofonu açıp tekrar dene.";
     error.hidden = false;
+    return false;
   }
+}
+
+function cancelCountdown() {
+  clearInterval(state.countdownId);
+  state.countdownId = null;
+  state.recordingIntent = false;
+  $("[data-countdown]").hidden = true;
+  $("[data-record-button]").disabled = false;
+  $("[data-record-hint]").textContent = `Hazır olduğunda başla. En fazla ${state.recordingDuration} saniye.`;
+  trackEvent("recording_countdown_cancelled", state.phase, {}, `countdown_cancelled:${state.phase}:${Date.now()}`);
+}
+
+function beginCountdown() {
+  let seconds = 5;
+  state.recordingIntent = true;
+  $("[data-countdown]").hidden = false;
+  $("[data-countdown-number]").textContent = String(seconds);
+  $("[data-record-button]").disabled = true;
+  trackEvent("recording_countdown_started", state.phase, { seconds }, `countdown_started:${state.phase}`);
+  state.countdownId = setInterval(() => {
+    seconds -= 1;
+    $("[data-countdown-number]").textContent = String(Math.max(0, seconds));
+    if (seconds <= 0) {
+      clearInterval(state.countdownId);
+      state.countdownId = null;
+      state.recordingIntent = false;
+      $("[data-countdown]").hidden = true;
+      $("[data-record-button]").disabled = false;
+      startRecording();
+    }
+  }, 1000);
 }
 
 function resetRecorder() {
   state.blob = null;
   state.chunks = [];
-  state.remaining = 45;
+  state.remaining = state.recordingDuration;
   clearInterval(state.timerId);
-  $("[data-timer]").textContent = "00:45";
+  $("[data-timer]").textContent = `${String(Math.floor(state.recordingDuration / 60)).padStart(2, "0")}:${String(state.recordingDuration % 60).padStart(2, "0")}`;
   $("[data-recorder]").classList.remove("is-recording");
   $("[data-record-label]").textContent = "Kaydı Başlat";
-  $("[data-record-hint]").textContent = "Hazır olduğunda başla. En fazla 45 saniye.";
+  $("[data-record-hint]").textContent = `Hazır olduğunda başla. En fazla ${state.recordingDuration} saniye.`;
   $("[data-record-actions]").hidden = true;
   $("[data-record-error]").hidden = true;
   $("[data-record-button]").disabled = false;
@@ -380,7 +433,7 @@ function startRecording() {
   if (state.isDemo) {
     if (state.demoRecording) return;
     state.demoRecording = true;
-    state.remaining = 45;
+    state.remaining = state.recordingDuration;
     $("[data-recorder]").classList.add("is-recording");
     $("[data-record-label]").textContent = "Kaydı Bitir";
     $("[data-record-hint]").textContent = "Yerel demo cevabı kaydediliyor.";
@@ -395,7 +448,7 @@ function startRecording() {
       : { first_recording_status: "recording" }).catch(() => {});
     state.timerId = setInterval(() => {
       state.remaining -= 1;
-      $("[data-timer]").textContent = `00:${String(Math.max(0, state.remaining)).padStart(2, "0")}`;
+      $("[data-timer]").textContent = `${String(Math.floor(Math.max(0, state.remaining) / 60)).padStart(2, "0")}:${String(Math.max(0, state.remaining) % 60).padStart(2, "0")}`;
       if (state.remaining <= 0) stopRecording();
     }, 1000);
     return;
@@ -411,7 +464,7 @@ function startRecording() {
     state.blob = new Blob(state.chunks, { type: state.recorder.mimeType || "audio/webm" });
     $("[data-recorder]").classList.remove("is-recording");
     $("[data-record-label]").textContent = "Kayıt Tamamlandı";
-    $("[data-record-hint]").textContent = `${45 - state.remaining} saniyelik cevap hazır.`;
+    $("[data-record-hint]").textContent = `${state.recordingDuration - state.remaining} saniyelik cevap hazır.`;
     $("[data-record-actions]").hidden = false;
   }, { once: true });
   state.recorder.start(250);
@@ -429,7 +482,7 @@ function startRecording() {
   $("[data-record-hint]").textContent = "Doğal konuş. Kusursuz olmaya çalışma.";
   state.timerId = setInterval(() => {
     state.remaining -= 1;
-    $("[data-timer]").textContent = `00:${String(Math.max(0, state.remaining)).padStart(2, "0")}`;
+    $("[data-timer]").textContent = `${String(Math.floor(Math.max(0, state.remaining) / 60)).padStart(2, "0")}:${String(Math.max(0, state.remaining) % 60).padStart(2, "0")}`;
     if (state.remaining <= 0) stopRecording();
   }, 1000);
 }
@@ -441,26 +494,31 @@ function stopRecording() {
     state.blob = new Blob([new Uint8Array(2000)], { type: "audio/webm" });
     $("[data-recorder]").classList.remove("is-recording");
     $("[data-record-label]").textContent = "Demo Kaydı Tamamlandı";
-    $("[data-record-hint]").textContent = `${45 - state.remaining} saniyelik demo cevabı hazır.`;
+    $("[data-record-hint]").textContent = `${state.recordingDuration - state.remaining} saniyelik demo cevabı hazır.`;
     $("[data-record-actions]").hidden = false;
     return;
   }
   if (state.recorder?.state === "recording") state.recorder.stop();
 }
 
-function handleRecordButton() {
+async function handleRecordButton() {
+  if (state.recordingIntent) return;
   if (state.isDemo && state.demoRecording) {
     stopRecording();
     return;
   }
-  if (state.recorder?.state === "recording") stopRecording();
-  else startRecording();
+  if (state.recorder?.state === "recording") {
+    stopRecording();
+    return;
+  }
+  if (!state.stream && !(await ensureMicrophone())) return;
+  beginCountdown();
 }
 
 async function useRecording() {
   const error = $("[data-record-error]");
   if (state.submitting) return;
-  if (!state.blob || state.blob.size < 1500 || 45 - state.remaining < 4) {
+  if (!state.blob || state.blob.size < 1500 || state.recordingDuration - state.remaining < 4) {
     error.textContent = "Analiz için en az birkaç saniye konuşman gerekiyor. Lütfen yeniden kaydet.";
     error.hidden = false;
     return;
@@ -470,7 +528,7 @@ async function useRecording() {
   const phase = state.phase;
   const blob = state.blob;
   state.recordings[phase] = blob;
-  const duration = 45 - state.remaining;
+  const duration = state.recordingDuration - state.remaining;
   try {
     await advanceParticipant(phase === "retry"
       ? { stage: "retry_submitted", retry_status: "submitted" }
@@ -512,6 +570,13 @@ async function analyzeRecording(blob, phase, prompt) {
     normalized_level: state.normalizedLevel,
     level_is_self_reported: true,
     question_id: state.question.id,
+    recording_duration_seconds: state.recordingDuration,
+    emotional_state: state.emotionalState,
+    first_attempt: phase === "retry" ? {
+      transcript: state.analyses.first?.transcript || "",
+      metrics: state.analyses.first?.metrics || null,
+      requested_focus: state.retryFocus,
+    } : null,
   }));
   if (state.retryFocus) form.append("retry_focus", state.retryFocus);
   const response = await fetch(`${config.url}/functions/v1/ai-speaking-coach`, {
@@ -546,14 +611,24 @@ async function waitForAnalysis(phase) {
       await trackEvent("diagnosis_received", "correction", {}, "diagnosis_received");
     } else {
       renderResult();
-      await advanceParticipant({ stage: "result_viewed", retry_status: "analyzed", result_status: "viewed" });
+      await advanceParticipant({
+        stage: "result_viewed", retry_status: "analyzed", result_status: "viewed",
+        comparison: {
+          first_metrics: state.analyses.first?.metrics || null,
+          retry_metrics: state.analyses.retry?.metrics || null,
+          requested_focus: state.retryFocus,
+          duration_seconds: state.recordingDuration,
+        },
+      });
       showScreen("result");
       await trackEvent("result_viewed", "result", {}, "result_viewed");
     }
   } catch (cause) {
-    advanceParticipant(phase === "retry"
-      ? { retry_status: "analysis_failed" }
-      : { first_recording_status: "analysis_failed" }).catch(() => {});
+    advanceParticipant({
+      ...(phase === "retry" ? { retry_status: "analysis_failed" } : { first_recording_status: "analysis_failed" }),
+      last_failure: { code: "analysis_failed", phase, message: String(cause?.message || "analysis_failed").slice(0, 180), at: new Date().toISOString() },
+    }).catch(() => {});
+    trackEvent('analysis_failed', phase, { code: 'analysis_failed' }, `analysis_failed:${phase}:${Date.now()}`);
     stopAnalysisAnimations();
     status.textContent = "Analiz tamamlanamadı.";
     error.textContent = `${cause.message} Kaydın bu ekranda duruyor; yeniden kayıt yapman gerekmiyor.`;
@@ -649,7 +724,7 @@ function renderResult() {
   $("[data-result-correction]").textContent = first.correction_tr;
   $("[data-result-next]").textContent = retry.next_action_tr;
   const message = [
-    "Merhaba, 3 Dakikalık Konuşma Performans Analizi'ni tamamladım.",
+    "Merhaba, Star Speaker Kariyer İngilizcesi Analizi'ni tamamladım.",
     `Ana odağım: ${bottleneckTitles[bottleneck] || labels[bottleneck]}.`,
     "Sonucumu bir Star Speaker uzmanıyla değerlendirmek istiyorum.",
   ].join("\n");
@@ -669,14 +744,21 @@ async function handleContactSubmit(event) {
     return;
   }
   const data = new FormData(form);
+  const phone = String(data.get("whatsapp") || "").trim();
+  if (phone.replace(/\D/g, "").length < 10 || phone.replace(/\D/g, "").length > 15) {
+    const error = $("[data-contact-error]");
+    error.textContent = "WhatsApp numaranı ülke koduyla birlikte kontrol et.";
+    error.hidden = false;
+    form.elements.whatsapp.focus();
+    return;
+  }
   state.contact = {
     fullName: String(data.get("fullName") || "").trim(),
-    whatsapp: String(data.get("whatsapp") || "").trim(),
+    whatsapp: phone,
     email: String(data.get("email") || "").trim(),
   };
-  const submit = $("button[type='submit']", form);
-  submit.disabled = true;
-  submit.textContent = "Uygun saatler hazırlanıyor…";
+  const submit = $("[data-urgency][aria-pressed='true']", form);
+  $$('button', form).forEach((button) => { button.disabled = true; });
   try {
     await saveLead("completed");
     if (!state.leadId) throw new Error("İletişim kaydı oluşturulamadı.");
@@ -685,11 +767,46 @@ async function handleContactSubmit(event) {
     form.hidden = true;
     await loadBookingSlots();
   } catch (cause) {
-    submit.disabled = false;
-    submit.innerHTML = 'Uygun Saatleri Göster <span aria-hidden="true">→</span>';
+    $$('button', form).forEach((button) => { button.disabled = false; });
     error.textContent = `${cause.message} Lütfen tekrar dene. Sonucun ekranda kalmaya devam edecek.`;
     error.hidden = false;
   }
+}
+
+function showBookingStep(step) {
+  state.bookingStep = step;
+  $$('[data-booking-step]').forEach((panel) => {
+    const active = panel.dataset.bookingStep === step;
+    panel.hidden = !active;
+    panel.classList.toggle('is-active', active);
+  });
+  storeFlow();
+  trackEvent('booking_step_viewed', 'booking', { step }, `booking_step:${step}`);
+}
+
+function continueFromContact() {
+  const form = $("[data-contact-form]");
+  const fields = $$('input', $('[data-booking-step="contact"]'));
+  if (!fields.every((field) => field.checkValidity())) {
+    form.reportValidity();
+    return;
+  }
+  const data = new FormData(form);
+  const phone = String(data.get("whatsapp") || "").trim();
+  if (phone.replace(/\D/g, "").length < 10 || phone.replace(/\D/g, "").length > 15) {
+    const error = $("[data-contact-error]");
+    error.textContent = "WhatsApp numaranı ülke koduyla birlikte kontrol et.";
+    error.hidden = false;
+    form.elements.whatsapp.focus();
+    return;
+  }
+  state.contact = {
+    fullName: String(data.get("fullName") || "").trim(),
+    whatsapp: phone,
+    email: String(data.get("email") || "").trim(),
+  };
+  trackEvent('contact_details_completed', 'booking', { email_provided: Boolean(state.contact.email) }, 'contact_details_completed');
+  showBookingStep('budget');
 }
 
 async function saveLead(stage) {
@@ -717,7 +834,11 @@ async function saveLead(stage) {
     },
     session_id: state.sessionId,
     participant_id: state.participantId,
-    budget_range: null,
+    budget_range: state.budgetRange,
+    urgency: state.urgency,
+    consent_accepted: true,
+    consent_accepted_at: new Date().toISOString(),
+    consent_version: "career_english_v3_consent_1",
     source_data: state.sourceData,
   };
   const response = await fetch(`${config.url}/functions/v1/ai-speaking-coach`, {
@@ -956,16 +1077,16 @@ function demoAnalysis(phase) {
   const base = phase === "retry" ? [76, 73, 70, 72] : [62, 48, 54, 57];
   return {
     transcript: phase === "retry"
-      ? "The main decision I made was to prioritize reliability because downtime was our biggest operational risk. I compared both options, aligned the team, and the release remained stable."
-      : "We had a project and there were different options. I think reliability was important and we discussed it with the team before the release.",
+      ? "The skill I want to develop is confident public speaking. I will practice in short weekly sessions because regular feedback helps me improve. For example, I can volunteer to present our next team update."
+      : "I want to improve speaking because it is important for my work. I think practice is helpful and I can try to speak more in meetings.",
     metrics: { clarity: base[0], structure: base[1], pressure: base[2], interaction: base[3] },
-    strength_tr: "Teknik kararının nedenini somut bir proje ayrıntısıyla destekledin.",
+    strength_tr: "Ana fikrini kariyer hedefinle ilişkilendirerek anlaşılır hale getirdin.",
     correction_tr: phase === "first"
       ? "Ana cevabını ilk cümlede söyle; ayrıntıları daha sonra ekle."
       : "Son cümlede kararının profesyonel etkisini açıkça bağla.",
     evidence_tr: "Ana mesajın cevabın ikinci yarısında ortaya çıktı; dinleyici ilk cümlelerde yönü tahmin etmek zorunda kaldı.",
-    improved_opening_tr: "The main decision I made was to prioritize reliability, because downtime was our biggest operational risk.",
-    next_action_tr: "Bir sonraki cevabında aynı doğrudan açılışı koruyup sonucu tek cümlede bağla.",
+    improved_opening_tr: "The skill I want to develop is confident public speaking, because it will help me contribute more clearly at work.",
+    next_action_tr: "Bir sonraki cevabında aynı doğrudan açılışı koruyup somut bir örnekle bitir.",
   };
 }
 
@@ -992,14 +1113,30 @@ $$("[data-situation]").forEach((button) => {
 $$('[data-level]').forEach((button) => {
   button.addEventListener("click", () => {
     state.reportedLevel = button.dataset.level;
+    state.recordingDuration = recommendedDuration(state.reportedLevel);
+    $("[data-duration-note]").textContent = `${state.recordingDuration} saniyeyi öneriyoruz; istersen değiştirebilirsin.`;
+    trackEvent('level_selected', 'setup', { level: state.reportedLevel }, `level:${state.reportedLevel}`);
     renderSetupSelection();
   });
 });
 
+$$('[data-duration]').forEach((button) => button.addEventListener('click', () => {
+  state.recordingDuration = Number(button.dataset.duration);
+  renderSetupSelection();
+  trackEvent('duration_selected', 'setup', { duration_seconds: state.recordingDuration }, `duration:${state.recordingDuration}`);
+}));
+
+$$('[data-feeling]').forEach((button) => button.addEventListener('click', () => {
+  state.emotionalState = button.dataset.feeling;
+  state.emotionalSelectedAt = new Date().toISOString();
+  renderSetupSelection();
+  trackEvent('feeling_selected', 'setup', { feeling: state.emotionalState }, `feeling:${state.emotionalState}`);
+}));
+
 $("[data-setup-form]").addEventListener("submit", handleSetupSubmit);
 
-$("[data-enable-mic]").addEventListener("click", ensureMicrophone);
 $("[data-record-button]").addEventListener("click", handleRecordButton);
+$("[data-countdown-cancel]").addEventListener("click", cancelCountdown);
 $("[data-record-again]").addEventListener("click", resetRecorder);
 $("[data-use-recording]").addEventListener("click", useRecording);
 $("[data-start-retry]").addEventListener("click", async () => {
@@ -1010,11 +1147,34 @@ $("[data-start-retry]").addEventListener("click", async () => {
 });
 $("[data-open-contact]").addEventListener("click", () => {
   $("[data-contact-form]").hidden = false;
+  $("[data-contact-form] [name='fullName']").value ||= state.firstName;
+  showBookingStep(state.bookingStep || "contact");
   $("[data-open-contact]").hidden = true;
   trackEvent("booking_intent_clicked", "result", {}, "booking_intent_clicked");
   advanceParticipant({ contact_status: "booking_started" }).catch(() => {});
 });
 $("[data-contact-form]").addEventListener("submit", handleContactSubmit);
+$("[data-booking-next='budget']").addEventListener("click", continueFromContact);
+$$('[data-booking-back]').forEach((button) => button.addEventListener('click', () => showBookingStep(button.dataset.bookingBack)));
+$$('[data-budget]').forEach((button) => button.addEventListener('click', () => {
+  state.budgetRange = button.dataset.budget;
+  $$('[data-budget]').forEach((item) => item.setAttribute('aria-pressed', String(item === button)));
+  storeFlow();
+  trackEvent('budget_selected', 'booking', { budget_range: state.budgetRange }, 'budget_selected');
+  setTimeout(() => showBookingStep('urgency'), 180);
+}));
+$$('[data-urgency]').forEach((button) => button.addEventListener('click', async () => {
+  state.urgency = button.dataset.urgency;
+  $$('[data-urgency]').forEach((item) => item.setAttribute('aria-pressed', String(item === button)));
+  storeFlow();
+  await trackEvent('urgency_selected', 'booking', { urgency: state.urgency }, 'urgency_selected');
+  await handleContactSubmit({ preventDefault() {}, currentTarget: $("[data-contact-form]") });
+}));
+$("[data-calendar-back]").addEventListener('click', () => {
+  $("[data-booking]").hidden = true;
+  $("[data-contact-form]").hidden = false;
+  showBookingStep('urgency');
+});
 $("[data-whatsapp-cta]").addEventListener("click", () => {
   trackEvent("whatsapp_clicked", "result", {}, "whatsapp_clicked");
   advanceParticipant({ contact_status: "whatsapp_clicked", keepalive: true }).catch(() => {});
@@ -1029,11 +1189,15 @@ $("[data-booking-fallback-whatsapp]").addEventListener("click", () => {
   trackEvent("booking_no_slot_whatsapp_clicked", "booking", {}, `booking_fallback:${Date.now()}`);
 });
 
-window.addEventListener("beforeunload", () => {
+window.addEventListener("beforeunload", (event) => {
   if (!state.isDemo && state.currentScreen !== "intro" && state.currentScreen !== "result") {
     trackEvent("session_abandoned", state.currentScreen, {}, `session_abandoned:${state.currentScreen}`);
   }
   state.stream?.getTracks().forEach((track) => track.stop());
+  if (state.blob && !state.submitting && state.currentScreen === "record") {
+    event.preventDefault();
+    event.returnValue = "";
+  }
 });
 
 trackEvent("landing_viewed", "intro", {}, "landing_viewed");
@@ -1049,7 +1213,9 @@ if (state.participantSaved && state.question) {
     renderCorrection();
     showScreen("correction");
   } else {
-    showScreen("mic");
+    state.phase = "first";
+    preparePrompt();
+    showScreen("record");
   }
 }
 restoreBooking();

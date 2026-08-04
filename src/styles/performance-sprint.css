@@ -823,6 +823,57 @@ img, svg { display: block; }
   .sprint-footer { min-height: 70px; flex-direction: column; justify-content: center; }
 }
 
+.sprint-feeling-options,
+.sprint-choice-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .65rem;
+}
+.sprint-feeling-options button,
+.sprint-choice-list button {
+  min-height: 48px;
+  padding: .75rem 1rem;
+  border: 1px solid rgba(255,255,255,.16);
+  border-radius: 10px;
+  color: var(--sprint-white);
+  background: rgba(255,255,255,.04);
+  font: inherit;
+  cursor: pointer;
+}
+.sprint-feeling-options button[aria-pressed="true"],
+.sprint-choice-list button[aria-pressed="true"] {
+  border-color: var(--sprint-gold);
+  background: rgba(212,177,94,.13);
+}
+.sprint-prompt-translation { margin: -.35rem 0 .8rem; color: var(--sprint-muted); font-size: .9rem; }
+.sprint-countdown {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: .4rem;
+  border-radius: inherit;
+  background: rgba(7,7,7,.96);
+}
+.sprint-countdown[hidden] { display: none; }
+.sprint-countdown strong { color: var(--sprint-gold); font-size: clamp(3.5rem, 11vw, 6rem); line-height: 1; }
+.sprint-booking-step__count { color: var(--sprint-gold); font-size: .75rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+.sprint-booking-step h4 { margin: .5rem 0 1rem; font-size: 1.2rem; }
+.sprint-record-card { padding-top: clamp(1rem, 2vh, 1.7rem); }
+.sprint-recorder { position: relative; }
+
+@media (max-width: 560px) {
+  .sprint-feeling-options, .sprint-choice-list { grid-template-columns: 1fr; }
+  .sprint-duration-options { grid-template-columns: repeat(4, 1fr); }
+  .sprint-duration-options button { padding-inline: .25rem; }
+  .sprint-record-card h2 { font-size: clamp(1.35rem, 6.2vw, 1.8rem); margin-block: .35rem; }
+  .sprint-prompt-context, .sprint-prompt-translation { margin-block: .25rem; }
+  .sprint-prompt-guide { padding: .65rem .8rem; margin-block: .55rem; }
+  .sprint-recorder { padding-block: .7rem; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
 }

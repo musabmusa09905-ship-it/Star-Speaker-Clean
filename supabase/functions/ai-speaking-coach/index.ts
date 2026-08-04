@@ -69,32 +69,29 @@ function compactText(value: unknown, max = 1200) {
   return String(value || "").replace(/\s+/g, " ").trim().slice(0, max);
 }
 
-const experienceVersion = "speaking_analysis_v2";
+const experienceVersion = "career_english_v3";
 const validSituations = new Set(["meeting", "interview", "presentation"]);
-const validReportedLevels = new Set(["b1", "b1_plus", "b2", "b2_plus", "c1", "unsure"]);
+const validReportedLevels = new Set(["a2_1", "a2_2", "b1_1", "b1_2", "b2_1", "b2_2", "c1_1", "unsure"]);
 const normalizedLevels: Record<string, string> = {
-  b1: "b1", b1_plus: "b1_plus", b2: "b2", b2_plus: "b2_plus", c1: "c1", unsure: "b1_plus",
+  a2_1: "a2_1", a2_2: "a2_2", b1_1: "b1_1", b1_2: "b1_2",
+  b2_1: "b2_1", b2_2: "b2_2", c1_1: "c1_1", unsure: "b1_1",
 };
 const questionIds: Record<string, string> = {
-  "meeting:b1": "meeting-b1-regular-update",
-  "meeting:b1_plus": "meeting-b1-plus-small-problem",
-  "meeting:b2": "meeting-b2-team-decision",
-  "meeting:b2_plus": "meeting-b2-plus-speed-reliability",
-  "meeting:c1": "meeting-c1-delay-launch",
-  "meeting:unsure": "meeting-unsure-improvement-suggestion",
-  "interview:b1": "interview-b1-role-task",
-  "interview:b1_plus": "interview-b1-plus-project",
-  "interview:b2": "interview-b2-technical-problem",
-  "interview:b2_plus": "interview-b2-plus-solution-tradeoff",
-  "interview:c1": "interview-c1-challenged-decision",
-  "interview:unsure": "interview-unsure-contribution",
-  "presentation:b1": "presentation-b1-familiar-project",
-  "presentation:b1_plus": "presentation-b1-plus-process",
-  "presentation:b2": "presentation-b2-project-result",
-  "presentation:b2_plus": "presentation-b2-plus-unexpected-result",
-  "presentation:c1": "presentation-c1-strategy-change",
-  "presentation:unsure": "presentation-unsure-recent-result",
+  "meeting:a2_1":"meeting-a2-1-helpful-routine", "meeting:a2_2":"meeting-a2-2-useful-app",
+  "meeting:b1_1":"meeting-b1-1-time-organization", "meeting:b1_2":"meeting-b1-2-home-or-office",
+  "meeting:b2_1":"meeting-b2-1-useful-meetings", "meeting:b2_2":"meeting-b2-2-digital-communication",
+  "meeting:c1_1":"meeting-c1-1-productive-disagreement", "meeting:unsure":"meeting-unsure-practical-change",
+  "interview:a2_1":"interview-a2-1-enjoyable-activity", "interview:a2_2":"interview-a2-2-learned-skill",
+  "interview:b1_1":"interview-b1-1-recent-problem", "interview:b1_2":"interview-b1-2-difficult-choice",
+  "interview:b2_1":"interview-b2-1-learning-goal", "interview:b2_2":"interview-b2-2-changed-opinion",
+  "interview:c1_1":"interview-c1-1-success-definition", "interview:unsure":"interview-unsure-proud-moment",
+  "presentation:a2_1":"presentation-a2-1-favorite-place", "presentation:a2_2":"presentation-a2-2-recommend-experience",
+  "presentation:b1_1":"presentation-b1-1-helpful-habit", "presentation:b1_2":"presentation-b1-2-recent-change",
+  "presentation:b2_1":"presentation-b2-1-technology-boundaries", "presentation:b2_2":"presentation-b2-2-place-to-live",
+  "presentation:c1_1":"presentation-c1-1-convenience-cost", "presentation:unsure":"presentation-unsure-useful-recommendation",
 };
+const validDurations = new Set([45, 60, 90, 120]);
+const validFeelings = new Set(["fantastic", "confident", "calm", "nervous", "tired"]);
 const firstNamePattern = /^[A-Za-zÇĞİÖŞÜçğıöşüÂâÎîÛû]+(?:[ '-][A-Za-zÇĞİÖŞÜçğıöşüÂâÎîÛû]+)*$/u;
 
 function serviceConfig() {
@@ -128,18 +125,20 @@ async function upsertParticipant(payload: Record<string, unknown>) {
   const version = compactText(payload.experience_version, 50);
   const question = (payload.question || {}) as Record<string, unknown>;
   const questionId = compactText(payload.question_id, 100);
+  const duration = Number(payload.recording_duration_seconds);
+  const feeling = compactText(payload.emotional_state, 30);
   if (!sessionId || !firstNamePattern.test(firstName) || !validSituations.has(situation)
     || !validReportedLevels.has(reportedLevel) || version !== experienceVersion
-    || questionIds[`${situation}:${reportedLevel}`] !== questionId) {
+    || questionIds[`${situation}:${reportedLevel}`] !== questionId
+    || !validDurations.has(duration) || !validFeelings.has(feeling)) {
     throw new Error("Participant setup is invalid.");
   }
-  const saved = await callRpc("upsert_performance_analysis_participant", {
+  const saved = await callRpc("upsert_career_english_participant", {
     p_session_id: sessionId,
     p_first_name: firstName,
     p_situation: situation,
     p_reported_level: reportedLevel,
     p_normalized_level: normalizedLevels[reportedLevel],
-    p_experience_version: version,
     p_question_id: questionId,
     p_question_snapshot: {
       id: questionId,
@@ -147,8 +146,9 @@ async function upsertParticipant(payload: Record<string, unknown>) {
       context: compactText(question.context, 500),
       guide: compactText(question.guide, 300),
     },
-    p_is_demo: false,
-    p_is_internal: Boolean(payload.is_internal),
+    p_recording_duration_seconds: duration,
+    p_emotional_state: feeling,
+    p_emotional_selected_at: payload.emotional_selected_at || new Date().toISOString(),
     p_source_data: payload.source_data || {},
   });
   return saved;
@@ -157,7 +157,7 @@ async function upsertParticipant(payload: Record<string, unknown>) {
 async function advanceParticipant(payload: Record<string, unknown>) {
   const sessionId = compactText(payload.session_id, 80);
   if (!sessionId) throw new Error("Participant session is missing.");
-  return callRpc("advance_performance_analysis_participant", {
+  return callRpc("advance_career_english_participant", {
     p_session_id: sessionId,
     p_stage: payload.stage || null,
     p_first_recording_status: payload.first_recording_status || null,
@@ -169,6 +169,8 @@ async function advanceParticipant(payload: Record<string, unknown>) {
     p_retry_transcript: payload.retry_transcript || null,
     p_retry_analysis: payload.retry_analysis || null,
     p_primary_bottleneck: payload.primary_bottleneck || null,
+    p_comparison: payload.comparison || null,
+    p_last_failure: payload.last_failure || null,
     p_lead_id: payload.lead_id || null,
   });
 }
@@ -192,7 +194,7 @@ async function transcribeAudio(audio: File, apiKey: string) {
   form.append("language", "en");
   form.append(
     "prompt",
-    "This is an English answer by a Turkish engineer about an interview, meeting, presentation, project, technical decision, risk, or trade-off. Preserve engineering terms and disfluencies.",
+    "This is a Career English practice answer by an adult learner in Türkiye. Preserve exact meaning, natural disfluencies, and professional vocabulary.",
   );
   const response = await fetch("https://api.openai.com/v1/audio/transcriptions", {
     method: "POST",
@@ -211,7 +213,7 @@ async function evaluateTranscript(input: {
   context: Record<string, unknown>;
   retryFocus: string;
 }, apiKey: string) {
-  const system = `You are Star Speaker's strict but psychologically safe professional English speaking evaluator for engineers in Türkiye.
+  const system = `You are Star Speaker's strict but psychologically safe Career English evaluator for adult learners in Türkiye.
 
 Evaluate only evidence visible in the transcript. Do not infer pronunciation, accent, audio confidence, silence length, or speaking speed from text. This is a short training sample, not a CEFR or scientific diagnosis.
 
@@ -235,6 +237,9 @@ Output rules:
 - Give exactly one high-leverage correction, not a list.
 - evidence_tr must refer to a visible behavior in this answer without quoting more than 12 words.
 - Be specific, warm, concise, and adult. No praise filler. No grammar correction unless it blocks meaning.
+- Emotional context may adjust warmth and phrasing only. Never score, reward, penalize, or infer ability from it.
+- Duration calibrates how much development is reasonable; it must not inflate or reduce a score by itself.
+- On retry, compare against the supplied first attempt and requested focus. Claim improvement only when the retry transcript contains direct evidence.
 - For retry/challenge phases, check whether the requested focus became more visible, but do not reward it unless the transcript demonstrates it.`;
 
   const user = {
@@ -242,6 +247,9 @@ Output rules:
     professional_context: input.context,
     speaking_prompt: input.prompt,
     requested_retry_focus: compactText(input.retryFocus, 400),
+    first_attempt: input.context.first_attempt || null,
+    speaking_duration_seconds: input.context.recording_duration_seconds,
+    emotional_context_for_tone_only: input.context.emotional_state,
     transcript: input.transcript,
   };
   const response = await fetch("https://api.openai.com/v1/responses", {
@@ -260,7 +268,7 @@ Output rules:
         verbosity: "low",
         format: {
           type: "json_schema",
-          name: "engineering_speaking_evaluation",
+          name: "career_english_speaking_evaluation",
           strict: true,
           schema: resultSchema,
         },
@@ -279,6 +287,12 @@ async function saveLead(payload: Record<string, unknown>) {
   const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
   if (!supabaseUrl || !serviceKey) throw new Error("Lead storage is not configured.");
   const contact = (payload.contact || {}) as Record<string, unknown>;
+  const budgetRange = compactText(payload.budget_range, 40);
+  const urgency = compactText(payload.urgency, 40);
+  const consentAccepted = payload.consent_accepted === true;
+  if (!["under_5000","5000_10000","10000_15000","15000_25000","25000_plus","unsure"].includes(budgetRange)
+    || !["immediately","within_1_month","within_1_3_months","researching"].includes(urgency)
+    || !consentAccepted) throw new Error("Lead qualification is incomplete.");
   const row = {
     full_name: compactText(contact.fullName, 80),
     whatsapp: compactText(contact.whatsapp, 30),
@@ -291,7 +305,12 @@ async function saveLead(payload: Record<string, unknown>) {
     final_metrics: payload.final_metrics || null,
     transcripts: payload.transcripts || {},
     session_id: compactText(payload.session_id, 80) || null,
-    budget_range: compactText(payload.budget_range, 80) || null,
+    budget_range: budgetRange,
+    urgency,
+    consent_accepted: true,
+    consent_accepted_at: payload.consent_accepted_at || new Date().toISOString(),
+    consent_version: compactText(payload.consent_version, 50) || "career_english_v3",
+    funnel_version: experienceVersion,
     source_data: payload.source_data || {},
     participant_id: compactText(payload.participant_id, 80) || null,
     updated_at: new Date().toISOString(),
@@ -344,15 +363,13 @@ async function trackEvent(payload: Record<string, unknown>) {
   const stage = compactText(payload.stage, 60);
   if (!sessionId || !eventType || !stage) throw new Error("Event is incomplete.");
   if (compactText(payload.experience_version, 50) === experienceVersion) {
-    await callRpc("track_performance_analysis_event", {
+    await callRpc("track_career_english_event", {
       p_session_id: sessionId,
       p_event_type: eventType,
       p_stage: stage,
       p_event_key: compactText(payload.event_key, 100),
       p_metadata: payload.metadata || {},
       p_source_data: payload.source_data || {},
-      p_experience_version: experienceVersion,
-      p_is_demo: Boolean(payload.is_demo),
     });
     return;
   }
@@ -415,9 +432,12 @@ Deno.serve(async (request) => {
 
     const form = await request.formData();
     const audio = form.get("audio");
-    if (!(audio instanceof File)) return json(request, { error: "Audio is required." }, 400);
-    if (audio.size > 8_000_000) return json(request, { error: "Audio file is too large." }, 413);
-    if (audio.size < 1_000) return json(request, { error: "Audio is too short." }, 400);
+    if (!(audio instanceof File)) return json(request, { error: "Audio is required.", code: "audio_required" }, 400);
+    if (!new Set(["audio/webm", "audio/mp4", "audio/mpeg", "audio/ogg"]).has(audio.type.split(";")[0])) {
+      return json(request, { error: "Audio format is not supported.", code: "audio_type_invalid" }, 415);
+    }
+    if (audio.size > 16_000_000) return json(request, { error: "Audio file is too large.", code: "audio_too_large" }, 413);
+    if (audio.size < 1_000) return json(request, { error: "Audio is too short.", code: "audio_too_short" }, 400);
 
     const apiKey = Deno.env.get("OPENAI_API_KEY");
     if (!apiKey) return json(request, { error: "AI service is not configured." }, 503);
@@ -425,6 +445,9 @@ Deno.serve(async (request) => {
     const phase = compactText(form.get("phase"), 30);
     const prompt = safeJson(form.get("prompt"), {}) as Record<string, unknown>;
     const context = safeJson(form.get("context"), {}) as Record<string, unknown>;
+    if (!validDurations.has(Number(context.recording_duration_seconds))) {
+      return json(request, { error: "Recording duration is invalid.", code: "duration_invalid" }, 400);
+    }
     const retryFocus = compactText(form.get("retry_focus"), 400);
     const sessionId = compactText(form.get("session_id"), 80);
     if (sessionId) {
