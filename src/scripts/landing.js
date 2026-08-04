@@ -11,8 +11,34 @@ import { homepageCopy, homepageLocales } from "../i18n/homepage-locales.mjs";
   const whatsappNumber = "905525247746";
   const currentLanguage = document.documentElement.lang === "en" ? "en" : "tr";
   const currentLocale = homepageLocales[currentLanguage];
+  const query = new URLSearchParams(window.location.search);
+  const deviceCategory = window.matchMedia("(max-width: 767px)").matches
+    ? "mobile"
+    : window.matchMedia("(max-width: 1024px)").matches
+      ? "tablet"
+      : "desktop";
+  const campaign = Object.fromEntries(
+    ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"]
+      .map((key) => [key, query.get(key)])
+      .filter(([, value]) => value),
+  );
+  const trafficSource = campaign.utm_source || document.referrer || "direct";
   let activeSlide = 0;
   let slideTimer = 0;
+
+  function trackHomepageEvent(event, details = {}) {
+    const payload = {
+      event,
+      locale: currentLanguage,
+      source: trafficSource,
+      device_category: deviceCategory,
+      page_path: window.location.pathname,
+      ...campaign,
+      ...details,
+    };
+    if (Array.isArray(window.dataLayer)) window.dataLayer.push(payload);
+    window.dispatchEvent(new CustomEvent("star-speaker:analytics", { detail: payload }));
+  }
 
   const supportedSectionHashes = new Set(["#programs", "#method", "#results", "#contact", "#faq"]);
 
@@ -95,8 +121,38 @@ import { homepageCopy, homepageLocales } from "../i18n/homepage-locales.mjs";
     button.addEventListener("click", () => {
       const shouldOpen = button.getAttribute("aria-expanded") !== "true";
       faqButtons.forEach((candidate) => setFaqItem(candidate, shouldOpen && candidate === button));
+      trackHomepageEvent("faq_interacted", {
+        faq_question: button.querySelector(".stage-closing-faq-question")?.textContent?.trim() || "",
+        faq_action: shouldOpen ? "opened" : "closed",
+      });
     });
   });
+
+  document.querySelectorAll("[data-home-event]").forEach((element) => {
+    element.addEventListener("click", () => {
+      const details = { location: element.dataset.homeLocation || "unknown" };
+      trackHomepageEvent(element.dataset.homeEvent, details);
+      if (element.hasAttribute("data-performance-link") && element.dataset.homeEvent !== "test_cta_clicked") {
+        trackHomepageEvent("test_cta_clicked", details);
+      }
+      if (element.hasAttribute("data-whatsapp-link") && element.dataset.homeEvent !== "whatsapp_clicked") {
+        trackHomepageEvent("whatsapp_clicked", details);
+      }
+    });
+  });
+
+  const programsSection = document.getElementById("programs");
+  if (programsSection && "IntersectionObserver" in window) {
+    const programsObserver = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        trackHomepageEvent("program_section_viewed");
+        programsObserver.disconnect();
+      },
+      { threshold: 0.25 },
+    );
+    programsObserver.observe(programsSection);
+  }
 
   function loadDesktopSlides() {
     slides.slice(1).forEach((slide) => {
@@ -327,4 +383,5 @@ import { homepageCopy, homepageLocales } from "../i18n/homepage-locales.mjs";
   stabilizeInitialSectionHash();
   updateMenuLabel();
   syncSlideshow();
+  trackHomepageEvent("homepage_viewed");
 })();

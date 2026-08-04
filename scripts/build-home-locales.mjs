@@ -49,6 +49,10 @@ function translatePage(source, locale) {
     /<link rel="canonical" href="[^"]+">/,
     `<link rel="canonical" href="https://starspeakerstudio.com/${locale}/">`,
   );
+  output = output.replace(
+    /<meta property="og:url" content="[^"]+">/,
+    `<meta property="og:url" content="https://starspeakerstudio.com/${locale}/">`,
+  );
   output = output.replace(/href="\/tr\/"\s+data-home-link/, `href="/${locale}/" data-home-link`);
   output = output.replace(/\s+aria-current="page"/g, "");
   output = output.replace(/stage-home-lang-button is-active/g, "stage-home-lang-button");
@@ -71,6 +75,12 @@ ${indentation}target="_blank"
 ${indentation}rel="noopener noreferrer"`,
     );
   }
+  const faqEntities = homepageLocales[locale].faqItems.map(({ question, answer }) => ({
+    "@type": "Question",
+    name: question,
+    acceptedAnswer: { "@type": "Answer", text: answer },
+  }));
+  output = output.replace('"mainEntity": []', `"mainEntity": ${JSON.stringify(faqEntities)}`);
   return output;
 }
 

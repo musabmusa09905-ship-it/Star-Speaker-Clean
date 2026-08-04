@@ -5056,6 +5056,15 @@ body.stage-one-home.nav-open {
   width: min(700px, 48%);
 }
 
+.stage-one-home .stage-home-eyebrow {
+  margin: 0 0 18px;
+  color: #d8c39a;
+  font-size: 13px;
+  font-weight: 750;
+  line-height: 1.2;
+  letter-spacing: 0.2em;
+}
+
 .stage-one-home .stage-home-copy h1 {
   max-width: 680px;
   margin: 0;
@@ -5073,7 +5082,7 @@ body.stage-one-home.nav-open {
   color: #f4f0e8;
 }
 
-.stage-one-home .stage-home-copy > p {
+.stage-one-home .stage-home-copy > p:not(.stage-home-eyebrow) {
   max-width: 640px;
   margin: 34px 0 0;
   color: rgba(244, 240, 232, 0.86);
@@ -5232,7 +5241,7 @@ body.stage-one-home.nav-open {
     font-size: 56px;
   }
 
-  .stage-one-home .stage-home-copy > p {
+  .stage-one-home .stage-home-copy > p:not(.stage-home-eyebrow) {
     max-width: 570px;
     margin-top: 26px;
     font-size: 17px;
@@ -5447,7 +5456,7 @@ body.stage-one-home.nav-open {
     font-size: 56px;
   }
 
-  .stage-one-home .stage-home-copy > p {
+  .stage-one-home .stage-home-copy > p:not(.stage-home-eyebrow) {
     max-width: 690px;
     margin-top: 26px;
     font-size: 19px;
@@ -5516,7 +5525,7 @@ body.stage-one-home.nav-open {
   }
 
   .stage-one-home .stage-home-mobile-image {
-    height: clamp(330px, 103vw, 420px);
+    height: clamp(300px, 82vw, 360px);
   }
 
   .stage-one-home .stage-home-mobile-image img {
@@ -5534,7 +5543,7 @@ body.stage-one-home.nav-open {
     text-wrap: pretty;
   }
 
-  .stage-one-home .stage-home-copy > p {
+  .stage-one-home .stage-home-copy > p:not(.stage-home-eyebrow) {
     margin-top: 22px;
     font-size: 16px;
     line-height: 1.55;

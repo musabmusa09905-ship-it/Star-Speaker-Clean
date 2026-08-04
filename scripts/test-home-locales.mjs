@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { readFile, stat } from "node:fs/promises";
 import { resolve } from "node:path";
 import {
   homepageCopy,
@@ -36,7 +36,13 @@ for (const locale of supportedHomepageLocales) {
   assert.match(page, new RegExp(`<html lang="${locale}">`));
   assert.match(page, new RegExp(`rel="canonical" href="https://starspeakerstudio.com/${locale}/"`));
   assert.match(page, new RegExp(`property="og:title" content="${homepageCopy.metaTitle[locale]}`));
-  assert.match(page, /property="og:description"/);
+  assert.match(page, new RegExp(`property="og:url" content="https://starspeakerstudio.com/${locale}/"`));
+  assert.match(page, new RegExp(`name="twitter:title" content="${homepageCopy.metaTitle[locale]}`));
+  assert.match(page, new RegExp(flexibleTextPattern(homepageCopy.metaDescription[locale])));
+  assert.match(page, /name="twitter:card" content="summary_large_image"/);
+  const structuredData = JSON.parse(page.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)?.[1]);
+  assert.deepEqual(structuredData["@graph"].map((entry) => entry["@type"]), ["Organization", "Service", "FAQPage"]);
+  assert.equal(structuredData["@graph"][2].mainEntity.length, 8);
   assert.match(
     page,
     new RegExp(`class="stage-home-lang-button is-active" href="/${locale}/" aria-current="page"`),
@@ -74,17 +80,17 @@ for (const locale of supportedHomepageLocales) {
   assert.match(programSection, /id="programs"/);
   assert.equal((programSection.match(/class="stage-programs-level /g) ?? []).length, 2);
   assert.equal((programSection.match(/class="stage-programs-level-icon"/g) ?? []).length, 2);
-  assert.equal((programSection.match(/data-whatsapp-link/g) ?? []).length, 1);
+  assert.equal((programSection.match(locale === "tr" ? /data-performance-link/g : /data-whatsapp-link/g) ?? []).length, 1);
   assert.equal((programSection.match(/stage-programs-analysis-cta/g) ?? []).length, 1);
   assert.doesNotMatch(programSection, /\bSpark\b|30-Day|30 Gün|taksit|installment|\b50 minutes?\b|\b20 minutes?\b/iu);
 
   const faqSection = page.match(/<section class="stage-closing-faq"[\s\S]*?<\/section>/)?.[0];
   assert(faqSection, `Missing FAQ section in /${locale}/`);
-  assert.equal((faqSection.match(/class="stage-closing-faq-item/g) ?? []).length, 6);
-  assert.equal((faqSection.match(/class="stage-closing-faq-button"/g) ?? []).length, 6);
+  assert.equal((faqSection.match(/class="stage-closing-faq-item/g) ?? []).length, 8);
+  assert.equal((faqSection.match(/class="stage-closing-faq-button"/g) ?? []).length, 8);
   assert.equal((faqSection.match(/aria-expanded="true"/g) ?? []).length, 1);
-  assert.equal((faqSection.match(/aria-expanded="false"/g) ?? []).length, 5);
-  assert.equal((faqSection.match(/class="stage-closing-faq-answer"[\s\S]*?\shidden/g) ?? []).length, 5);
+  assert.equal((faqSection.match(/aria-expanded="false"/g) ?? []).length, 7);
+  assert.equal((faqSection.match(/class="stage-closing-faq-answer"[\s\S]*?\shidden/g) ?? []).length, 7);
   assert.match(faqSection, /id="faq-question-1"[\s\S]*?aria-expanded="true"[\s\S]*?aria-controls="faq-answer-1"/);
   assert.match(faqSection, /id="faq-answer-1"[\s\S]*?aria-labelledby="faq-question-1"/);
   assert.equal((faqSection.match(/data-whatsapp-link/g) ?? []).length, 0);
@@ -92,7 +98,7 @@ for (const locale of supportedHomepageLocales) {
   const finalCtaSection = page.match(/<section class="stage-final-cta"[\s\S]*?<\/section>/)?.[0];
   assert(finalCtaSection, `Missing final CTA section in /${locale}/`);
   assert.equal((finalCtaSection.match(/stage-final-cta-button/g) ?? []).length, 1);
-  assert.equal((finalCtaSection.match(/data-whatsapp-link/g) ?? []).length, 1);
+  assert.equal((finalCtaSection.match(locale === "tr" ? /data-performance-link/g : /data-whatsapp-link/g) ?? []).length, 1);
   const programCtaTarget = programSection.match(/class="stage-programs-analysis-cta"[\s\S]*?href="([^"]+)"/)?.[1];
   const finalCtaTarget = finalCtaSection.match(/class="stage-final-cta-button"[\s\S]*?href="([^"]+)"/)?.[1];
   assert.equal(finalCtaTarget, programCtaTarget, `Final CTA must reuse the Programs destination in /${locale}/`);
@@ -108,7 +114,7 @@ for (const locale of supportedHomepageLocales) {
   const allWhatsappTargets = [...page.matchAll(/data-whatsapp-link[\s\S]*?href="([^"]+)"/g)].map(
     (match) => match[1],
   );
-  assert(allWhatsappTargets.length >= 2);
+  assert(allWhatsappTargets.length >= 1);
   assert(allWhatsappTargets.every((target) => target === allWhatsappTargets[0]));
 
   for (const sectionId of majorSectionIds) {
@@ -120,6 +126,20 @@ for (const locale of supportedHomepageLocales) {
   const localHashes = [...page.matchAll(/href="#([^"]+)"/g)].map((match) => match[1]);
   for (const hash of localHashes) {
     assert(documentIds.has(hash), `Missing #${hash} target in /${locale}/`);
+  }
+
+  const localAssets = new Set(
+    [...page.matchAll(/(?:src|href)="\/(public|src)\/([^"]+)"/g)].map((match) => `${match[1]}/${match[2].split("?")[0]}`),
+  );
+  for (const assetPath of localAssets) await stat(resolve(assetPath));
+  const localRoutes = new Set(
+    [...page.matchAll(/href="(\/[^"]*)"/g)]
+      .map((match) => match[1].split(/[?#]/)[0])
+      .filter((route) => route && !route.startsWith("/public/") && !route.startsWith("/src/")),
+  );
+  for (const route of localRoutes) {
+    const routeTarget = route.endsWith("/") ? `${route.slice(1)}index.html` : route.slice(1);
+    await stat(resolve(routeTarget));
   }
 }
 
@@ -138,20 +158,20 @@ assert.doesNotMatch(pages.tr, /İngilizce biliyorsun\. Artık konuş\./i);
 assert.doesNotMatch(pages.en, /You know English\. Now speak\./i);
 
 for (const locale of supportedHomepageLocales) {
-  assert.equal(homepageLocales[locale].faqItems.length, 6);
+  assert.equal(homepageLocales[locale].faqItems.length, 8);
   homepageLocales[locale].faqItems.forEach(({ question, answer }) => {
     assert.match(pages[locale], new RegExp(flexibleTextPattern(question)));
     assert.match(pages[locale], new RegExp(flexibleTextPattern(answer)));
   });
 }
 
-assert.match(pages.tr, /Star Speaker Engineer Flow/);
+assert.match(pages.tr, /Star Speaker Career Flow/);
 const turkishPerformanceCtas = [
   ...pages.tr.matchAll(
     /<a(?=[^>]*data-performance-link)(?=[^>]*href="([^"]+)")[^>]*>([\s\S]*?)<\/a>/g,
   ),
 ];
-assert.equal(turkishPerformanceCtas.length, 3, "Desktop header, mobile header, and hero must use the Performance Test.");
+assert.equal(turkishPerformanceCtas.length, 5, "All five Turkish primary homepage CTAs must use the Performance Test.");
 assert(turkishPerformanceCtas.every(([, target]) => target === "/tr/performans-testi/"));
 assert(turkishPerformanceCtas.every(([cta]) => !/\btarget="_blank"/.test(cta)));
 assert.equal(
@@ -169,7 +189,7 @@ assert.equal((pages.en.match(/Free Speaking Analysis/g) ?? []).length, 3);
 assert.match(pages.tr, /17\.000 TL/);
 assert.match(pages.tr, /23\.000 TL/);
 assert.match(pages.tr, /12\.000 TL/);
-assert.match(pages.tr, /Mühendisler İçin 21 Günlük İngilizce Performans Sprinti/);
+assert.match(pages.tr, /21 Günlük İngilizce Performans Sprinti/);
 assert.match(pages.tr, /Haftada 2 birebir konuşma çalışması/);
 assert.match(pages.tr, /Haftada 3 birebir konuşma çalışması/);
 assert.match(pages.tr, /Daha derin kişiselleştirme/iu);
@@ -177,11 +197,11 @@ assert.match(pages.tr, /Daha hızlı ve daha detaylı öncelik geri bildirimi/);
 assert.match(pages.tr, /Daha yakın ve detaylı gelişim takibi/);
 assert.match(pages.tr, /Öncelikli destek ve daha fazla öğretmen erişimi/);
 
-assert.match(pages.en, /Star Speaker Engineer Flow/);
+assert.match(pages.en, /Star Speaker Career Flow/);
 assert.match(pages.en, /17,000 TL/);
 assert.match(pages.en, /23,000 TL/);
 assert.match(pages.en, /12,000 TL/);
-assert.match(pages.en, /21-Day English Performance Sprint for Engineers/);
+assert.match(pages.en, /21-Day English Performance Sprint/);
 assert.match(pages.en, /2 private speaking sessions per week/);
 assert.match(pages.en, /3 private speaking sessions per week/);
 assert.match(pages.en, /deeper personalization/iu);
@@ -206,6 +226,33 @@ assert.match(landingScript, /hashchange/);
 assert.match(landingScript, /setFaqItem/);
 assert.match(landingScript, /aria-expanded/);
 assert.match(landingScript, /panel\.hidden/);
+for (const eventName of [
+  "homepage_viewed",
+  "hero_cta_clicked",
+  "whatsapp_clicked",
+  "program_section_viewed",
+  "program_cta_clicked",
+  "test_cta_clicked",
+  "faq_interacted",
+  "final_cta_clicked",
+]) {
+  assert.match(`${landingScript}\n${pages.tr}`, new RegExp(eventName));
+}
+for (const field of ["locale", "source", "utm_source", "device_category"]) {
+  assert.match(landingScript, new RegExp(field));
+}
+
+const forbiddenActivePhrases = [
+  /English-Speaking Engineers/i,
+  /İngilizce Konuşan Mühendisler/i,
+  /Engineer Flow/i,
+  /Mühendisliğini İngilizce/i,
+  /Mühendisler İçin 21 Günlük/i,
+  /15 dakikalık ücretsiz konuşma performans analizi/i,
+];
+for (const page of Object.values(pages)) {
+  for (const phrase of forbiddenActivePhrases) assert.doesNotMatch(page, phrase);
+}
 
 const rootPage = await readFile(resolve("index.html"), "utf8");
 assert.match(rootPage, /http-equiv="refresh" content="0; url=\/tr\/"/);

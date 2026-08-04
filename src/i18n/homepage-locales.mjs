@@ -1,11 +1,31 @@
 export const homepageCopy = {
   metaTitle: {
-    tr: "Star Speaker | İngilizce Konuşan Mühendisler",
-    en: "Star Speaker | English-Speaking Engineers",
+    tr: "Star Speaker | Kariyer İngilizcesi",
+    en: "Star Speaker | Career English",
   },
   metaDescription: {
-    tr: "Star Speaker, mühendislerin İngilizce uzmanlıklarını net, akıcı ve kendinden emin şekilde ifade etmelerine yardımcı olur.",
-    en: "Star Speaker helps engineers express their expertise clearly, fluently, and confidently in English.",
+    tr: "Mülakatlarda, toplantılarda, sunumlarda ve uluslararası çalışma ortamlarında İngilizceyi daha net, güvenli ve etkili konuş. Ücretsiz konuşma analizine başla.",
+    en: "Speak English clearly and confidently in interviews, meetings, presentations, and international career situations.",
+  },
+  organizationDescription: {
+    tr: "Star Speaker, insanların kariyerlerini etkileyen anlarda İngilizceyi net ve güvenli konuşmalarına yardımcı olur.",
+    en: "Star Speaker helps people speak English clearly and confidently in the moments that shape their careers.",
+  },
+  serviceName: {
+    tr: "Star Speaker Kariyer İngilizcesi Programı",
+    en: "Star Speaker Career English Program",
+  },
+  serviceType: {
+    tr: "Kariyer İngilizcesi konuşma eğitimi",
+    en: "Career English speaking training",
+  },
+  serviceDescription: {
+    tr: "Mülakatlar, toplantılar, sunumlar ve uluslararası çalışma ortamları için konuşma pratiği, odaklı geri bildirim, düzeltme, tekrar ve simülasyon.",
+    en: "Speaking practice, focused feedback, correction, repetition, and simulations for interviews, meetings, presentations, and international work environments.",
+  },
+  ogImageAlt: {
+    tr: "Uluslararası bir toplantıda İngilizce konuşan bir profesyonel",
+    en: "A professional speaking English in an international meeting",
   },
   skipLink: { tr: "İçeriğe geç", en: "Skip to content" },
   mainNavigation: { tr: "Ana navigasyon", en: "Main navigation" },
@@ -22,52 +42,54 @@ export const homepageCopy = {
   freeSpeakingAnalysis: { tr: "Ücretsiz Performans Testi", en: "Free Speaking Analysis" },
   performanceSessionCta: {
     tr: "Ücretsiz Performans Testini Başlat",
-    en: "Free Speaking Analysis",
+    en: "Start with a Free Speaking Analysis",
   },
-  heroTitleOne: { tr: "İngilizcen, ne kadar", en: "Your English should not hide" },
+  categoryLabel: { tr: "KARİYER İNGİLİZCESİ", en: "CAREER ENGLISH" },
+  brandDescriptor: { tr: "Kariyer İngilizcesi", en: "Career English" },
+  heroTitleOne: { tr: "İngilizcen, kariyerini", en: "Don’t let your English" },
   heroTitleTwo: {
-    tr: "iyi bir mühendis olduğunu gizlemesin.",
-    en: "how good an engineer you are.",
+    tr: "geride tutmasın.",
+    en: "hold your career back.",
   },
   heroBody: {
-    tr: "İş görüşmelerinde, toplantılarda, sunumlarda ve uluslararası çalışma ortamlarında uzmanlığını net, akıcı ve kendinden emin şekilde ifade et.",
-    en: "In job interviews, meetings, presentations, and international work environments, express your expertise clearly, fluently, and confidently.",
+    tr: "Mülakatlarda, toplantılarda, sunumlarda ve uluslararası çalışma ortamlarında İngilizceyi net, güvenli ve etkili şekilde konuş.",
+    en: "Speak English clearly, confidently, and effectively in interviews, meetings, presentations, and international work environments.",
   },
   homepageActions: { tr: "Ana sayfa eylemleri", en: "Homepage actions" },
   askWhatsapp: { tr: "WhatsApp’tan Sor", en: "Ask on WhatsApp" },
   freeTest: { tr: "Ücretsiz Test", en: "Free Test" },
   programTitle: {
-    tr: "İngilizce öğrenmiyorsun. Mühendisliğini İngilizce anlatmayı öğreniyorsun.",
-    en: "You are not learning English. You are learning to explain your engineering in English.",
+    tr: "İngilizce öğrenmiyorsun. Kariyerin için İngilizce konuşmayı öğreniyorsun.",
+    en: "You are not learning English. You are learning to speak English for your career.",
   },
   programBody: {
-    tr: "Star Speaker, İngilizceyi anlayan fakat iş hayatında konuşurken donan mühendisler için tasarlanmış uygulamalı bir konuşma programıdır.",
-    en: "Star Speaker is a practical speaking program designed for engineers who understand English but freeze when they need to speak at work.",
+    tr: "Star Speaker, İngilizceyi anlayan ancak önemli kariyer anlarında konuşurken donan insanlar için tasarlanmış uygulamalı bir konuşma programıdır.",
+    en: "Star Speaker is a practical speaking program for people who understand English but freeze during important career moments.",
   },
   programAltInterview: {
-    tr: "Bir mühendisin iş görüşmesinde soruları yanıtladığı profesyonel görüşme",
-    en: "An engineer answering questions in a professional job interview",
+    tr: "Bir adayın profesyonel iş görüşmesinde soruları yanıtlaması",
+    en: "A candidate answering questions in a professional job interview",
   },
   programScenarioInterview: { tr: "İş görüşmesinde donmak", en: "Freezing in a job interview" },
   programAltMeeting: {
-    tr: "Bir mühendisin uluslararası ekip toplantısında teknik bir fikri açıkladığı görüşme",
-    en: "An engineer explaining a technical idea in an international team meeting",
+    tr: "Uluslararası bir ekip toplantısında fikrini açıklayan bir profesyonel",
+    en: "A professional explaining an idea in an international team meeting",
   },
   programScenarioMeeting: {
     tr: "Toplantıda fikrini net açıklayamamak",
     en: "Struggling to explain an idea clearly in a meeting",
   },
   programAltTechnical: {
-    tr: "Mühendislerin mekanik bir sistem üzerinde teknik açıklama yaptığı çalışma ortamı",
-    en: "Engineers discussing a mechanical system in a technical work environment",
+    tr: "İngilizce konuşurken bilgisini aktarmaya çalışan bir profesyonel",
+    en: "A professional working to communicate what they know in English",
   },
   programScenarioTechnical: {
-    tr: "Teknik bilgiyi İngilizceye aktaramamak",
-    en: "Struggling to communicate technical knowledge in English",
+    tr: "İngilizce konuşurken bildiklerini gösterememek",
+    en: "Failing to show what you know when speaking English",
   },
   programAltPresentation: {
-    tr: "Bir mühendisin iş yerinde teknik sunum yaptığı profesyonel ortam",
-    en: "An engineer giving a technical presentation at work",
+    tr: "Bir profesyonelin iş yerinde İngilizce sunum yapması",
+    en: "A professional giving a presentation in English at work",
   },
   programScenarioPresentation: {
     tr: "Sunum yaparken özgüvenini kaybetmek",
@@ -80,28 +102,28 @@ export const homepageCopy = {
   beforeTwo: { tr: "Bildiğin kelimelere ulaşamamak", en: "Being unable to access words you already know" },
   beforeThree: { tr: "Kısa ve güvensiz cevaplar vermek", en: "Giving short, uncertain answers" },
   beforeFour: {
-    tr: "Teknik bilgini olduğundan zayıf göstermek",
-    en: "Making your technical knowledge sound weaker than it is",
+    tr: "Gerçek profesyonel yetkinliğinden daha zayıf görünmek",
+    en: "Appearing less capable than you really are professionally",
   },
   afterOne: { tr: "Cevabına sakin ve net başlamak", en: "Starting your answer calmly and clearly" },
   afterTwo: { tr: "Fikrini doğal bir yapıyla geliştirmek", en: "Developing your idea with a natural structure" },
   afterThree: {
-    tr: "Teknik konuları anlaşılır şekilde açıklamak",
-    en: "Explaining technical topics in an understandable way",
+    tr: "Toplantı ve mülakatlarda kendini açıkça ifade etmek",
+    en: "Expressing yourself clearly in meetings and interviews",
   },
-  afterFour: { tr: "Uzmanlığını güvenle göstermek", en: "Showing your expertise with confidence" },
+  afterFour: { tr: "Yetkinliğini İngilizce güvenle göstermek", en: "Showing your capabilities confidently in English" },
   methodKicker: { tr: "NASIL ÇALIŞIR?", en: "HOW DOES IT WORK?" },
   methodTitle: {
     tr: "Gelişim tesadüfen değil, doğru sistemle gerçekleşir.",
-    en: "Progress does not happen by chance. It happens with the right system.",
+    en: "Progress does not happen by accident. It happens through the right system.",
   },
   methodBody: {
-    tr: "Star Speaker, konuşma problemini belirler; sana hedefli pratik, uzman geri bildirimi ve gerçek iş senaryolarında tekrar sağlar.",
-    en: "Star Speaker identifies your speaking problem, then gives you focused practice, expert feedback, and repetition in real work scenarios.",
+    tr: "Star Speaker, konuşma problemini belirler; sana hedefli pratik, uzman geri bildirimi ve gerçek kariyer senaryolarında tekrar sağlar.",
+    en: "Star Speaker identifies your speaking problem, then gives you focused practice, expert feedback, and repetition in real career scenarios.",
   },
   methodAltOne: {
-    tr: "Bir mühendisin konuşma analizini uzman koçla yaptığı bire bir görüşme",
-    en: "An engineer completing a one-to-one speaking analysis with an expert coach",
+    tr: "Bir katılımcının uzmanla konuşma analizi yaptığı bire bir görüşme",
+    en: "A participant completing a one-to-one speaking analysis with an expert",
   },
   methodOneTitle: { tr: "Gerçek problemini belirle", en: "Identify the real problem" },
   methodOneBody: {
@@ -109,8 +131,8 @@ export const homepageCopy = {
     en: "Find where you freeze, why you lose clarity, and what you need to focus on when speaking.",
   },
   methodAltTwo: {
-    tr: "Bir mühendisin telefonuyla kısa bir sesli konuşma çalışması yapması",
-    en: "An engineer completing a short voice-speaking exercise on a phone",
+    tr: "Bir katılımcının telefonuyla kısa bir sesli konuşma çalışması yapması",
+    en: "A participant completing a short voice-speaking exercise on a phone",
   },
   methodTwoTitle: { tr: "Her gün konuşarak çalış", en: "Practice speaking every day" },
   methodTwoBody: {
@@ -127,13 +149,13 @@ export const homepageCopy = {
     en: "Focus on one important weakness at a time and see clearly what to improve and how.",
   },
   methodAltFour: {
-    tr: "Bir mühendisin profesyonel konuşma senaryosunu prova etmesi",
-    en: "An engineer rehearsing a professional speaking scenario",
+    tr: "Bir katılımcının profesyonel konuşma senaryosunu prova etmesi",
+    en: "A participant rehearsing a professional speaking scenario",
   },
-  methodFourTitle: { tr: "Gerçek iş senaryolarında hazırlan", en: "Prepare with real work scenarios" },
+  methodFourTitle: { tr: "Gerçek kariyer senaryolarında hazırlan", en: "Prepare with real career scenarios" },
   methodFourBody: {
-    tr: "İş görüşmeleri, toplantılar, teknik açıklamalar ve sunumlar üzerinde tekrar yap.",
-    en: "Rehearse job interviews, meetings, technical explanations, and presentations.",
+    tr: "İş görüşmeleri, toplantılar, sunumlar ve uluslararası çalışma durumları üzerinden tekrar yap.",
+    en: "Rehearse interviews, meetings, presentations, and international work situations.",
   },
   methodAltFive: {
     tr: "İlk ve son konuşma kayıtları arasındaki gelişimi gösteren ses dalgası karşılaştırması",
@@ -147,11 +169,11 @@ export const homepageCopy = {
   resultsKicker: { tr: "GERÇEK ÖĞRENCİLER. GERÇEK DEĞİŞİM.", en: "REAL STUDENTS. REAL CHANGE." },
   resultsTitle: {
     tr: "İngilizceyi bilmek yetmediğinde, doğru çalışma sistemi fark yaratır.",
-    en: "When knowing English is not enough, the right practice system makes the difference.",
+    en: "When knowing English is not enough, the right training system makes the difference.",
   },
   resultsBody: {
-    tr: "Üç mühendis, üç farklı konuşma problemi ve gerçek hayatta görünür hale gelen gelişim.",
-    en: "Three engineers, three different speaking problems, and progress that became visible in real life.",
+    tr: "Farklı kariyerlerden insanlar, farklı konuşma problemleri ve gerçek hayatta görünür hale gelen gelişim.",
+    en: "Different careers, different speaking problems, and progress that becomes visible in real life.",
   },
   carouselLabel: { tr: "Gerçek öğrenci sonuçları", en: "Real student results" },
   carouselRole: { tr: "karusel", en: "carousel" },
@@ -171,18 +193,18 @@ export const homepageCopy = {
   programsLabel: { tr: "PROGRAMLAR", en: "PROGRAMS" },
   programsTitle: {
     tr: "Hedefinize uygun çalışma yoğunluğunu seçin.",
-    en: "Choose the level of support that matches your goal.",
+    en: "Choose the training intensity that matches your goal.",
   },
   programsBody: {
-    tr: "Yakın bir profesyonel hedef için yoğun bir sprint veya İngilizce iletişiminizi geliştirmek için altı haftalık kapsamlı bir program.",
-    en: "Choose an intensive sprint for an approaching professional goal, or a comprehensive six-week program to develop your English communication.",
+    tr: "Yaklaşan önemli bir kariyer hedefi için yoğun bir sprint veya İngilizce konuşma performansınızı sistemli şekilde geliştirmek için altı haftalık kapsamlı bir program seçin.",
+    en: "Choose an intensive sprint for an important career goal, or a comprehensive six-week program to develop your English speaking performance systematically.",
   },
   flowDesignation: { tr: "ANA PROGRAM", en: "FLAGSHIP PROGRAM" },
-  flowName: { tr: "Star Speaker Engineer Flow", en: "Star Speaker Engineer Flow" },
+  flowName: { tr: "Star Speaker Career Flow", en: "Star Speaker Career Flow" },
   flowDuration: { tr: "6 HAFTA", en: "6 WEEKS" },
   flowDescription: {
-    tr: "İngilizcesini iş hayatında düzenli ve kapsamlı bir sistemle geliştirmek isteyen mühendisler için.",
-    en: "For engineers who want to develop their professional English through a structured and comprehensive system.",
+    tr: "Mülakat, toplantı, sunum ve uluslararası çalışma ortamlarında İngilizce konuşma performansını sistemli şekilde geliştirmek isteyenler için.",
+    en: "For people who want to develop their English speaking performance systematically for interviews, meetings, presentations, and international work.",
   },
   sharedContent: { tr: "ORTAK İÇERİK", en: "SHARED PROGRAM ELEMENTS" },
   flowSharedOne: {
@@ -271,8 +293,8 @@ export const homepageCopy = {
   },
   sprintDesignation: { tr: "YAKIN HEDEFLER İÇİN", en: "FOR APPROACHING GOALS" },
   sprintName: {
-    tr: "Mühendisler İçin 21 Günlük İngilizce Performans Sprinti",
-    en: "21-Day English Performance Sprint for Engineers",
+    tr: "21 Günlük İngilizce Performans Sprinti",
+    en: "21-Day English Performance Sprint",
   },
   sprintDuration: { tr: "21 GÜN", en: "21 DAYS" },
   sprintPrice: { tr: "12.000 TL", en: "12,000 TL" },
@@ -299,8 +321,8 @@ export const homepageCopy = {
   sprintFive: { tr: "Kişiselleştirilmiş geri bildirim", en: "Personalized feedback" },
   sprintSix: { tr: "Hedefe özel çalışma planı", en: "A goal-specific training plan" },
   sprintClarification: {
-    tr: "Belirli ve yakın tarihli bir profesyonel hedefi olan mühendisler için.",
-    en: "For engineers with a specific professional goal approaching soon.",
+    tr: "Belirli ve yakın tarihli bir kariyer hedefi olanlar için.",
+    en: "For people with a specific career goal approaching soon.",
   },
   sprintSummaryLabel: { tr: "Program süresi ve fiyatı", en: "Program duration and price" },
   analysisDesignation: { tr: "İLK ADIM", en: "FIRST STEP" },
@@ -309,29 +331,34 @@ export const homepageCopy = {
     en: "Free Speaking Performance Analysis",
   },
   analysisBody: {
-    tr: "Konuşmanızı birlikte değerlendirir, temel problemlerinizi belirler ve hedefinize uygun programı netleştiririz.",
-    en: "We assess your speaking together, identify your main problems and clarify the program that best matches your goal.",
+    tr: "Konuşmanı analiz et, güçlü yönünü gör, ana konuşma problemini keşfet ve aynı soruya daha güçlü bir cevap ver.",
+    en: "Analyze your speaking, see your strength, discover your main speaking problem, and give a stronger answer to the same question.",
   },
   analysisOutcomesLabel: { tr: "Konuşma analizi çıktıları", en: "Speaking analysis outcomes" },
-  analysisOutcomeOne: { tr: "1 güçlü yönünüz", en: "1 strength" },
-  analysisOutcomeTwo: { tr: "2 temel konuşma probleminiz", en: "2 main speaking problems" },
-  analysisOutcomeThree: { tr: "Size uygun sonraki adım", en: "Your most suitable next step" },
-  analysisCta: { tr: "Ücretsiz Analize Başvur", en: "Apply for Your Free Analysis" },
+  analysisOutcomeOne: { tr: "1 güçlü yönün", en: "1 strength" },
+  analysisOutcomeTwo: { tr: "1 ana konuşma problemin", en: "1 main speaking problem" },
+  analysisOutcomeThree: { tr: "1 odaklı düzeltme", en: "1 focused correction" },
+  analysisOutcomeFour: { tr: "İlk ve geliştirilmiş cevabın", en: "Your first and improved answers" },
+  analysisCta: { tr: "Ücretsiz Analize Başla", en: "Start Your Free Analysis" },
   analysisReassurance: {
-    tr: "15 dakika · Online · Satın alma zorunluluğu yok",
-    en: "15 minutes · Online · No obligation to purchase",
+    tr: "Yaklaşık 3 dakika · Online · Satın alma zorunluluğu yok",
+    en: "About 3 minutes · Online · No obligation to purchase",
   },
   faqHeading: {
     tr: "Aklınızdaki son soruları netleştirelim.",
     en: "Let’s clarify the final questions on your mind.",
   },
   finalCtaTitle: {
-    tr: "Bir sonraki profesyonel fırsatınıza daha hazır girin.",
-    en: "Walk into your next professional opportunity better prepared.",
+    tr: "Bir sonraki kariyer fırsatınıza daha hazır girin.",
+    en: "Be better prepared for your next career opportunity.",
   },
   finalCtaBody: {
-    tr: "15 dakikalık ücretsiz konuşma performans analizinde güçlü yönünüzü, iki temel konuşma probleminizi ve hedefinize uygun sonraki adımı birlikte netleştirelim.",
-    en: "In a free 15-minute speaking performance analysis, we will identify one strength, two main speaking problems, and the next step that best fits your goal.",
+    tr: "3 dakikalık ücretsiz konuşma analizinde güçlü yönünüzü, ana konuşma probleminizi ve geliştirmeniz gereken önceliği görün.",
+    en: "In the free three-minute speaking analysis, see your strength, your main speaking problem, and the priority you need to improve.",
+  },
+  finalCtaReassurance: {
+    tr: "3 dakika · Online · Satın alma zorunluluğu yok",
+    en: "3 minutes · Online · No obligation to purchase",
   },
   footerNavigation: { tr: "Alt bilgi navigasyonu", en: "Footer navigation" },
   footerHome: { tr: "Ana Sayfa", en: "Home" },
@@ -339,8 +366,8 @@ export const homepageCopy = {
   footerResults: { tr: "Sonuçlar", en: "Results" },
   footerPrograms: { tr: "Programlar", en: "Programs" },
   footerBrandLine: {
-    tr: "İNGİLİZCE KONUŞAN MÜHENDİSLER",
-    en: "ENGLISH-SPEAKING ENGINEERS",
+    tr: "KARİYER İNGİLİZCESİ",
+    en: "CAREER ENGLISH",
   },
   footerCopyright: {
     tr: "© 2026 Star Speaker. Tüm hakları saklıdır.",
@@ -355,32 +382,42 @@ export const homepageLocales = {
       {
         question: "Bu programlar kimler için?",
         answer:
-          "İngilizce bilgisi olmasına rağmen mülakatlarda, toplantılarda, sunumlarda veya teknik konuşmalarda kendini istediği kadar net ve özgüvenli ifade edemeyen mühendisler için.",
+          "İngilizceyi anlayan ancak mülakatlarda, toplantılarda, sunumlarda, uluslararası çalışma ortamlarında veya baskı altında konuşurken kendini istediği kadar net ve güvenli ifade edemeyen insanlar için. Mühendis olmanız gerekmez.",
       },
       {
         question: "Bu bir genel İngilizce kursu mu?",
         answer:
-          "Hayır. Programlar, genel İngilizce konularını sırayla tamamlamak yerine profesyonel hayatta ihtiyaç duyduğunuz konuşma performansını geliştirmeye odaklanır.",
+          "Hayır. Star Speaker konuşma odaklıdır; genel İngilizce konularını sırayla tamamlamak yerine kariyeriniz için önemli anlarda kullanabileceğiniz konuşma performansını pratik, geri bildirim, düzeltme ve tekrar yoluyla geliştirir.",
       },
       {
-        question: "Engineer Flow ile 21 Günlük Performans Sprinti arasındaki fark nedir?",
+        question: "Career Flow ile 21 Günlük Performans Sprinti arasındaki fark nedir?",
         answer:
-          "21 Günlük Performans Sprinti, yaklaşan bir mülakat, toplantı, sunum veya benzeri yakın tarihli bir hedefe hazırlanmak içindir. Engineer Flow ise İngilizce iletişiminizi altı haftalık kapsamlı bir sistemle daha kalıcı biçimde geliştirmek için tasarlanmıştır.",
+          "21 Günlük Performans Sprinti, yaklaşan bir mülakat, toplantı, sunum veya benzeri yakın tarihli kariyer hedefine yoğun şekilde hazırlanmak içindir. Career Flow ise İngilizce konuşma performansınızı altı haftalık kapsamlı bir sistemle geliştirmek için tasarlanmıştır.",
       },
       {
         question: "Hangi programın bana uygun olduğunu nasıl anlayacağım?",
         answer:
-          "Hedefinizin ne kadar yakın olduğu, mevcut konuşma performansınız ve ihtiyaç duyduğunuz destek seviyesi ücretsiz konuşma analizi sırasında değerlendirilir. Size uygun program ve program seviyesi bu görüşmenin ardından netleştirilir.",
+          "Önce ücretsiz konuşma analizini tamamlarsınız. Hedefinizin ne kadar yakın olduğu, mevcut konuşma performansınız ve ihtiyaç duyduğunuz destek seviyesi analiz ve sonrasındaki görüşmede değerlendirilir; program uygunluğu bu aşamadan sonra netleştirilir.",
       },
       {
         question: "Programlara katılmak için hangi İngilizce seviyesinde olmam gerekiyor?",
         answer:
-          "Tek bir seviye şartı yoktur. Önemli olan mevcut İngilizce bilginizden çok, profesyonel hedefiniz ve konuşurken yaşadığınız problemlerdir. Programa uygunluğunuz konuşma analizi sırasında değerlendirilir.",
+          "Programlar A2.1 seviyesinden C1.1 seviyesine kadar İngilizce kullanıcılarını destekler. Kesin uygunluk, konuşma analizi ve sonrasındaki görüşmede hedefiniz ve mevcut konuşma performansınız değerlendirilerek belirlenir.",
       },
       {
         question: "Ücretsiz Konuşma Performans Analizi nasıl ilerliyor?",
         answer:
-          "15 dakikalık online görüşmede konuşmanızı birlikte değerlendiririz. Görüşmenin sonunda bir güçlü yönünüzü, iki temel konuşma probleminizi ve size uygun sonraki adımı netleştiririz. Satın alma zorunluluğu yoktur.",
+          "Yaklaşık üç dakikalık online akışta bir soruya sesli cevap verirsiniz. Cevabınızdan bir güçlü yön, bir ana konuşma problemi ve odaklı bir düzeltme görür; ardından aynı soruya daha güçlü bir cevap vererek iki kaydı karşılaştırırsınız. Bu analiz, sonrasındaki danışmanlık görüşmesinden ayrı bir ilk adımdır.",
+      },
+      {
+        question: "Star Speaker geleneksel İş İngilizcesinden nasıl farklı?",
+        answer:
+          "Geleneksel İş İngilizcesi çoğunlukla kurumsal kelimeler, kalıplar veya yazışma içerikleri öğretir. Star Speaker ise mülakat, toplantı, sunum ve uluslararası çalışma gibi gerçek kariyer durumlarında konuşma pratiği, odaklı geri bildirim, düzeltme, tekrar ve simülasyon yoluyla kullanılabilir konuşma performansı geliştirir.",
+      },
+      {
+        question: "Yurt dışında çalışmaya hazırlanmak için uygun mu?",
+        answer:
+          "Evet, yurt dışındaki mülakatlara, uluslararası ekip toplantılarına, sunumlara ve günlük profesyonel konuşmalara hazırlanmak hedefler arasında olabilir. İçerik hedefinize göre uyarlanır; belirli bir iş veya sonuç garantisi verilmez.",
       },
     ],
     carousel: {
@@ -434,32 +471,42 @@ export const homepageLocales = {
       {
         question: "Who are these programs for?",
         answer:
-          "They are designed for engineers who know English but cannot express themselves as clearly and confidently as they would like in interviews, meetings, presentations, or technical conversations.",
+          "They are for people who understand English but cannot express themselves as clearly and confidently as they would like in interviews, meetings, presentations, international work, or other high-pressure conversations. You do not need to be an engineer.",
       },
       {
         question: "Is this a general English course?",
         answer:
-          "No. Instead of moving through a standard sequence of general English topics, the programs focus on developing the speaking performance you need in professional situations.",
+          "No. Star Speaker is speaking-first. Instead of moving through a standard sequence of general English topics, it develops the speaking performance you need in important career moments through practice, feedback, correction, and repetition.",
       },
       {
-        question: "What is the difference between Engineer Flow and the 21-Day Performance Sprint?",
+        question: "What is the difference between Career Flow and the 21-Day Performance Sprint?",
         answer:
-          "The 21-Day Performance Sprint is designed to prepare you for an upcoming interview, meeting, presentation, or another time-sensitive professional goal. Engineer Flow is designed to develop your English communication more sustainably through a comprehensive six-week system.",
+          "The 21-Day Performance Sprint is an intensive way to prepare for an upcoming interview, meeting, presentation, or another time-sensitive career goal. Career Flow develops your English speaking performance through a comprehensive six-week system.",
       },
       {
         question: "How will I know which program is right for me?",
         answer:
-          "During the free speaking analysis, we assess how close your goal is, your current speaking performance, and the level of support you need. We then identify the most suitable program and program level for you.",
+          "You begin with the free speaking analysis. Your timeline, current speaking performance, and required level of support are then considered during the analysis and follow-up consultation before program suitability is confirmed.",
       },
       {
         question: "What level of English do I need to join?",
         answer:
-          "There is no single level requirement. What matters is not only your current English knowledge, but also your professional goal and the problems you experience while speaking. Your suitability for the program is assessed during the speaking analysis.",
+          "The programs support English users from A2.1 through C1.1. Final suitability is determined after your goal and current speaking performance are considered during the speaking analysis and follow-up consultation.",
       },
       {
         question: "What happens during the Free Speaking Performance Analysis?",
         answer:
-          "During the 15-minute online conversation, we assess your speaking together. By the end, we identify one strength, two main speaking problems, and the most suitable next step for you. There is no obligation to purchase.",
+          "In an online flow that takes about three minutes, you answer one question aloud. You see one strength, one main speaking problem, and a focused correction, then answer the same question more strongly and compare the two recordings. This analysis is a separate first step before any later consultation.",
+      },
+      {
+        question: "How is Star Speaker different from traditional Business English?",
+        answer:
+          "Traditional Business English often focuses on corporate vocabulary, expressions, or written communication. Star Speaker develops usable speaking performance through practice, focused feedback, correction, repetition, and simulations for real career situations such as interviews, meetings, presentations, and international work.",
+      },
+      {
+        question: "Is it suitable for preparing to work abroad?",
+        answer:
+          "Yes. Your goal can include preparing for international interviews, team meetings, presentations, and everyday professional conversations abroad. Practice is adapted to your goal, but no particular job or outcome is guaranteed.",
       },
     ],
     carousel: {
@@ -532,8 +579,8 @@ export function validateHomepageLocales() {
   });
 
   const faqKeys = ["question", "answer"];
-  if (homepageLocales.en.faqItems.length !== 6 || homepageLocales.tr.faqItems.length !== 6) {
-    throw new Error("Each homepage locale must contain exactly six FAQ entries.");
+  if (homepageLocales.en.faqItems.length !== 8 || homepageLocales.tr.faqItems.length !== 8) {
+    throw new Error("Each homepage locale must contain exactly eight FAQ entries.");
   }
   homepageLocales.tr.faqItems.forEach((_, index) => {
     faqKeys.forEach((key) => {
