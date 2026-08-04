@@ -112,6 +112,9 @@ export const homepageCopy = {
     en: "Expressing yourself clearly in meetings and interviews",
   },
   afterFour: { tr: "Yetkinliğini İngilizce güvenle göstermek", en: "Showing your capabilities confidently in English" },
+  transformationBridge: { tr: "Star Speaker dönüşümü", en: "The Star Speaker transformation" },
+  transformationOutcome: { tr: "Aynı bilgi. Daha net, düzenli ve güçlü bir ifade.", en: "The same knowledge. A clearer, more structured, more powerful expression." },
+  transformationCue: { tr: "Dağınık cevap → Net ve yapılandırılmış cevap", en: "Scattered answer → Clear, structured answer" },
   methodKicker: { tr: "NASIL ÇALIŞIR?", en: "HOW DOES IT WORK?" },
   methodTitle: {
     tr: "Gelişim tesadüfen değil, doğru sistemle gerçekleşir.",

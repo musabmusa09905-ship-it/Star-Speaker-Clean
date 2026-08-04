@@ -3,10 +3,11 @@ import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import {
   EXPERIENCE_VERSION,
-  QUESTION_BANK,
+  QUESTION_BANK_VERSION,
   REPORTED_LEVELS,
   SITUATIONS,
   normalizeReportedLevel,
+  eligibleQuestions,
   recommendedDuration,
   resolveQuestion,
   resolveQuestionById,
@@ -17,7 +18,7 @@ const page = await readFile(resolve("tr", "performans-testi", "index.html"), "ut
 const client = await readFile(resolve("src", "scripts", "performance-sprint.js"), "utf8");
 const edge = await readFile(resolve("supabase", "functions", "ai-speaking-coach", "index.ts"), "utf8");
 const migration = await readFile(
-  resolve("..", "StarSpeaker-App", "supabase", "migrations", "0151_career_english_funnel_v3.sql"),
+  resolve("..", "StarSpeaker-App", "supabase", "migrations", "0152_performance_question_rotation_v2.sql"),
   "utf8",
 );
 
@@ -34,21 +35,24 @@ for (const invalidName of ["", "   ", "A1", "<script>", "A".repeat(41), "Deniz_Y
 
 const questionIds = new Set();
 for (const situation of SITUATIONS) {
-  assert.ok(QUESTION_BANK[situation]);
   const titles = new Set();
   for (const level of REPORTED_LEVELS) {
-    const selected = resolveQuestion(situation, level);
+    const eligible = eligibleQuestions(situation, level);
+    assert.equal(eligible.length, 4, `${situation}/${level} must have four active questions`);
+    const selected = eligible[0];
     assert.ok(selected, `${situation}/${level} must resolve`);
     assert.ok(selected.id && selected.title && selected.context && selected.guide);
     assert.equal(resolveQuestionById(selected.id)?.id, selected.id);
-    assert.match(edge, new RegExp(`"${situation}:${level}":\\s*"${selected.id}"`));
-    assert.equal(questionIds.has(selected.id), false, `${selected.id} must be globally unique`);
-    questionIds.add(selected.id);
+    for (const question of eligible) {
+      assert.equal(questionIds.has(question.id), false, `${question.id} must be globally unique`);
+      questionIds.add(question.id);
+    }
     titles.add(selected.title);
   }
   assert.equal(titles.size, REPORTED_LEVELS.length, `${situation} must have genuinely distinct level questions`);
 }
-assert.equal(questionIds.size, SITUATIONS.length * REPORTED_LEVELS.length);
+assert.equal(questionIds.size, 128);
+assert.equal(QUESTION_BANK_VERSION, "speaking_question_bank_v2");
 assert.equal(normalizeReportedLevel("unsure"), "b1_1");
 assert.deepEqual(REPORTED_LEVELS, ["a2_1", "a2_2", "b1_1", "b1_2", "b2_1", "b2_2", "c1_1", "unsure"]);
 assert.equal(recommendedDuration("a2_1"), 45);
@@ -72,6 +76,7 @@ assert.doesNotMatch(page.slice(0, page.indexOf('data-screen="record"')), /email|
 assert.doesNotMatch(page, /data-screen="mic"/);
 assert.match(page, /data-feeling="nervous"/);
 assert.match(page, /data-duration="120"/);
+assert.match(page, /data-situation="other"/);
 
 for (const contract of [
   "validateFirstName",
@@ -96,17 +101,18 @@ assert.match(client, /state\.isDemo\) return \{ ok: true, demo: true/);
 
 assert.match(edge, /action === "save_participant"/);
 assert.match(edge, /action === "advance_participant"/);
+assert.match(edge, /action === "select_question"/);
+assert.match(edge, /questionById\.get\(questionId\)/);
 assert.match(edge, /upsert_career_english_participant/);
 assert.match(edge, /advance_career_english_participant/);
 assert.match(edge, /track_career_english_event/);
 assert.match(edge, /level_is_self_reported|self-reported level/);
 
-assert.match(migration, /add column if not exists recording_duration_seconds/);
-assert.match(migration, /add column if not exists emotional_state/);
+assert.match(migration, /performance_analysis_question_history/);
+assert.match(migration, /'other'/);
 assert.match(migration, /on conflict \(session_id\) do update/);
-assert.match(migration, /on conflict\(session_id,event_key\).*do nothing/s);
 assert.match(migration, /career_english_v3/);
-assert.match(migration, /with\(security_invoker=true\)/);
+assert.match(migration, /enable row level security/);
 for (const definition of migration.split(/create or replace function/i).slice(1)) {
   if (/security definer/i.test(definition)) assert.match(definition, /set search_path = ''/i);
 }

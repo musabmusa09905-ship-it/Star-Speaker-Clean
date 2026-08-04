@@ -1,5 +1,6 @@
 import {
   EXPERIENCE_VERSION,
+  QUESTION_BANK_VERSION,
   normalizeReportedLevel,
   recommendedDuration,
   resolveQuestion,
@@ -39,6 +40,40 @@ function persistentSessionId() {
   }
 }
 
+const QUESTION_HISTORY_KEY = "starSpeakerQuestionHistoryV2";
+const ANONYMOUS_ID_KEY = "starSpeakerAnonymousParticipantId";
+
+function persistentAnonymousId() {
+  try {
+    const existing = localStorage.getItem(ANONYMOUS_ID_KEY);
+    if (existing) return existing;
+    const created = crypto.randomUUID();
+    localStorage.setItem(ANONYMOUS_ID_KEY, created);
+    return created;
+  } catch {
+    return persistentSessionId();
+  }
+}
+
+function readQuestionHistory() {
+  try {
+    const history = JSON.parse(localStorage.getItem(QUESTION_HISTORY_KEY) || "[]");
+    return Array.isArray(history) ? history.filter((item) => item?.id).slice(-96) : [];
+  } catch {
+    return [];
+  }
+}
+
+function rememberQuestion(questionId) {
+  try {
+    const history = readQuestionHistory().filter((item) => item.id !== questionId);
+    history.push({ id: questionId, servedAt: new Date().toISOString() });
+    localStorage.setItem(QUESTION_HISTORY_KEY, JSON.stringify(history.slice(-96)));
+  } catch {
+    // Rotation still works through server history when local storage is unavailable.
+  }
+}
+
 function getSourceData() {
   const params = new URLSearchParams(location.search);
   return {
@@ -74,9 +109,13 @@ const state = {
   emotionalState: storedFlow.emotionalState || "",
   emotionalSelectedAt: storedFlow.emotionalSelectedAt || "",
   question: storedFlow.question || null,
+  questionPreviouslySeen: Boolean(storedFlow.questionPreviouslySeen),
+  questionPriorServeCount: Number(storedFlow.questionPriorServeCount || 0),
+  questionSelectionFallback: Boolean(storedFlow.questionSelectionFallback),
   participantId: storedFlow.participantId || null,
   participantSaved: Boolean(storedFlow.participantSaved),
   setupSubmitting: false,
+  setupHadFailure: false,
   stream: null,
   recorder: null,
   demoRecording: false,
@@ -93,6 +132,7 @@ const state = {
   contact: {},
   leadId: storedFlow.leadId || null,
   sessionId: persistentSessionId(),
+  anonymousId: persistentAnonymousId(),
   sourceData: getSourceData(),
   trackedEvents: new Set(),
   currentScreen: "intro",
@@ -121,6 +161,9 @@ function storeFlow() {
       emotionalState: state.emotionalState,
       emotionalSelectedAt: state.emotionalSelectedAt,
       questionId: state.question?.id || "",
+      questionPreviouslySeen: state.questionPreviouslySeen,
+      questionPriorServeCount: state.questionPriorServeCount,
+      questionSelectionFallback: state.questionSelectionFallback,
       participantId: state.participantId,
       participantSaved: state.participantSaved,
       analyses: state.analyses,
@@ -226,9 +269,44 @@ async function participantApi(payload) {
     keepalive: Boolean(payload.keepalive),
   });
   const body = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(body.error || "Katılımcı kaydı tamamlanamadı.");
+  if (!response.ok) {
+    const failure = new Error(body.error || "Katılımcı kaydı tamamlanamadı.");
+    failure.code = body.code || `http_${response.status}`;
+    throw failure;
+  }
   if (body.participant_id) state.participantId = body.participant_id;
   return body;
+}
+
+async function selectQuestion() {
+  if (state.isDemo) return resolveQuestion(state.situation, state.reportedLevel);
+  const config = window.STAR_SPEAKER_SUPABASE_CONFIG || {};
+  if (!config.url || !config.anonKey) throw Object.assign(new Error("Soru servisi yapılandırılmamış."), { code: "question_service_unconfigured" });
+  const browserHistory = readQuestionHistory();
+  const response = await fetch(`${config.url}/functions/v1/ai-speaking-coach`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", apikey: config.anonKey, Authorization: `Bearer ${config.anonKey}` },
+    body: JSON.stringify({
+      action: "select_question",
+      session_id: state.sessionId,
+      anonymous_id: state.anonymousId,
+      situation: state.situation,
+      reported_level: state.reportedLevel,
+      question_bank_version: QUESTION_BANK_VERSION,
+      recent_question_ids: browserHistory.slice(-32).map((item) => item.id),
+    }),
+  });
+  const body = await response.json().catch(() => ({}));
+  if (!response.ok || !body.question) {
+    const failure = new Error(body.error || "Soru seçilemedi.");
+    failure.code = body.code || `http_${response.status}`;
+    throw failure;
+  }
+  state.questionPreviouslySeen = Boolean(body.previously_seen);
+  state.questionPriorServeCount = Number(body.prior_serve_count || 0);
+  state.questionSelectionFallback = Boolean(body.fallback);
+  rememberQuestion(body.question.id);
+  return body.question;
 }
 
 async function saveParticipant() {
@@ -240,6 +318,10 @@ async function saveParticipant() {
     normalized_level: state.normalizedLevel,
     question_id: state.question.id,
     question: state.question,
+    question_bank_version: QUESTION_BANK_VERSION,
+    question_previously_seen: state.questionPreviouslySeen,
+    question_prior_serve_count: state.questionPriorServeCount,
+    anonymous_id: state.anonymousId,
     recording_duration_seconds: state.recordingDuration,
     emotional_state: state.emotionalState,
     emotional_selected_at: state.emotionalSelectedAt,
@@ -276,6 +358,7 @@ function renderSetupSelection() {
 async function handleSetupSubmit(event) {
   event.preventDefault();
   if (state.setupSubmitting) return;
+  if (state.setupHadFailure) trackEvent("setup_retry_clicked", "setup", {}, `setup_retry_clicked:${Date.now()}`);
   const error = $("[data-setup-error]");
   const submit = $(".sprint-setup-submit", event.currentTarget);
   error.hidden = true;
@@ -301,37 +384,54 @@ async function handleSetupSubmit(event) {
     error.hidden = false;
     return;
   }
-  const selectedQuestion = resolveQuestion(state.situation, state.reportedLevel);
-  if (!selectedQuestion) {
-    error.textContent = "Bu seçim için soru hazırlanamadı. Lütfen tekrar dene.";
-    error.hidden = false;
-    return;
-  }
   state.firstName = nameResult.value;
   state.normalizedLevel = normalizeReportedLevel(state.reportedLevel);
-  state.question = selectedQuestion;
   state.setupSubmitting = true;
   submit.disabled = true;
   submit.textContent = "Sorun hazırlanıyor…";
   try {
+    state.question = state.question || await selectQuestion();
     await saveParticipant();
-    await trackEvent("situation_selected", "setup", {
+    await trackEvent("purpose_selected", "setup", {
       situation: state.situation,
       reported_level: state.reportedLevel,
       question_id: state.question.id,
-    }, "situation_selected");
+      question_bank_version: QUESTION_BANK_VERSION,
+    }, "purpose_selected");
+    if (state.situation === "other") await trackEvent("other_purpose_selected", "setup", { reported_level: state.reportedLevel }, "other_purpose_selected");
+    await trackEvent("question_selected", "setup", {
+      situation: state.situation,
+      reported_level: state.reportedLevel,
+      normalized_level: state.normalizedLevel,
+      question_id: state.question.id,
+      question_topic: state.question.topic,
+      question_bank_version: QUESTION_BANK_VERSION,
+      previously_seen: state.questionPreviouslySeen,
+      prior_serve_count: state.questionPriorServeCount,
+      fallback: state.questionSelectionFallback,
+    }, "question_selected");
     await trackEvent("setup_completed", "setup", {
       situation: state.situation,
       reported_level: state.reportedLevel,
       normalized_level: state.normalizedLevel,
       question_id: state.question.id,
+      question_topic: state.question.topic,
+      question_bank_version: QUESTION_BANK_VERSION,
+      previously_seen: state.questionPreviouslySeen,
+      prior_serve_count: state.questionPriorServeCount,
     }, "setup_completed");
     state.phase = "first";
     preparePrompt();
     showScreen("record");
+    await trackEvent("question_screen_viewed", "record", { question_id: state.question.id, question_bank_version: QUESTION_BANK_VERSION }, "question_screen_viewed");
+    if (state.setupHadFailure) await trackEvent("setup_recovered", "setup", { question_id: state.question.id }, "setup_recovered");
+    state.setupHadFailure = false;
   } catch (cause) {
-    error.textContent = `${cause.message} Lütfen bağlantını kontrol edip tekrar dene.`;
+    const failureCode = cause?.code || "setup_unknown";
+    error.innerHTML = `Şu anda devam edemedik. Bağlantını kontrol edip tekrar dene. <button type="submit" class="sprint-inline-retry" data-setup-retry>Tekrar Dene</button>`;
     error.hidden = false;
+    state.setupHadFailure = true;
+    trackEvent("setup_failed", "setup", { failure_code: failureCode }, `setup_failed:${Date.now()}`);
   } finally {
     state.setupSubmitting = false;
     submit.disabled = false;
@@ -547,6 +647,12 @@ async function useRecording() {
     { duration_seconds: duration },
     `answer_submitted:${phase}`,
   );
+  await trackEvent(
+    phase === "retry" ? "retry_completed" : "first_recording_completed",
+    phase,
+    { duration_seconds: duration, question_id: state.question.id, question_bank_version: QUESTION_BANK_VERSION },
+    `recording_completed:${phase}`,
+  );
   state.pending[phase] = analyzeRecording(blob, phase, promptForSituation());
   await waitForAnalysis(phase);
   state.submitting = false;
@@ -563,6 +669,8 @@ async function analyzeRecording(blob, phase, prompt) {
   form.append("audio", blob, `answer-${phase}.${blob.type.includes("mp4") ? "m4a" : "webm"}`);
   form.append("phase", phase);
   form.append("session_id", state.sessionId);
+  form.append("question_id", state.question.id);
+  form.append("question_bank_version", QUESTION_BANK_VERSION);
   form.append("prompt", JSON.stringify(prompt));
   form.append("context", JSON.stringify({
     situation: state.situation,
@@ -1105,6 +1213,7 @@ $("[data-start]").addEventListener("click", () => {
 
 $$("[data-situation]").forEach((button) => {
   button.addEventListener("click", () => {
+    if (state.situation !== button.dataset.situation) state.question = null;
     state.situation = button.dataset.situation;
     renderSetupSelection();
   });
@@ -1112,6 +1221,7 @@ $$("[data-situation]").forEach((button) => {
 
 $$('[data-level]').forEach((button) => {
   button.addEventListener("click", () => {
+    if (state.reportedLevel !== button.dataset.level) state.question = null;
     state.reportedLevel = button.dataset.level;
     state.recordingDuration = recommendedDuration(state.reportedLevel);
     $("[data-duration-note]").textContent = `${state.recordingDuration} saniyeyi öneriyoruz; istersen değiştirebilirsin.`;

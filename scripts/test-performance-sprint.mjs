@@ -40,9 +40,9 @@ assert.ok(
   page.indexOf('data-screen="result"') < page.indexOf("data-contact-form"),
   "The optional contact form must remain inside the completed result.",
 );
-for (const situation of ["meeting", "interview", "presentation"]) {
+for (const situation of ["meeting", "interview", "presentation", "other"]) {
   assert.match(page, new RegExp(`data-situation="${situation}"`));
-  assert.match(config, new RegExp(`${situation}:\\s*Object\\.freeze\\(\\{`));
+  assert.match(config, new RegExp(`"${situation}"`));
 }
 assert.match(page, /data-whatsapp-cta/);
 assert.match(page, /data-booking-confirm/);
@@ -74,7 +74,7 @@ assert.match(script, /data-whatsapp-cta/);
 for (const eventName of [
   "landing_viewed",
   "start_clicked",
-  "situation_selected",
+  "purpose_selected",
   "microphone_granted",
   "microphone_denied",
   "first_recording_started",

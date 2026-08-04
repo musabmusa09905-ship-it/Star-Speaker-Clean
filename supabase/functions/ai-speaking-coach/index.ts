@@ -70,13 +70,13 @@ function compactText(value: unknown, max = 1200) {
 }
 
 const experienceVersion = "career_english_v3";
-const validSituations = new Set(["meeting", "interview", "presentation"]);
+const validSituations = new Set(["meeting", "interview", "presentation", "other"]);
 const validReportedLevels = new Set(["a2_1", "a2_2", "b1_1", "b1_2", "b2_1", "b2_2", "c1_1", "unsure"]);
 const normalizedLevels: Record<string, string> = {
   a2_1: "a2_1", a2_2: "a2_2", b1_1: "b1_1", b1_2: "b1_2",
   b2_1: "b2_1", b2_2: "b2_2", c1_1: "c1_1", unsure: "b1_1",
 };
-const questionIds: Record<string, string> = {
+const legacyQuestionIds: Record<string, string> = {
   "meeting:a2_1":"meeting-a2-1-helpful-routine", "meeting:a2_2":"meeting-a2-2-useful-app",
   "meeting:b1_1":"meeting-b1-1-time-organization", "meeting:b1_2":"meeting-b1-2-home-or-office",
   "meeting:b2_1":"meeting-b2-1-useful-meetings", "meeting:b2_2":"meeting-b2-2-digital-communication",
@@ -90,6 +90,7 @@ const questionIds: Record<string, string> = {
   "presentation:b2_1":"presentation-b2-1-technology-boundaries", "presentation:b2_2":"presentation-b2-2-place-to-live",
   "presentation:c1_1":"presentation-c1-1-convenience-cost", "presentation:unsure":"presentation-unsure-useful-recommendation",
 };
+const questionById = new Map<string, (typeof QUESTIONS)[number]>(QUESTIONS.map((question) => [question.id, question]));
 const validDurations = new Set([45, 60, 90, 120]);
 const validFeelings = new Set(["fantastic", "confident", "calm", "nervous", "tired"]);
 const firstNamePattern = /^[A-Za-zÇĞİÖŞÜçğıöşüÂâÎîÛû]+(?:[ '-][A-Za-zÇĞİÖŞÜçğıöşüÂâÎîÛû]+)*$/u;
@@ -117,6 +118,60 @@ async function callRpc(name: string, args: Record<string, unknown>) {
   return Array.isArray(body) ? body[0] : body;
 }
 
+async function selectQuestion(payload: Record<string, unknown>) {
+  const situation = compactText(payload.situation, 30);
+  const reportedLevel = compactText(payload.reported_level, 30);
+  const sessionId = compactText(payload.session_id, 80);
+  const anonymousId = compactText(payload.anonymous_id, 80);
+  const bankVersion = compactText(payload.question_bank_version, 80);
+  if (!validSituations.has(situation)) throw Object.assign(new Error("Unknown purpose."), { code: "unknown_purpose" });
+  if (!validReportedLevels.has(reportedLevel)) throw Object.assign(new Error("Unknown level."), { code: "unknown_level" });
+  if (bankVersion !== QUESTION_BANK_VERSION) throw Object.assign(new Error("Question bank version is invalid."), { code: "question_bank_version_invalid" });
+  if (!/^[0-9a-f-]{36}$/i.test(sessionId) || !/^[0-9a-f-]{36}$/i.test(anonymousId)) {
+    throw Object.assign(new Error("Question identity is invalid."), { code: "question_identity_invalid" });
+  }
+
+  const eligible = QUESTIONS.filter((question) => question.active && question.purpose === situation && question.level === reportedLevel);
+  if (!eligible.length) throw Object.assign(new Error("No eligible question."), { code: "no_eligible_question" });
+  const { url, key } = serviceConfig();
+  const historyResponse = await fetch(`${url}/rest/v1/performance_analysis_question_history?anonymous_id=eq.${anonymousId}&purpose=eq.${situation}&reported_level=eq.${reportedLevel}&select=question_id,serve_count,last_served_at,session_id&order=last_served_at.desc`, {
+    headers: { apikey: key, Authorization: `Bearer ${key}` },
+  });
+  if (!historyResponse.ok) throw Object.assign(new Error("Question history is unavailable."), { code: "question_history_failed" });
+  const history = await historyResponse.json() as Array<Record<string, unknown>>;
+  const existingSession = history.find((entry) => entry.session_id === sessionId);
+  if (existingSession) {
+    const existingQuestion = questionById.get(String(existingSession.question_id));
+    if (existingQuestion) return { question: existingQuestion, previously_seen: Number(existingSession.serve_count || 0) > 1, prior_serve_count: Math.max(0, Number(existingSession.serve_count || 1) - 1), fallback: false, preserved: true };
+  }
+
+  const random = new Uint32Array(1);
+  crypto.getRandomValues(random);
+  const selected = chooseQuestion(eligible, history, Array.isArray(payload.recent_question_ids) ? payload.recent_question_ids.map(String) : [], random[0]);
+  if (!selected) throw Object.assign(new Error("No eligible question."), { code: "no_eligible_question" });
+  const previous = history.find((entry) => String(entry.question_id) === selected.id);
+  const priorServeCount = Number(previous?.serve_count || 0);
+  const writeResponse = await fetch(`${url}/rest/v1/performance_analysis_question_history`, {
+    method: "POST",
+    headers: { apikey: key, Authorization: `Bearer ${key}`, "Content-Type": "application/json", Prefer: "resolution=merge-duplicates,return=minimal" },
+    body: JSON.stringify({
+      anonymous_id: anonymousId,
+      session_id: sessionId,
+      purpose: situation,
+      reported_level: reportedLevel,
+      normalized_level: normalizedLevels[reportedLevel],
+      question_id: selected.id,
+      question_topic: selected.topic,
+      question_bank_version: QUESTION_BANK_VERSION,
+      previously_seen: priorServeCount > 0,
+      serve_count: priorServeCount + 1,
+      last_served_at: new Date().toISOString(),
+    }),
+  });
+  if (!writeResponse.ok) throw Object.assign(new Error("Question history could not be saved."), { code: "question_history_write_failed" });
+  return { question: selected, previously_seen: priorServeCount > 0, prior_serve_count: priorServeCount, fallback: false, preserved: false };
+}
+
 async function upsertParticipant(payload: Record<string, unknown>) {
   const firstName = compactText(payload.first_name, 40).normalize("NFC");
   const situation = compactText(payload.situation, 30);
@@ -125,13 +180,18 @@ async function upsertParticipant(payload: Record<string, unknown>) {
   const version = compactText(payload.experience_version, 50);
   const question = (payload.question || {}) as Record<string, unknown>;
   const questionId = compactText(payload.question_id, 100);
+  const bankVersion = compactText(payload.question_bank_version, 80);
   const duration = Number(payload.recording_duration_seconds);
   const feeling = compactText(payload.emotional_state, 30);
   if (!sessionId || !firstNamePattern.test(firstName) || !validSituations.has(situation)
     || !validReportedLevels.has(reportedLevel) || version !== experienceVersion
-    || questionIds[`${situation}:${reportedLevel}`] !== questionId
+    || bankVersion !== QUESTION_BANK_VERSION
     || !validDurations.has(duration) || !validFeelings.has(feeling)) {
     throw new Error("Participant setup is invalid.");
+  }
+  const canonicalQuestion = questionById.get(questionId);
+  if (!canonicalQuestion || !canonicalQuestion.active || canonicalQuestion.purpose !== situation || canonicalQuestion.level !== reportedLevel) {
+    throw Object.assign(new Error("Question selection is invalid."), { code: "question_invalid" });
   }
   const saved = await callRpc("upsert_career_english_participant", {
     p_session_id: sessionId,
@@ -140,16 +200,11 @@ async function upsertParticipant(payload: Record<string, unknown>) {
     p_reported_level: reportedLevel,
     p_normalized_level: normalizedLevels[reportedLevel],
     p_question_id: questionId,
-    p_question_snapshot: {
-      id: questionId,
-      title: compactText(question.title, 500),
-      context: compactText(question.context, 500),
-      guide: compactText(question.guide, 300),
-    },
+    p_question_snapshot: { ...canonicalQuestion, title: canonicalQuestion.question_en, translationTr: canonicalQuestion.question_tr, context: canonicalQuestion.context_en, guide: canonicalQuestion.structure_hint_en, previously_seen: payload.question_previously_seen === true, prior_serve_count: Number(payload.question_prior_serve_count || 0) },
     p_recording_duration_seconds: duration,
     p_emotional_state: feeling,
     p_emotional_selected_at: payload.emotional_selected_at || new Date().toISOString(),
-    p_source_data: payload.source_data || {},
+    p_source_data: { ...(payload.source_data as Record<string, unknown> || {}), anonymous_id: compactText(payload.anonymous_id, 80), question_previously_seen: payload.question_previously_seen === true, question_prior_serve_count: Number(payload.question_prior_serve_count || 0), question_bank_version: QUESTION_BANK_VERSION },
   });
   return saved;
 }
@@ -371,6 +426,20 @@ async function trackEvent(payload: Record<string, unknown>) {
       p_metadata: payload.metadata || {},
       p_source_data: payload.source_data || {},
     });
+    const historyChanges: Record<string, unknown> = { updated_at: new Date().toISOString() };
+    if (eventType === "first_recording_started") historyChanges.recording_started = true;
+    if (eventType === "first_recording_completed" || eventType === "first_answer_submitted") historyChanges.recording_completed = true;
+    if (eventType === "personal_correction_viewed" || eventType === "result_viewed") historyChanges.analysis_completed = true;
+    if (eventType === "retry_completed" || eventType === "retry_submitted") historyChanges.retry_completed = true;
+    if (eventType === "booking_confirmed") historyChanges.booking_converted = true;
+    if (eventType === "setup_failed" || eventType === "analysis_failed") historyChanges.failure_code = compactText((payload.metadata as Record<string, unknown>)?.failure_code || (payload.metadata as Record<string, unknown>)?.code, 80);
+    if (Object.keys(historyChanges).length > 1) {
+      await fetch(`${supabaseUrl}/rest/v1/performance_analysis_question_history?session_id=eq.${sessionId}`, {
+        method: "PATCH",
+        headers: { apikey: serviceKey, Authorization: `Bearer ${serviceKey}`, "Content-Type": "application/json" },
+        body: JSON.stringify(historyChanges),
+      });
+    }
     return;
   }
   const response = await fetch(`${supabaseUrl}/rest/v1/performance_sprint_events`, {
@@ -417,6 +486,10 @@ Deno.serve(async (request) => {
         await trackEvent(payload);
         return json(request, { ok: true });
       }
+      if (payload?.action === "select_question") {
+        const selection = await selectQuestion(payload);
+        return json(request, { ok: true, ...selection });
+      }
       if (payload?.action === "save_participant") {
         if (payload?.is_demo) return json(request, { ok: true, demo: true });
         const participant = await upsertParticipant(payload);
@@ -443,8 +516,17 @@ Deno.serve(async (request) => {
     if (!apiKey) return json(request, { error: "AI service is not configured." }, 503);
 
     const phase = compactText(form.get("phase"), 30);
-    const prompt = safeJson(form.get("prompt"), {}) as Record<string, unknown>;
+    const submittedPrompt = safeJson(form.get("prompt"), {}) as Record<string, unknown>;
     const context = safeJson(form.get("context"), {}) as Record<string, unknown>;
+    const questionId = compactText(form.get("question_id"), 100);
+    const bankVersion = compactText(form.get("question_bank_version"), 80);
+    const canonicalQuestion = questionById.get(questionId);
+    if (!canonicalQuestion || !canonicalQuestion.active || bankVersion !== QUESTION_BANK_VERSION
+      || canonicalQuestion.purpose !== compactText(context.situation, 30)
+      || canonicalQuestion.level !== compactText(context.reported_level, 30)) {
+      return json(request, { error: "Soru doğrulanamadı.", code: "question_invalid" }, 400);
+    }
+    const prompt = { ...canonicalQuestion, title: canonicalQuestion.question_en, translationTr: canonicalQuestion.question_tr, context: canonicalQuestion.context_en, guide: canonicalQuestion.structure_hint_en };
     if (!validDurations.has(Number(context.recording_duration_seconds))) {
       return json(request, { error: "Recording duration is invalid.", code: "duration_invalid" }, 400);
     }
@@ -491,6 +573,9 @@ Deno.serve(async (request) => {
     }
   } catch (cause) {
     console.error("ai-speaking-coach", cause);
-    return json(request, { error: "Analiz şu anda tamamlanamadı. Lütfen birkaç saniye sonra tekrar dene." }, 500);
+    const code = typeof cause === "object" && cause && "code" in cause ? String(cause.code) : "internal_error";
+    return json(request, { error: "Analiz şu anda tamamlanamadı. Lütfen birkaç saniye sonra tekrar dene.", code }, 500);
   }
 });
+import { QUESTIONS, QUESTION_BANK_VERSION } from "../_shared/performance-question-bank.ts";
+import { chooseQuestion } from "../_shared/question-selection.js";

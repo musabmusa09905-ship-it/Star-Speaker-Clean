@@ -1,6 +1,9 @@
-export const EXPERIENCE_VERSION = "career_english_v3";
+import { LEGACY_QUESTION_IDS, QUESTIONS, QUESTION_BANK_VERSION } from "./performance-question-bank.js";
 
-export const SITUATIONS = ["meeting", "interview", "presentation"];
+export const EXPERIENCE_VERSION = "career_english_v3";
+export { QUESTION_BANK_VERSION };
+
+export const SITUATIONS = ["meeting", "interview", "presentation", "other"];
 export const REPORTED_LEVELS = ["a2_1", "a2_2", "b1_1", "b1_2", "b2_1", "b2_2", "c1_1", "unsure"];
 export const RECORDING_DURATIONS = [45, 60, 90, 120];
 export const FEELINGS = ["fantastic", "confident", "calm", "nervous", "tired"];
@@ -25,7 +28,7 @@ const question = (id, title, translationTr, context, guide, demand) => Object.fr
   id, title, translationTr, context, guide, demand,
 });
 
-export const QUESTION_BANK = Object.freeze({
+export const LEGACY_QUESTION_BANK = Object.freeze({
   meeting: Object.freeze({
     a2_1: question("meeting-a2-1-helpful-routine", "What is one routine that helps you have a good day?", "İyi bir gün geçirmeni sağlayan bir alışkanlık nedir?", "Describe the routine and give one simple reason.", "Routine → Reason → Example", "Describe a familiar routine with one reason."),
     a2_2: question("meeting-a2-2-useful-app", "Tell us about an app or tool you use often. How does it help you?", "Sık kullandığın bir uygulama veya araçtan bahset. Sana nasıl yardımcı oluyor?", "Explain what you use and one practical benefit.", "Tool → How you use it → Benefit", "Describe a familiar tool and its result."),
@@ -82,15 +85,38 @@ export function recommendedDuration(value) {
 
 export function resolveQuestion(situation, reportedLevel) {
   if (!SITUATIONS.includes(situation) || !REPORTED_LEVELS.includes(reportedLevel)) return null;
-  return QUESTION_BANK[situation][reportedLevel] || null;
+  const candidate = QUESTIONS.find((item) => item.active && item.purpose === situation && item.level === reportedLevel);
+  return candidate ? presentQuestion(candidate) : null;
 }
 
 export function resolveQuestionById(questionId) {
-  for (const situation of SITUATIONS) {
+  const current = QUESTIONS.find((item) => item.id === questionId);
+  if (current) return presentQuestion(current);
+  for (const situation of ["meeting", "interview", "presentation"]) {
     for (const level of REPORTED_LEVELS) {
-      const candidate = QUESTION_BANK[situation][level];
+      const candidate = LEGACY_QUESTION_BANK[situation][level];
       if (candidate.id === questionId) return candidate;
     }
   }
   return null;
+}
+
+export function eligibleQuestions(situation, reportedLevel) {
+  if (!SITUATIONS.includes(situation) || !REPORTED_LEVELS.includes(reportedLevel)) return [];
+  return QUESTIONS.filter((item) => item.active && item.purpose === situation && item.level === reportedLevel).map(presentQuestion);
+}
+
+export function isLegacyQuestionId(questionId) {
+  return LEGACY_QUESTION_IDS.includes(questionId);
+}
+
+export function presentQuestion(item) {
+  return Object.freeze({
+    ...item,
+    title: item.question_en,
+    translationTr: item.question_tr,
+    context: item.context_en,
+    guide: item.structure_hint_en,
+    demand: item.difficulty_version,
+  });
 }
