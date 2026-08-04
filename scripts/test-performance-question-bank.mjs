@@ -54,5 +54,7 @@ assert.match(edge, /canonicalQuestion\.purpose/);
 assert.match(edge, /canonicalQuestion\.level/);
 assert.match(edge, /question_invalid/);
 assert.match(edge, /chooseQuestion/);
+assert.match(edge, /function clientQuestion/);
+assert.match(edge, /title: question\.question_en/);
 
 console.log("128-question coverage, quality lint, canonical validation, legacy support, and rotation tests passed");

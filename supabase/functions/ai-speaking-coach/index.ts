@@ -91,6 +91,9 @@ const legacyQuestionIds: Record<string, string> = {
   "presentation:c1_1":"presentation-c1-1-convenience-cost", "presentation:unsure":"presentation-unsure-useful-recommendation",
 };
 const questionById = new Map<string, (typeof QUESTIONS)[number]>(QUESTIONS.map((question) => [question.id, question]));
+function clientQuestion(question: (typeof QUESTIONS)[number]) {
+  return { ...question, title: question.question_en, translationTr: question.question_tr, context: question.context_en, guide: question.structure_hint_en, demand: question.difficulty_version };
+}
 const validDurations = new Set([45, 60, 90, 120]);
 const validFeelings = new Set(["fantastic", "confident", "calm", "nervous", "tired"]);
 const firstNamePattern = /^[A-Za-zÇĞİÖŞÜçğıöşüÂâÎîÛû]+(?:[ '-][A-Za-zÇĞİÖŞÜçğıöşüÂâÎîÛû]+)*$/u;
@@ -142,7 +145,7 @@ async function selectQuestion(payload: Record<string, unknown>) {
   const existingSession = history.find((entry) => entry.session_id === sessionId);
   if (existingSession) {
     const existingQuestion = questionById.get(String(existingSession.question_id));
-    if (existingQuestion) return { question: existingQuestion, previously_seen: Number(existingSession.serve_count || 0) > 1, prior_serve_count: Math.max(0, Number(existingSession.serve_count || 1) - 1), fallback: false, preserved: true };
+    if (existingQuestion) return { question: clientQuestion(existingQuestion), previously_seen: Number(existingSession.serve_count || 0) > 1, prior_serve_count: Math.max(0, Number(existingSession.serve_count || 1) - 1), fallback: false, preserved: true };
   }
 
   const random = new Uint32Array(1);
@@ -169,7 +172,7 @@ async function selectQuestion(payload: Record<string, unknown>) {
     }),
   });
   if (!writeResponse.ok) throw Object.assign(new Error("Question history could not be saved."), { code: "question_history_write_failed" });
-  return { question: selected, previously_seen: priorServeCount > 0, prior_serve_count: priorServeCount, fallback: false, preserved: false };
+  return { question: clientQuestion(selected), previously_seen: priorServeCount > 0, prior_serve_count: priorServeCount, fallback: false, preserved: false };
 }
 
 async function upsertParticipant(payload: Record<string, unknown>) {
