@@ -124,6 +124,16 @@ assert.match(styles, /@media \(max-width: 560px\)/);
 assert.match(styles, /@media \(prefers-reduced-motion: reduce\)/);
 assert.match(styles, /sprint-feeling-options button:last-child/);
 assert.match(styles, /sprint-setup-submit\[data-ready="true"\]/);
+assert.equal((page.match(/class="sprint-choice-card /g) || []).length, 21);
+assert.equal((page.match(/sprint-choice-card__content/g) || []).length, 21);
+assert.equal((page.match(/class="sprint-level-mark /g) || []).length, 7);
+assert.equal((page.match(/class="sprint-duration-mark"/g) || []).length, 4);
+assert.equal((page.match(/sprint-choice-card--feeling/g) || []).length, 5);
+assert.match(styles, /\.sprint-choice-card\[aria-pressed="true"\]::after/);
+assert.match(styles, /\.sprint-choice-card\[aria-pressed="true"\][^{]*\{[^}]*transform:\s*none/s);
+assert.match(styles, /\.sprint-choice-card__content[^}]*justify-content:\s*center/s);
+assert.match(styles, /\.sprint-duration-options\s*\{\s*grid-template-columns:\s*repeat\(2,/s);
+assert.match(styles, /animation:\s*sprint-check-in 180ms/);
 assert.doesNotMatch(styles, /overflow-x:\s*auto/);
 
 assert.match(edgeFunction, /Deno\.env\.get\("OPENAI_API_KEY"\)/);

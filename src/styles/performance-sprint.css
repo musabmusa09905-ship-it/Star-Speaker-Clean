@@ -337,8 +337,9 @@ input:focus-visible, .sprint-whatsapp-cta:focus-visible {
   color: var(--ivory);
   padding: .8rem .9rem;
 }
-.sprint-setup-group { margin: 0 0 .8rem; padding: .85rem; border: 1px solid rgba(230,211,163,.11); background: rgba(255,255,255,.012); transition: border-color 180ms ease, background 180ms ease, box-shadow 180ms ease; }
-.sprint-setup-group:focus-within { border-color: rgba(230,211,163,.26); background: rgba(230,211,163,.025); box-shadow: 0 10px 35px rgba(0,0,0,.16); }
+.sprint-setup-group { margin: 0 0 .72rem; padding: .8rem; border: 1px solid rgba(230,211,163,.11); background: rgba(255,255,255,.012); transition: border-color 180ms ease, background 180ms ease, box-shadow 180ms ease; }
+.sprint-setup-group:focus-within,
+.sprint-setup-group:has(.sprint-choice-card[aria-pressed="true"]) { border-color: rgba(230,211,163,.26); background: radial-gradient(circle at 50% 40%, rgba(230,211,163,.042), rgba(230,211,163,.012) 72%); box-shadow: 0 10px 35px rgba(0,0,0,.16); }
 .sprint-setup-group legend { margin-bottom: .15rem; padding: 0 .25rem; }
 .sprint-setup-helper { margin: 0 0 .65rem; color: var(--muted); font-size: .72rem; }
 .sprint-situation-options {
@@ -346,59 +347,66 @@ input:focus-visible, .sprint-whatsapp-cta:focus-visible {
   grid-template-columns: repeat(4, 1fr);
   gap: .75rem;
 }
-.sprint-situation-option {
+.sprint-choice-card {
   position: relative;
-  min-height: 76px;
+  min-height: 56px;
   border: 1px solid rgba(230,211,163,.2);
+  border-radius: 10px;
   background: rgba(255,255,255,.018);
   color: var(--ivory);
   cursor: pointer;
   display: grid;
-  grid-template-columns: auto 1fr;
-  align-items: center;
-  gap: .75rem;
-  padding: .9rem 1rem;
-  text-align: left;
+  place-items: center;
+  padding: .55rem 1.8rem;
+  text-align: center;
   transition: transform 180ms ease, border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
 }
-.sprint-situation-option:hover {
-  transform: translateY(-3px);
+.sprint-choice-card:hover {
+  transform: translateY(-2px);
   border-color: var(--line-strong);
   background: rgba(230,211,163,.05);
 }
-.sprint-situation-option[aria-pressed="true"],
-.sprint-level-options button[aria-pressed="true"] {
+.sprint-choice-card[aria-pressed="true"] {
   border-color: var(--champagne);
   background: rgba(230,211,163,.11);
   box-shadow: inset 0 0 0 1px rgba(230,211,163,.14), 0 9px 24px rgba(0,0,0,.2), 0 0 24px rgba(230,211,163,.06);
-  transform: translateY(-2px);
+  transform: none;
 }
-.sprint-situation-option[aria-pressed="true"]::after,
-.sprint-level-options button[aria-pressed="true"]::after,
-.sprint-feeling-options button[aria-pressed="true"]::after { content: "✓"; position: absolute; top: .35rem; right: .42rem; width: 17px; height: 17px; display: grid; place-items: center; border-radius: 50%; background: var(--champagne); color: #080706; font-size: .65rem; font-weight: 900; }
-.sprint-situation-option > span { color: var(--champagne-dark); font: .8rem Georgia, serif; }
-.sprint-situation-option > .sprint-choice-emoji { font-family: "Apple Color Emoji", "Segoe UI Emoji", sans-serif; font-size: 1.15rem; line-height: 1; filter: saturate(.82); }
-.sprint-situation-option > strong { font: 1.15rem Georgia, serif; }
-.sprint-situation-option > small { color: var(--muted); line-height: 1.45; }
+.sprint-choice-card[aria-pressed="true"]::after { content: "✓"; position: absolute; z-index: 2; top: .42rem; right: .42rem; width: 18px; height: 18px; display: grid; place-items: center; border-radius: 50%; background: var(--champagne); color: #080706; font-size: .68rem; font-weight: 900; line-height: 1; box-shadow: 0 2px 8px rgba(0,0,0,.24); animation: sprint-check-in 180ms ease-out both; pointer-events: none; }
+@keyframes sprint-check-in { from { opacity: 0; transform: scale(.72); } to { opacity: 1; transform: scale(1); } }
+.sprint-choice-card__content { width: 100%; min-width: 0; max-width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: .55rem; line-height: 1.2; }
+.sprint-choice-card__content > strong { min-width: 0; font-weight: 760; text-wrap: balance; }
+.sprint-choice-card__icon { flex: 0 0 28px; width: 28px; height: 28px; display: grid; place-items: center; border: 1px solid rgba(230,211,163,.16); border-radius: 8px; background: rgba(230,211,163,.055); font-family: "Apple Color Emoji", "Segoe UI Emoji", sans-serif; font-size: 1.05rem; line-height: 1; filter: saturate(.82); }
+.sprint-choice-card--purpose { min-height: 66px; }
+.sprint-choice-card--purpose .sprint-choice-card__content > strong { font: 1rem/1.15 Georgia, serif; }
 .sprint-level-options {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
   gap: .55rem;
 }
-.sprint-level-options button {
-  position: relative;
-  min-height: 50px;
-  border: 1px solid rgba(230,211,163,.2);
-  background: rgba(255,255,255,.018);
-  color: var(--ivory);
-  cursor: pointer;
-  font-weight: 750;
-  transition: transform 180ms ease, border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
-}
-.sprint-level-options button:hover { border-color: var(--line-strong); background: rgba(230,211,163,.05); }
-.sprint-duration-options button { display: grid; place-content: center; gap: .15rem; }
-.sprint-duration-options button strong { font-size: .8rem; }
-.sprint-duration-options button small { color: var(--muted); font-size: .58rem; font-weight: 600; }
+.sprint-choice-card--level { min-height: 56px; padding-inline: 1.55rem; }
+.sprint-choice-card--level .sprint-choice-card__content { flex-direction: column; gap: .3rem; }
+.sprint-choice-card--level .sprint-choice-card__content > strong { font-size: .78rem; }
+.sprint-level-mark { height: 10px; display: inline-flex; align-items: flex-end; gap: 2px; }
+.sprint-level-mark i { width: 3px; height: 4px; border-radius: 2px; background: rgba(230,211,163,.18); }
+.sprint-level-mark i:nth-child(2) { height: 5.5px; }
+.sprint-level-mark i:nth-child(3) { height: 7px; }
+.sprint-level-mark i:nth-child(4) { height: 8.5px; }
+.sprint-level-mark i:nth-child(5) { height: 10px; }
+.sprint-level-mark--1 i:nth-child(-n+1),
+.sprint-level-mark--2 i:nth-child(-n+2),
+.sprint-level-mark--3 i:nth-child(-n+3),
+.sprint-level-mark--4 i:nth-child(-n+4),
+.sprint-level-mark--5 i:nth-child(-n+5) { background: var(--champagne); box-shadow: 0 0 7px rgba(230,211,163,.15); }
+.sprint-level-unknown { width: 20px; height: 20px; display: grid; place-items: center; border: 1px solid rgba(230,211,163,.3); border-radius: 50%; color: var(--champagne); font: 700 .72rem/1 Georgia, serif; }
+.sprint-choice-card--unsure .sprint-choice-card__content { gap: .18rem; }
+.sprint-choice-card--unsure .sprint-choice-card__content > strong { font-size: .66rem; }
+.sprint-duration-options { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.sprint-choice-card--duration { min-height: 58px; padding-inline: 1.55rem; }
+.sprint-duration-mark { flex: 0 0 21px; width: 21px; height: 21px; fill: none; stroke: var(--champagne-dark); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.sprint-choice-card__copy { display: grid; gap: .08rem; text-align: left; }
+.sprint-choice-card--duration strong { font-size: .76rem; }
+.sprint-choice-card--duration small { color: var(--muted); font-size: .56rem; font-weight: 650; }
 .sprint-level-note { margin: .65rem 0 0; color: var(--muted); font-size: .72rem; line-height: 1.45; }
 .sprint-setup-ready-copy { margin: .95rem 0 .55rem; color: var(--muted); font-size: .72rem; text-align: center; }
 .sprint-setup-submit { width: 100%; transition: transform 180ms ease, box-shadow 180ms ease, opacity 180ms ease; }
@@ -823,15 +831,10 @@ input:focus-visible, .sprint-whatsapp-cta:focus-visible {
   .sprint-situation-options { grid-template-columns: 1fr; }
   .sprint-situation-option { min-height: 54px; }
   .sprint-setup-card .sprint-situation-options { grid-template-columns: repeat(2, 1fr); gap: .45rem; }
-  .sprint-setup-card .sprint-situation-option {
-    min-height: 60px;
-    grid-template-columns: 1fr;
-    justify-items: center;
-    gap: .2rem;
-    padding: .5rem .35rem;
-    text-align: center;
-  }
-  .sprint-setup-card .sprint-situation-option > strong { font-size: 1rem; }
+  .sprint-setup-card .sprint-situation-option { min-height: 60px; padding: .45rem 1.5rem; }
+  .sprint-setup-card .sprint-choice-card--purpose .sprint-choice-card__content { flex-direction: column; gap: .2rem; }
+  .sprint-setup-card .sprint-choice-card--purpose .sprint-choice-card__icon { width: 25px; height: 25px; flex-basis: 25px; font-size: .95rem; }
+  .sprint-setup-card .sprint-choice-card--purpose .sprint-choice-card__content > strong { font-size: .88rem; }
   .sprint-setup-progress { gap: .25rem; margin-bottom: 1rem; }
   .sprint-setup-progress li { justify-content: center; font-size: .6rem; }
   .sprint-setup-progress li span { width: 18px; height: 18px; }
@@ -868,7 +871,6 @@ input:focus-visible, .sprint-whatsapp-cta:focus-visible {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: .65rem;
 }
-.sprint-feeling-options button,
 .sprint-choice-list button {
   position: relative;
   min-height: 48px;
@@ -880,16 +882,15 @@ input:focus-visible, .sprint-whatsapp-cta:focus-visible {
   font: inherit;
   cursor: pointer;
 }
-.sprint-feeling-options button { display: flex; align-items: center; justify-content: center; gap: .5rem; transition: transform 180ms ease, border-color 180ms ease, background 180ms ease, box-shadow 180ms ease; }
-.sprint-feeling-options button > span { font-size: 1rem; line-height: 1; filter: saturate(.82); }
-.sprint-feeling-options button:hover { transform: translateY(-2px); border-color: var(--line-strong); background: rgba(230,211,163,.055); }
-.sprint-feeling-options button[aria-pressed="true"],
 .sprint-choice-list button[aria-pressed="true"] {
   border-color: var(--sprint-gold);
   background: rgba(212,177,94,.13);
   box-shadow: 0 9px 24px rgba(0,0,0,.2), 0 0 24px rgba(230,211,163,.06);
   transform: translateY(-2px);
 }
+.sprint-choice-card--feeling { min-height: 54px; }
+.sprint-choice-card--feeling .sprint-choice-card__content > strong { font-size: .8rem; }
+.sprint-feeling-options button:last-child { grid-column: 1 / -1; width: calc(50% - .325rem); justify-self: center; }
 .sprint-prompt-translation { margin: -.35rem 0 .8rem; color: var(--sprint-muted); font-size: .9rem; }
 .sprint-countdown {
   position: absolute;
@@ -911,10 +912,12 @@ input:focus-visible, .sprint-whatsapp-cta:focus-visible {
 
 @media (max-width: 560px) {
   .sprint-feeling-options { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .sprint-feeling-options button:last-child { grid-column: 1 / -1; width: calc(50% - .325rem); justify-self: center; }
   .sprint-choice-list { grid-template-columns: 1fr; }
-  .sprint-duration-options { grid-template-columns: repeat(4, 1fr); }
-  .sprint-duration-options button { padding-inline: .25rem; }
+  .sprint-duration-options { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .sprint-choice-card--duration { min-height: 56px; }
+  .sprint-choice-card--feeling { min-height: 58px; padding-inline: 1.45rem; }
+  .sprint-choice-card--feeling .sprint-choice-card__icon { width: 25px; height: 25px; flex-basis: 25px; font-size: .95rem; }
+  .sprint-choice-card--feeling .sprint-choice-card__content > strong { font-size: .7rem; line-height: 1.15; }
   .sprint-record-card h2 { font-size: clamp(1.35rem, 6.2vw, 1.8rem); margin-block: .35rem; }
   .sprint-prompt-context, .sprint-prompt-translation { margin-block: .25rem; }
   .sprint-prompt-guide { padding: .65rem .8rem; margin-block: .55rem; }

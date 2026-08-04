@@ -109,17 +109,17 @@
             <legend>Hangi durumda İngilizce konuşmak istiyorsun?</legend>
             <p class="sprint-setup-helper">Sana en yakın seçeneği seç.</p>
             <div class="sprint-situation-options">
-              <button class="sprint-situation-option" type="button" aria-pressed="false" data-situation="meeting">
-                <span class="sprint-choice-emoji" aria-hidden="true">💬</span><strong>Toplantı</strong>
+              <button class="sprint-choice-card sprint-choice-card--purpose sprint-situation-option" type="button" aria-pressed="false" data-situation="meeting">
+                <span class="sprint-choice-card__content"><span class="sprint-choice-card__icon sprint-choice-emoji" aria-hidden="true">💬</span><strong>Toplantı</strong></span>
               </button>
-              <button class="sprint-situation-option" type="button" aria-pressed="false" data-situation="interview">
-                <span class="sprint-choice-emoji" aria-hidden="true">🤝</span><strong>Mülakat</strong>
+              <button class="sprint-choice-card sprint-choice-card--purpose sprint-situation-option" type="button" aria-pressed="false" data-situation="interview">
+                <span class="sprint-choice-card__content"><span class="sprint-choice-card__icon sprint-choice-emoji" aria-hidden="true">🤝</span><strong>Mülakat</strong></span>
               </button>
-              <button class="sprint-situation-option" type="button" aria-pressed="false" data-situation="presentation">
-                <span class="sprint-choice-emoji" aria-hidden="true">🎤</span><strong>Sunum</strong>
+              <button class="sprint-choice-card sprint-choice-card--purpose sprint-situation-option" type="button" aria-pressed="false" data-situation="presentation">
+                <span class="sprint-choice-card__content"><span class="sprint-choice-card__icon sprint-choice-emoji" aria-hidden="true">🎤</span><strong>Sunum</strong></span>
               </button>
-              <button class="sprint-situation-option" type="button" aria-pressed="false" data-situation="other">
-                <span class="sprint-choice-emoji" aria-hidden="true">✨</span><strong>Başka Bir Amaç</strong>
+              <button class="sprint-choice-card sprint-choice-card--purpose sprint-situation-option" type="button" aria-pressed="false" data-situation="other">
+                <span class="sprint-choice-card__content"><span class="sprint-choice-card__icon sprint-choice-emoji" aria-hidden="true">✨</span><strong>Başka Bir Amaç</strong></span>
               </button>
             </div>
           </fieldset>
@@ -127,14 +127,14 @@
           <fieldset class="sprint-setup-group">
             <legend>İngilizce konuşma seviyen hangisine daha yakın?</legend>
             <div class="sprint-level-options">
-              <button type="button" aria-pressed="false" data-level="a2_1">A2.1</button>
-              <button type="button" aria-pressed="false" data-level="a2_2">A2.2</button>
-              <button type="button" aria-pressed="false" data-level="b1_1">B1.1</button>
-              <button type="button" aria-pressed="false" data-level="b1_2">B1.2</button>
-              <button type="button" aria-pressed="false" data-level="b2_1">B2.1</button>
-              <button type="button" aria-pressed="false" data-level="b2_2">B2.2</button>
-              <button type="button" aria-pressed="false" data-level="c1_1">C1.1</button>
-              <button type="button" aria-pressed="false" data-level="unsure">Emin değilim</button>
+              <button class="sprint-choice-card sprint-choice-card--level" type="button" aria-pressed="false" data-level="a2_1"><span class="sprint-choice-card__content"><span class="sprint-level-mark sprint-level-mark--1" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span><strong>A2.1</strong></span></button>
+              <button class="sprint-choice-card sprint-choice-card--level" type="button" aria-pressed="false" data-level="a2_2"><span class="sprint-choice-card__content"><span class="sprint-level-mark sprint-level-mark--2" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span><strong>A2.2</strong></span></button>
+              <button class="sprint-choice-card sprint-choice-card--level" type="button" aria-pressed="false" data-level="b1_1"><span class="sprint-choice-card__content"><span class="sprint-level-mark sprint-level-mark--3" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span><strong>B1.1</strong></span></button>
+              <button class="sprint-choice-card sprint-choice-card--level" type="button" aria-pressed="false" data-level="b1_2"><span class="sprint-choice-card__content"><span class="sprint-level-mark sprint-level-mark--3" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span><strong>B1.2</strong></span></button>
+              <button class="sprint-choice-card sprint-choice-card--level" type="button" aria-pressed="false" data-level="b2_1"><span class="sprint-choice-card__content"><span class="sprint-level-mark sprint-level-mark--4" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span><strong>B2.1</strong></span></button>
+              <button class="sprint-choice-card sprint-choice-card--level" type="button" aria-pressed="false" data-level="b2_2"><span class="sprint-choice-card__content"><span class="sprint-level-mark sprint-level-mark--4" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span><strong>B2.2</strong></span></button>
+              <button class="sprint-choice-card sprint-choice-card--level" type="button" aria-pressed="false" data-level="c1_1"><span class="sprint-choice-card__content"><span class="sprint-level-mark sprint-level-mark--5" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span><strong>C1.1</strong></span></button>
+              <button class="sprint-choice-card sprint-choice-card--level sprint-choice-card--unsure" type="button" aria-pressed="false" data-level="unsure"><span class="sprint-choice-card__content"><span class="sprint-level-unknown" aria-hidden="true">?</span><strong>Emin değilim</strong></span></button>
             </div>
             <p class="sprint-level-note">Emin değilsen sorun değil. Sana uygun bir başlangıç sorusu göstereceğiz.</p>
           </fieldset>
@@ -142,10 +142,10 @@
           <fieldset class="sprint-setup-group">
             <legend>Ne kadar konuşmak istersin?</legend>
             <div class="sprint-level-options sprint-duration-options">
-              <button type="button" aria-pressed="false" data-duration="45"><strong>45 sn</strong><small>Kısa</small></button>
-              <button type="button" aria-pressed="false" data-duration="60"><strong>60 sn</strong><small>Önerilen</small></button>
-              <button type="button" aria-pressed="false" data-duration="90"><strong>90 sn</strong><small>Detaylı</small></button>
-              <button type="button" aria-pressed="false" data-duration="120"><strong>120 sn</strong><small>Uzun</small></button>
+              <button class="sprint-choice-card sprint-choice-card--duration" type="button" aria-pressed="false" data-duration="45"><span class="sprint-choice-card__content"><svg class="sprint-duration-mark" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7.5"></circle><path d="M12 13V8.5M9 3.5h6"></path></svg><span class="sprint-choice-card__copy"><strong>45 sn</strong><small>Kısa</small></span></span></button>
+              <button class="sprint-choice-card sprint-choice-card--duration" type="button" aria-pressed="false" data-duration="60"><span class="sprint-choice-card__content"><svg class="sprint-duration-mark" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7.5"></circle><path d="M12 13V7M9 3.5h6"></path></svg><span class="sprint-choice-card__copy"><strong>60 sn</strong><small>Önerilen</small></span></span></button>
+              <button class="sprint-choice-card sprint-choice-card--duration" type="button" aria-pressed="false" data-duration="90"><span class="sprint-choice-card__content"><svg class="sprint-duration-mark" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7.5"></circle><path d="M12 13l4-3M9 3.5h6"></path></svg><span class="sprint-choice-card__copy"><strong>90 sn</strong><small>Detaylı</small></span></span></button>
+              <button class="sprint-choice-card sprint-choice-card--duration" type="button" aria-pressed="false" data-duration="120"><span class="sprint-choice-card__content"><svg class="sprint-duration-mark" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7.5"></circle><path d="M12 13l4 3M9 3.5h6"></path></svg><span class="sprint-choice-card__copy"><strong>120 sn</strong><small>Uzun</small></span></span></button>
             </div>
             <p class="sprint-level-note" data-duration-note>Seviyeni seçtiğinde uygun süreyi öneririz; istersen değiştirebilirsin.</p>
           </fieldset>
@@ -153,11 +153,11 @@
           <fieldset class="sprint-setup-group">
             <legend>Bugün İngilizce konuşurken nasıl hissediyorsun?</legend>
             <div class="sprint-feeling-options">
-              <button type="button" aria-pressed="false" data-feeling="fantastic"><span aria-hidden="true">🤩</span>Harika</button>
-              <button type="button" aria-pressed="false" data-feeling="confident"><span aria-hidden="true">😎</span>Kendime güveniyorum</button>
-              <button type="button" aria-pressed="false" data-feeling="calm"><span aria-hidden="true">😌</span>Sakinim</button>
-              <button type="button" aria-pressed="false" data-feeling="nervous"><span aria-hidden="true">😬</span>Gerginim</button>
-              <button type="button" aria-pressed="false" data-feeling="tired"><span aria-hidden="true">😴</span>Yorgunum</button>
+              <button class="sprint-choice-card sprint-choice-card--feeling" type="button" aria-pressed="false" data-feeling="fantastic"><span class="sprint-choice-card__content"><span class="sprint-choice-card__icon" aria-hidden="true">🤩</span><strong>Harika</strong></span></button>
+              <button class="sprint-choice-card sprint-choice-card--feeling" type="button" aria-pressed="false" data-feeling="confident"><span class="sprint-choice-card__content"><span class="sprint-choice-card__icon" aria-hidden="true">😎</span><strong>Kendime güveniyorum</strong></span></button>
+              <button class="sprint-choice-card sprint-choice-card--feeling" type="button" aria-pressed="false" data-feeling="calm"><span class="sprint-choice-card__content"><span class="sprint-choice-card__icon" aria-hidden="true">😌</span><strong>Sakinim</strong></span></button>
+              <button class="sprint-choice-card sprint-choice-card--feeling" type="button" aria-pressed="false" data-feeling="nervous"><span class="sprint-choice-card__content"><span class="sprint-choice-card__icon" aria-hidden="true">😬</span><strong>Gerginim</strong></span></button>
+              <button class="sprint-choice-card sprint-choice-card--feeling" type="button" aria-pressed="false" data-feeling="tired"><span class="sprint-choice-card__content"><span class="sprint-choice-card__icon" aria-hidden="true">😴</span><strong>Yorgunum</strong></span></button>
             </div>
             <p class="sprint-level-note">Bu seçim yalnızca geri bildirimin tonunu kişiselleştirir; puanını etkilemez.</p>
           </fieldset>
