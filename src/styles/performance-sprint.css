@@ -765,7 +765,7 @@ img, svg { display: block; }
   .sprint-brand strong { font-size: .83rem; }
   .sprint-brand small { font-size: .43rem; }
   .sprint-header-status { font-size: 0; }
-  .sprint-header-status::after { content: "3 dk"; font-size: .7rem; }
+  .sprint-header-status::after { content: "kişisel"; font-size: .7rem; }
   #sprint-main { width: min(calc(100% - 1.2rem), var(--max)); }
   .sprint-screen { min-height: calc(100vh - 128px); padding: 2.6rem 0 3rem; }
   .sprint-progress-shell { width: calc(100% - 1.2rem); margin-top: 1.25rem; }
