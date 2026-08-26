@@ -8,6 +8,7 @@ import {
   validateFirstName,
 } from "./performance-analysis-config.js";
 import { persistSetupAttempt } from "./performance-setup-recovery.js";
+import { normalizePublicContact } from "./performance-contact-contract.js";
 
 const labels = {
   clarity: "Netlik",
@@ -932,25 +933,13 @@ async function handleContactSubmit(event) {
   const form = event.currentTarget;
   const error = $("[data-contact-error]");
   error.hidden = true;
+  const contact = captureContact(form, error);
+  if (!contact) return;
   if (!form.checkValidity()) {
     form.reportValidity();
     return;
   }
-  const data = new FormData(form);
-  const phone = String(data.get("whatsapp") || "").trim();
-  if (phone.replace(/\D/g, "").length < 10 || phone.replace(/\D/g, "").length > 15) {
-    const error = $("[data-contact-error]");
-    error.textContent = "WhatsApp numaranı ülke koduyla birlikte kontrol et.";
-    error.hidden = false;
-    form.elements.whatsapp.focus();
-    return;
-  }
-  state.contact = {
-    fullName: String(data.get("fullName") || "").trim(),
-    whatsapp: phone,
-    email: String(data.get("email") || "").trim(),
-  };
-  const submit = $("[data-urgency][aria-pressed='true']", form);
+  state.contact = contact;
   $$('button', form).forEach((button) => { button.disabled = true; });
   try {
     await saveLead("completed");
@@ -979,27 +968,41 @@ function showBookingStep(step) {
 
 function continueFromContact() {
   const form = $("[data-contact-form]");
+  const error = $("[data-contact-error]");
+  const contact = captureContact(form, error);
+  if (!contact) return;
   const fields = $$('input', $('[data-booking-step="contact"]'));
   if (!fields.every((field) => field.checkValidity())) {
     form.reportValidity();
     return;
   }
-  const data = new FormData(form);
-  const phone = String(data.get("whatsapp") || "").trim();
-  if (phone.replace(/\D/g, "").length < 10 || phone.replace(/\D/g, "").length > 15) {
-    const error = $("[data-contact-error]");
-    error.textContent = "WhatsApp numaranı ülke koduyla birlikte kontrol et.";
-    error.hidden = false;
-    form.elements.whatsapp.focus();
-    return;
-  }
-  state.contact = {
-    fullName: String(data.get("fullName") || "").trim(),
-    whatsapp: phone,
-    email: String(data.get("email") || "").trim(),
-  };
+  state.contact = contact;
   trackEvent('contact_details_completed', 'booking', { email_provided: Boolean(state.contact.email) }, 'contact_details_completed');
   showBookingStep('budget');
+}
+
+function captureContact(form, error) {
+  for (const field of ["fullName", "whatsapp", "email"]) form.elements[field].setCustomValidity("");
+  const data = new FormData(form);
+  const result = normalizePublicContact({
+    fullName: data.get("fullName"),
+    whatsapp: data.get("whatsapp"),
+    email: data.get("email"),
+  });
+  if (!result.valid) {
+    const field = form.elements[result.invalidField];
+    field.setCustomValidity(result.message);
+    error.textContent = result.message;
+    error.hidden = false;
+    field.focus();
+    form.reportValidity();
+    return null;
+  }
+  error.hidden = true;
+  form.elements.fullName.value = result.value.fullName;
+  form.elements.whatsapp.value = result.value.whatsapp;
+  form.elements.email.value = result.value.email;
+  return result.value;
 }
 
 async function saveLead(stage) {

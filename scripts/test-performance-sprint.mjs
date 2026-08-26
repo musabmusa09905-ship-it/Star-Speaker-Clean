@@ -4,6 +4,7 @@ import { resolve } from "node:path";
 
 const page = await readFile(resolve("tr", "performans-testi", "index.html"), "utf8");
 const script = await readFile(resolve("src", "scripts", "performance-sprint.js"), "utf8");
+const contactContract = await readFile(resolve("src", "scripts", "performance-contact-contract.js"), "utf8");
 const config = await readFile(resolve("src", "scripts", "performance-analysis-config.js"), "utf8");
 const styles = await readFile(resolve("src", "styles", "performance-sprint.css"), "utf8");
 const edgeFunction = await readFile(
@@ -51,6 +52,7 @@ assert.match(page, /data-booking-cancel/);
 assert.match(page, /Ücretsiz Görüşmeni Planla/);
 assert.match(page, /Türkiye saati/);
 assert.match(page, /autocomplete="tel"/);
+assert.match(page, /performance-sprint\.js\?v=20260826-contact1/);
 assert.match(page, /name="consent" required/);
 for (const level of ["a2_1", "a2_2", "b1_1", "b1_2", "b2_1", "b2_2", "c1_1", "unsure"]) assert.match(page, new RegExp(`data-level="${level}"`));
 for (const duration of [45, 60, 90, 120]) assert.match(page, new RegExp(`data-duration="${duration}"`));
@@ -62,6 +64,11 @@ assert.match(page, /sprint-setup-submit" type="submit" disabled/);
 for (const qualification of ["under_5000", "5000_10000", "10000_15000", "15000_25000", "25000_plus", "unsure"]) assert.match(page, new RegExp(`data-budget="${qualification}"`));
 assert.match(script, /recording_countdown_started/);
 assert.match(script, /consent_version/);
+assert.match(script, /normalizePublicContact/);
+assert.match(script, /captureContact/);
+assert.match(contactContract, /\+905\[0-9\]\{9\}/);
+assert.match(contactContract, /Lütfen geçerli bir WhatsApp numarası gir/);
+assert.doesNotMatch(contactContract, /Analiz şu anda tamamlanamadı/);
 assert.doesNotMatch(script, /budget_range:\s*null/);
 
 for (const phase of ["first", "retry"]) {
