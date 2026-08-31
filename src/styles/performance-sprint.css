@@ -937,6 +937,9 @@ input:focus-visible, .sprint-whatsapp-cta:focus-visible {
 }
 .sprint-countdown[hidden] { display: none; }
 .sprint-countdown strong { color: var(--sprint-gold); font-size: clamp(3.5rem, 11vw, 6rem); line-height: 1; }
+.sprint-countdown-actions { display: grid; justify-items: center; gap: .35rem; width: min(100%, 14rem); }
+.sprint-countdown-actions .sprint-primary,
+.sprint-countdown-actions .sprint-text-button { min-height: 44px; width: 100%; }
 .sprint-booking-step__count { color: var(--sprint-gold); font-size: .75rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
 .sprint-booking-step h4 { margin: .5rem 0 1rem; font-size: 1.2rem; }
 @media (max-width: 960px) {
@@ -979,6 +982,8 @@ input:focus-visible, .sprint-whatsapp-cta:focus-visible {
   .sprint-countdown strong { font-size: 2.4rem; }
   .sprint-countdown > span { font-size: .67rem; }
   .sprint-countdown .sprint-text-button { min-height: 32px; padding: .3rem .65rem; }
+  .sprint-countdown-actions .sprint-primary,
+  .sprint-countdown-actions .sprint-text-button { min-height: 44px; padding: .45rem .65rem; }
 }
 
 @media (max-width: 560px) {

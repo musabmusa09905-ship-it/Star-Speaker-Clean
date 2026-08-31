@@ -157,6 +157,7 @@ const state = {
   bookingStep: storedFlow.bookingStep || "contact",
   recordingIntent: false,
   countdownId: null,
+  countdownStartedAt: 0,
 };
 
 function storeFlow() {
@@ -559,6 +560,7 @@ function cancelCountdown() {
   clearInterval(state.countdownId);
   state.countdownId = null;
   state.recordingIntent = false;
+  state.countdownStartedAt = 0;
   $("[data-countdown]").hidden = true;
   $("[data-record-button]").disabled = false;
   $("[data-record-hint]").textContent = `Hazır olduğunda başla. En fazla ${state.recordingDuration} saniye.`;
@@ -566,9 +568,35 @@ function cancelCountdown() {
   trackEvent("recording_countdown_cancelled", state.phase, {}, `countdown_cancelled:${state.phase}:${Date.now()}`);
 }
 
+function completeCountdown(reason) {
+  if (!state.recordingIntent) return false;
+  const configuredDuration = 5;
+  const elapsedDuration = reason === "timer"
+    ? configuredDuration
+    : Math.max(0, Math.min(configuredDuration, Math.floor((Date.now() - state.countdownStartedAt) / 1000)));
+  clearInterval(state.countdownId);
+  state.countdownId = null;
+  state.recordingIntent = false;
+  state.countdownStartedAt = 0;
+  $("[data-countdown]").hidden = true;
+  $("[data-record-button]").disabled = false;
+  if (reason === "skipped") {
+    trackEvent("recording_preparation_skipped", state.phase, {
+      surface: "performance_sprint",
+      configured_duration: configuredDuration,
+      elapsed_duration: elapsedDuration,
+      attempt_type: state.phase,
+      preparation_policy: "optional",
+    }, `recording_preparation_skipped:${state.phase}:${Date.now()}`);
+  }
+  startRecording();
+  return true;
+}
+
 function beginCountdown() {
   let seconds = 5;
   state.recordingIntent = true;
+  state.countdownStartedAt = Date.now();
   $("[data-countdown]").hidden = false;
   $("[data-countdown-number]").textContent = String(seconds);
   $("[data-record-button]").disabled = true;
@@ -578,12 +606,7 @@ function beginCountdown() {
     seconds -= 1;
     $("[data-countdown-number]").textContent = String(Math.max(0, seconds));
     if (seconds <= 0) {
-      clearInterval(state.countdownId);
-      state.countdownId = null;
-      state.recordingIntent = false;
-      $("[data-countdown]").hidden = true;
-      $("[data-record-button]").disabled = false;
-      startRecording();
+      completeCountdown("timer");
     }
   }, 1000);
 }
@@ -1338,6 +1361,7 @@ $("[data-setup-form]").addEventListener("submit", handleSetupSubmit);
 
 $("[data-record-button]").addEventListener("click", handleRecordButton);
 $("[data-countdown-cancel]").addEventListener("click", cancelCountdown);
+$("[data-countdown-start-now]").addEventListener("click", () => completeCountdown("skipped"));
 $("[data-record-again]").addEventListener("click", resetRecorder);
 $("[data-use-recording]").addEventListener("click", useRecording);
 $("[data-start-retry]").addEventListener("click", async () => {
