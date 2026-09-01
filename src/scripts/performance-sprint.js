@@ -9,6 +9,10 @@ import {
 } from "./performance-analysis-config.js";
 import { persistSetupAttempt } from "./performance-setup-recovery.js";
 import { normalizePublicContact } from "./performance-contact-contract.js";
+import {
+  createRecordingInteractionGuard,
+  RECORDING_INTERACTION_STATES,
+} from "./performance-recording-interaction.js";
 
 const labels = {
   clarity: "Netlik",
@@ -159,6 +163,8 @@ const state = {
   countdownId: null,
   countdownStartedAt: 0,
 };
+
+const recordingInteraction = createRecordingInteractionGuard();
 
 function storeFlow() {
   try {
@@ -557,6 +563,7 @@ async function ensureMicrophone() {
 }
 
 function cancelCountdown() {
+  if (!recordingInteraction.cancelCountdown()) return false;
   clearInterval(state.countdownId);
   state.countdownId = null;
   state.recordingIntent = false;
@@ -566,10 +573,15 @@ function cancelCountdown() {
   $("[data-record-hint]").textContent = `Hazır olduğunda başla. En fazla ${state.recordingDuration} saniye.`;
   setRecordStatus("Hazır");
   trackEvent("recording_countdown_cancelled", state.phase, {}, `countdown_cancelled:${state.phase}:${Date.now()}`);
+  return true;
 }
 
 function completeCountdown(reason) {
-  if (!state.recordingIntent) return false;
+  if (!state.recordingIntent || !recordingInteraction.beginStarting(() => {
+    if (recordingInteraction.phase() === RECORDING_INTERACTION_STATES.recording) {
+      $("[data-record-button]").disabled = false;
+    }
+  })) return false;
   const configuredDuration = 5;
   const elapsedDuration = reason === "timer"
     ? configuredDuration
@@ -579,7 +591,8 @@ function completeCountdown(reason) {
   state.recordingIntent = false;
   state.countdownStartedAt = 0;
   $("[data-countdown]").hidden = true;
-  $("[data-record-button]").disabled = false;
+  // The countdown covers this control. Keep Stop inert until the initiating interaction ends.
+  $("[data-record-button]").disabled = true;
   if (reason === "skipped") {
     trackEvent("recording_preparation_skipped", state.phase, {
       surface: "performance_sprint",
@@ -594,6 +607,7 @@ function completeCountdown(reason) {
 }
 
 function beginCountdown() {
+  if (!recordingInteraction.beginCountdown()) return false;
   let seconds = 5;
   state.recordingIntent = true;
   state.countdownStartedAt = Date.now();
@@ -609,9 +623,15 @@ function beginCountdown() {
       completeCountdown("timer");
     }
   }, 1000);
+  return true;
 }
 
 function resetRecorder() {
+  recordingInteraction.reset();
+  clearInterval(state.countdownId);
+  state.countdownId = null;
+  state.recordingIntent = false;
+  state.countdownStartedAt = 0;
   state.blob = null;
   state.chunks = [];
   state.remaining = state.recordingDuration;
@@ -670,6 +690,7 @@ function startRecording() {
     $("[data-record-hint]").textContent = `${state.recordingDuration - state.remaining} saniyelik cevap hazır.`;
     $("[data-record-actions]").hidden = false;
     setRecordStatus("Kayıt tamamlandı");
+    recordingInteraction.markRecorded();
   }, { once: true });
   state.recorder.start(250);
   advanceParticipant(state.phase === "retry"
@@ -693,6 +714,7 @@ function startRecording() {
 }
 
 function stopRecording() {
+  if (!recordingInteraction.beginStopping()) return false;
   clearInterval(state.timerId);
   if (state.isDemo && state.demoRecording) {
     state.demoRecording = false;
@@ -702,13 +724,16 @@ function stopRecording() {
     $("[data-record-hint]").textContent = `${state.recordingDuration - state.remaining} saniyelik demo cevabı hazır.`;
     $("[data-record-actions]").hidden = false;
     setRecordStatus("Kayıt tamamlandı");
-    return;
+    recordingInteraction.markRecorded();
+    return true;
   }
   if (state.recorder?.state === "recording") state.recorder.stop();
+  return true;
 }
 
 async function handleRecordButton() {
   if (state.recordingIntent) return;
+  if (recordingInteraction.phase() === RECORDING_INTERACTION_STATES.starting) return;
   if (state.isDemo && state.demoRecording) {
     stopRecording();
     return;
@@ -1361,7 +1386,15 @@ $("[data-setup-form]").addEventListener("submit", handleSetupSubmit);
 
 $("[data-record-button]").addEventListener("click", handleRecordButton);
 $("[data-countdown-cancel]").addEventListener("click", cancelCountdown);
-$("[data-countdown-start-now]").addEventListener("click", () => completeCountdown("skipped"));
+const countdownStartNow = $("[data-countdown-start-now]");
+for (const eventName of ["pointerdown", "pointerup"]) {
+  countdownStartNow.addEventListener(eventName, (event) => event.stopPropagation());
+}
+countdownStartNow.addEventListener("click", (event) => {
+  event.preventDefault();
+  event.stopPropagation();
+  completeCountdown("skipped");
+});
 $("[data-record-again]").addEventListener("click", resetRecorder);
 $("[data-use-recording]").addEventListener("click", useRecording);
 $("[data-start-retry]").addEventListener("click", async () => {
