@@ -185,7 +185,12 @@ assert.equal(
   2,
   "English desktop and mobile header CTAs must remain localized.",
 );
-assert.equal((pages.en.match(/Free Speaking Analysis/g) ?? []).length, 3);
+const englishWhatsappCtas = [...pages.en.matchAll(/<a(?=[^>]*data-whatsapp-link)[^>]*>([\s\S]*?)<\/a>/g)];
+assert.equal(englishWhatsappCtas.length, 5);
+assert(englishWhatsappCtas.every(([, content]) => content.replace(/<[^>]*>/g, "").trim() === "Ask on WhatsApp"));
+assert.doesNotMatch(pages.en, /class="stage-home-action stage-home-whatsapp"/);
+assert.match(pages.en, /href="#results">Student Results<\/a>/);
+assert.match(pages.tr, /href="#results">Öğrenci Sonuçları<\/a>/);
 assert.match(pages.tr, /17\.000 TL/);
 assert.match(pages.tr, /23\.000 TL/);
 assert.match(pages.tr, /12\.000 TL/);
@@ -262,16 +267,19 @@ assert.doesNotMatch(rootPage, /stage-home-hero/);
 const legacyRoutes = {
   "programs.html": "#programs",
   "program.html": "#programs",
-  program: "#programs",
+  "program/index.html": "#programs",
   "method.html": "#method",
-  method: "#method",
+  "method/index.html": "#method",
   "results.html": "#results",
-  results: "#results",
+  "results/index.html": "#results",
   "about.html": "",
-  about: "",
-  "apply.html": "#contact",
+  "about/index.html": "",
+  "apply.html": "",
+  "apply/index.html": "",
   "resources.html": "",
-  "level-test.html": "#contact",
+  "resources/index.html": "",
+  "level-test.html": "",
+  "level-test/index.html": "",
 };
 
 for (const [route, hash] of Object.entries(legacyRoutes)) {

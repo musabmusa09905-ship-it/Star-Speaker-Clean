@@ -9,9 +9,12 @@
     <title>Star Speaker</title>
     <script>
       (() => {
-        const requestedLocale = new URLSearchParams(location.search).get("lang");
+        const query = new URLSearchParams(location.search);
+        const requestedLocale = query.get("lang");
         const locale = requestedLocale === "en" ? "en" : "tr";
-        location.replace(`/${locale}/`);
+        query.delete("lang");
+        const search = query.size ? `?${query}` : "";
+        location.replace(`/${locale}/${search}`);
       })();
     </script>
   </head>

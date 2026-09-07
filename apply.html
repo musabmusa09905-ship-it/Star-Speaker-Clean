@@ -4,18 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="noindex, follow">
-    <meta http-equiv="refresh" content="0; url=/tr/#contact">
+    <meta http-equiv="refresh" content="0; url=/tr/">
     <link rel="canonical" href="https://starspeakerstudio.com/tr/">
     <title>Star Speaker</title>
     <script>
       (() => {
-        const requestedLocale = new URLSearchParams(location.search).get("lang");
+        const query = new URLSearchParams(location.search);
+        const requestedLocale = query.get("lang");
         const locale = requestedLocale === "en" ? "en" : "tr";
-        location.replace(`/${locale}/#contact`);
+        query.delete("lang");
+        const search = query.size ? `?${query}` : "";
+        location.replace(`/${locale}/${search}`);
       })();
     </script>
   </head>
   <body data-legacy-route="apply.html">
-    <p><a href="/tr/#contact">Star Speaker ana sayfasına devam et</a></p>
+    <p><a href="/tr/">Star Speaker ana sayfasına devam et</a></p>
   </body>
 </html>

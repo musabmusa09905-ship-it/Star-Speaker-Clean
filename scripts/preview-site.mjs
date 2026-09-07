@@ -36,10 +36,21 @@ function resolveRequestPath(pathname) {
 }
 
 createServer((request, response) => {
-  const filePath = resolveRequestPath(new URL(request.url, `http://${request.headers.host}`).pathname);
+  const url = new URL(request.url, `http://${request.headers.host}`);
+  const directory = resolve(root, `.${decodeURIComponent(url.pathname)}`);
+  if (directory.startsWith(`${root}${sep}`) && !url.pathname.endsWith("/")) {
+    try {
+      if (statSync(directory).isDirectory()) {
+        response.writeHead(301, { location: `${url.pathname}/${url.search}` });
+        response.end();
+        return;
+      }
+    } catch { /* Continue to file or 404 lookup. */ }
+  }
+  const filePath = resolveRequestPath(url.pathname);
   if (!filePath) {
-    response.writeHead(404, { "content-type": "text/plain; charset=utf-8" });
-    response.end("Not found");
+    response.writeHead(404, { "content-type": "text/html; charset=utf-8" });
+    createReadStream(resolve(root, "404.html")).pipe(response);
     return;
   }
 

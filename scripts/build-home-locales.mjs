@@ -67,6 +67,9 @@ function translatePage(source, locale) {
     `https://wa.me/905525247746?text=${encodeURIComponent(homepageLocales[locale].whatsappMessage)}`,
   );
   if (locale === "en") {
+    // The English analysis is not available yet: retain only the primary
+    // WhatsApp action, rather than a second identical hero destination.
+    output = output.replace(/\s*<a\s+class="stage-home-action stage-home-whatsapp"[\s\S]*?<\/a>/, "");
     output = output.replace(
       /^([ \t]*)data-performance-link\s+href="\/tr\/performans-testi\/"/gm,
       (_, indentation) => `${indentation}data-whatsapp-link

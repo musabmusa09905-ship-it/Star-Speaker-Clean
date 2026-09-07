@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="noindex, follow">
-    <meta http-equiv="refresh" content="0; url=/tr/">
+    <meta http-equiv="refresh" content="0; url=/tr/#programs">
     <link rel="canonical" href="https://starspeakerstudio.com/tr/">
     <title>Star Speaker</title>
     <script>
@@ -14,11 +14,11 @@
         const locale = requestedLocale === "en" ? "en" : "tr";
         query.delete("lang");
         const search = query.size ? `?${query}` : "";
-        location.replace(`/${locale}/${search}`);
+        location.replace(`/${locale}/${search}#programs`);
       })();
     </script>
   </head>
-  <body data-legacy-route="level-test.html">
-    <p><a href="/tr/">Star Speaker ana sayfasına devam et</a></p>
+  <body data-legacy-route="program/index.html">
+    <p><a href="/tr/#programs">Star Speaker ana sayfasına devam et</a></p>
   </body>
 </html>

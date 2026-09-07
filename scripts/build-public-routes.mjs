@@ -1,4 +1,4 @@
-import { writeFile } from "node:fs/promises";
+import { mkdir, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -8,16 +8,19 @@ const supportedHashes = new Set(["#programs", "#method", "#results", "#contact",
 const legacyRoutes = new Map([
   ["programs.html", "#programs"],
   ["program.html", "#programs"],
-  ["program", "#programs"],
+  ["program/index.html", "#programs"],
   ["method.html", "#method"],
-  ["method", "#method"],
+  ["method/index.html", "#method"],
   ["results.html", "#results"],
-  ["results", "#results"],
+  ["results/index.html", "#results"],
   ["about.html", ""],
-  ["about", ""],
-  ["apply.html", "#contact"],
+  ["about/index.html", ""],
+  ["apply.html", ""],
+  ["apply/index.html", ""],
   ["resources.html", ""],
-  ["level-test.html", "#contact"],
+  ["resources/index.html", ""],
+  ["level-test.html", ""],
+  ["level-test/index.html", ""],
 ]);
 
 function rootRedirectDocument() {
@@ -35,11 +38,14 @@ function rootRedirectDocument() {
     <title>Star Speaker</title>
     <script>
       (() => {
-        const requestedLocale = new URLSearchParams(location.search).get("lang");
+        const query = new URLSearchParams(location.search);
+        const requestedLocale = query.get("lang");
         const locale = requestedLocale === "en" ? "en" : "tr";
+        query.delete("lang");
+        const search = query.size ? \`?\${query}\` : "";
         const supportedHashes = new Set(${JSON.stringify([...supportedHashes])});
         const hash = supportedHashes.has(location.hash) ? location.hash : "";
-        location.replace(\`/\${locale}/\${hash}\`);
+        location.replace(\`/\${locale}/\${search}\${hash}\`);
       })();
     </script>
   </head>
@@ -63,9 +69,12 @@ function legacyRedirectDocument(route, hash) {
     <title>Star Speaker</title>
     <script>
       (() => {
-        const requestedLocale = new URLSearchParams(location.search).get("lang");
+        const query = new URLSearchParams(location.search);
+        const requestedLocale = query.get("lang");
         const locale = requestedLocale === "en" ? "en" : "tr";
-        location.replace(\`/\${locale}/${hash}\`);
+        query.delete("lang");
+        const search = query.size ? \`?\${query}\` : "";
+        location.replace(\`/\${locale}/\${search}${hash}\`);
       })();
     </script>
   </head>
@@ -79,6 +88,7 @@ function legacyRedirectDocument(route, hash) {
 await writeFile(resolve(repositoryRoot, "index.html"), rootRedirectDocument(), "utf8");
 
 for (const [route, hash] of legacyRoutes) {
+  await mkdir(dirname(resolve(repositoryRoot, route)), { recursive: true });
   await writeFile(resolve(repositoryRoot, route), legacyRedirectDocument(route, hash), "utf8");
 }
 

@@ -12,11 +12,14 @@
     <title>Star Speaker</title>
     <script>
       (() => {
-        const requestedLocale = new URLSearchParams(location.search).get("lang");
+        const query = new URLSearchParams(location.search);
+        const requestedLocale = query.get("lang");
         const locale = requestedLocale === "en" ? "en" : "tr";
+        query.delete("lang");
+        const search = query.size ? `?${query}` : "";
         const supportedHashes = new Set(["#programs","#method","#results","#contact","#faq"]);
         const hash = supportedHashes.has(location.hash) ? location.hash : "";
-        location.replace(`/${locale}/${hash}`);
+        location.replace(`/${locale}/${search}${hash}`);
       })();
     </script>
   </head>

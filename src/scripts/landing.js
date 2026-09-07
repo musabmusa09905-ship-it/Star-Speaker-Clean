@@ -44,8 +44,11 @@ import { homepageCopy, homepageLocales } from "../i18n/homepage-locales.mjs";
 
   function syncLocaleLinks() {
     const sectionHash = supportedSectionHashes.has(window.location.hash) ? window.location.hash : "";
+    const parameters = new URLSearchParams(window.location.search);
+    parameters.delete("lang");
+    const search = parameters.size ? `?${parameters}` : "";
     document.querySelectorAll("[data-locale-link]").forEach((link) => {
-      link.href = `/${link.dataset.localeLink}/${sectionHash}`;
+      link.href = `/${link.dataset.localeLink}/${search}${sectionHash}`;
     });
   }
 
@@ -96,7 +99,10 @@ import { homepageCopy, homepageLocales } from "../i18n/homepage-locales.mjs";
   menuLinks.forEach((link) => link.addEventListener("click", () => setMenu(false)));
 
   document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") setMenu(false);
+    if (event.key === "Escape" && body.classList.contains("nav-open")) {
+      setMenu(false);
+      menuButton?.focus();
+    }
   });
 
   document.addEventListener("click", (event) => {
