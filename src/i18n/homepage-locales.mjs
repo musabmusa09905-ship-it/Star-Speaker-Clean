@@ -49,10 +49,10 @@ export const homepageCopy = {
   aboutUs: { tr: "Hakkımızda", en: "About Us" },
   faq: { tr: "SSS", en: "FAQ" },
   languageSelection: { tr: "Dil seçimi", en: "Language selection" },
-  freeSpeakingAnalysis: { tr: "Ücretsiz Performans Testi", en: "Ask on WhatsApp" },
+  freeSpeakingAnalysis: { tr: "Ücretsiz Performans Testi", en: "Free Speaking Analysis" },
   performanceSessionCta: {
     tr: "Ücretsiz Performans Testini Başlat",
-    en: "Ask on WhatsApp",
+    en: "Free Speaking Analysis",
   },
   categoryLabel: {
     tr: "KONUŞMA PERFORMANSI",
@@ -367,7 +367,7 @@ export const homepageCopy = {
   },
   analysisBody: {
     tr: "Türkçe sunulan ücretsiz akışta bir soruya sesli cevap ver. Yazıya dökülen cevabına dayalı geri bildirimi incele, sonra aynı soruyu tekrar dene.",
-    en: "The free public flow is available in Turkish: answer one question aloud, review feedback based on the transcript, then try again. Ask on WhatsApp about the next step for your goal.",
+    en: "Answer one question aloud, review feedback based on your transcript, then try the same question again.",
   },
   analysisOutcomesLabel: { tr: "Konuşma analizi çıktıları", en: "Speaking analysis outcomes" },
   analysisOutcomeOne: { tr: "1 güçlü yönün", en: "1 strength" },
@@ -377,7 +377,7 @@ export const homepageCopy = {
   },
   analysisOutcomeThree: { tr: "1 odaklı düzeltme", en: "1 focused correction" },
   analysisOutcomeFour: { tr: "İlk ve geliştirilmiş cevabın", en: "Your first and improved answers" },
-  analysisCta: { tr: "Ücretsiz Analize Başla", en: "Ask on WhatsApp" },
+  analysisCta: { tr: "Ücretsiz Analize Başla", en: "Free Speaking Analysis" },
   analysisReassurance: {
     tr: "Online · Süre kişiye göre değişir · Satın alma zorunluluğu yok",
     en: "Online · Time varies · No obligation to purchase",
@@ -392,7 +392,7 @@ export const homepageCopy = {
   },
   finalCtaBody: {
     tr: "Ücretsiz Konuşma Analizi ile bir cevabını incele, odaklı geri bildirim al ve tekrar dene.",
-    en: "Tell us what you want to use English for. Ask on WhatsApp about practice and the next step that fits your goal.",
+    en: "Use the Free Speaking Analysis to review one answer, get focused feedback, and try again.",
   },
   finalCtaReassurance: {
     tr: "Online · Satın alma zorunluluğu yok",
@@ -524,7 +524,7 @@ export const homepageLocales = {
       {
         question: "How will I know which program is right for me?",
         answer:
-          "Share your goal on WhatsApp. The free Turkish speaking analysis can also be a starting point. Your goal, timeline, and support needs are discussed before program suitability is confirmed.",
+          "Start with the Free Speaking Analysis or share your goal on WhatsApp. Your goal, timeline, and support needs are discussed before program suitability is confirmed.",
       },
       {
         question: "What level of English do I need to join?",
@@ -534,7 +534,7 @@ export const homepageLocales = {
       {
         question: "What happens during the Free Speaking Performance Analysis?",
         answer:
-          "In the free Turkish flow, you answer one question aloud, see a strength and an area to work on based on the transcript, then try again. You can compare answers, transcripts, and results. It does not measure pronunciation, accent, acoustic speed, or confidence. Time varies. The Member Diagnostic requires sign-in and covers broader speaking and listening; it is separate from this one-question flow.",
+          "In the free speaking analysis, you answer one question aloud, see a strength and an area to work on based on the transcript, then try again. You can compare answers, transcripts, and results. It does not measure pronunciation, accent, acoustic speed, or confidence. Time varies. The Member Diagnostic requires sign-in and covers broader speaking and listening; it is separate from this one-question flow.",
       },
       {
         question: "How is Star Speaker different from traditional Business English?",

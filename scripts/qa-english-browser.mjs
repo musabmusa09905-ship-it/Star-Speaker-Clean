@@ -34,7 +34,8 @@ const server = createServer(async (req, res) => {
   }
 });
 await new Promise((r) => server.listen(0, "127.0.0.1", r));
-const base = "http://127.0.0.1:" + server.address().port;
+// QA_BASE_URL tests deployed assets; API responses remain isolated fixtures.
+const base = process.env.QA_BASE_URL || "http://127.0.0.1:" + server.address().port;
 const browser = await chromium.launch({
   headless: true,
   executablePath:

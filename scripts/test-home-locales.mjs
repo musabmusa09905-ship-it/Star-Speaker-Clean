@@ -80,7 +80,7 @@ for (const locale of supportedHomepageLocales) {
   assert.match(programSection, /id="programs"/);
   assert.equal((programSection.match(/class="stage-programs-level /g) ?? []).length, 2);
   assert.equal((programSection.match(/class="stage-programs-level-icon"/g) ?? []).length, 2);
-  assert.equal((programSection.match(locale === "tr" ? /data-performance-link/g : /data-whatsapp-link/g) ?? []).length, 1);
+  assert.equal((programSection.match(/data-performance-link/g) ?? []).length, 1);
   assert.equal((programSection.match(/stage-programs-analysis-cta/g) ?? []).length, 1);
   assert.doesNotMatch(programSection, /\bSpark\b|30-Day|30 Gün|taksit|installment|\b50 minutes?\b|\b20 minutes?\b/iu);
 
@@ -98,7 +98,7 @@ for (const locale of supportedHomepageLocales) {
   const finalCtaSection = page.match(/<section class="stage-final-cta"[\s\S]*?<\/section>/)?.[0];
   assert(finalCtaSection, `Missing final CTA section in /${locale}/`);
   assert.equal((finalCtaSection.match(/stage-final-cta-button/g) ?? []).length, 1);
-  assert.equal((finalCtaSection.match(locale === "tr" ? /data-performance-link/g : /data-whatsapp-link/g) ?? []).length, 1);
+  assert.equal((finalCtaSection.match(/data-performance-link/g) ?? []).length, 1);
   const programCtaTarget = programSection.match(/class="stage-programs-analysis-cta"[\s\S]*?href="([^"]+)"/)?.[1];
   const finalCtaTarget = finalCtaSection.match(/class="stage-final-cta-button"[\s\S]*?href="([^"]+)"/)?.[1];
   assert.equal(finalCtaTarget, programCtaTarget, `Final CTA must reuse the Programs destination in /${locale}/`);
@@ -179,16 +179,20 @@ assert.equal(
   3,
 );
 assert.match(pages.tr, /<span>Ücretsiz Performans Testini Başlat<\/span>/);
-assert.doesNotMatch(pages.en, /data-performance-link|\/tr\/performans-testi\//);
+assert.doesNotMatch(pages.en, /\/tr\/performans-testi\//);
 assert.equal(
   (pages.en.match(/class="stage-home-nav-cta"/g) ?? []).length,
   2,
   "English desktop and mobile header CTAs must remain localized.",
 );
 const englishWhatsappCtas = [...pages.en.matchAll(/<a(?=[^>]*data-whatsapp-link)[^>]*>([\s\S]*?)<\/a>/g)];
-assert.equal(englishWhatsappCtas.length, 5);
+assert.equal(englishWhatsappCtas.length, 1);
 assert(englishWhatsappCtas.every(([, content]) => content.replace(/<[^>]*>/g, "").trim() === "Ask on WhatsApp"));
-assert.doesNotMatch(pages.en, /class="stage-home-action stage-home-whatsapp"/);
+assert.match(pages.en, /class="stage-home-action stage-home-whatsapp"/);
+const englishAnalysisCtas = [...pages.en.matchAll(/<a(?=[^>]*data-performance-link)(?=[^>]*href="([^"]+)")[^>]*>([\s\S]*?)<\/a>/g)];
+assert.equal(englishAnalysisCtas.length, 5);
+assert(englishAnalysisCtas.every(([, target]) => target === "/en/speaking-analysis/"));
+assert(englishAnalysisCtas.every(([cta, , content]) => !/target="_blank"/.test(cta) && content.replace(/<[^>]*>/g, "").trim() === "Free Speaking Analysis"));
 assert.match(pages.en, /href="#results">Student Results<\/a>/);
 assert.match(pages.tr, /href="#results">Öğrenci Sonuçları<\/a>/);
 assert.match(pages.tr, /17\.000 TL/);

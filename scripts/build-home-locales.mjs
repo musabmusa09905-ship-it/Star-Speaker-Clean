@@ -67,16 +67,7 @@ function translatePage(source, locale) {
     `https://wa.me/905525247746?text=${encodeURIComponent(homepageLocales[locale].whatsappMessage)}`,
   );
   if (locale === "en") {
-    // The English analysis is not available yet: retain only the primary
-    // WhatsApp action, rather than a second identical hero destination.
-    output = output.replace(/\s*<a\s+class="stage-home-action stage-home-whatsapp"[\s\S]*?<\/a>/, "");
-    output = output.replace(
-      /^([ \t]*)data-performance-link\s+href="\/tr\/performans-testi\/"/gm,
-      (_, indentation) => `${indentation}data-whatsapp-link
-${indentation}href="https://wa.me/905525247746?text=${encodeURIComponent(homepageLocales.en.whatsappMessage)}"
-${indentation}target="_blank"
-${indentation}rel="noopener noreferrer"`,
-    );
+    output = output.replace(/href="\/tr\/performans-testi\/"/g, 'href="/en/speaking-analysis/"');
   }
   if (locale === "en") output = output.replace(/(<a[^>]*class="stage-home-action stage-home-test"[\s\S]*?<span>)Programs(<\/span>)/, '$1Explore Programs$2');
   const faqEntities = homepageLocales[locale].faqItems.map(({ question, answer }) => ({
