@@ -1,3 +1,4 @@
+import { releaseTracks, recordingMime } from './speaking-core.js';
 import {
   EXPERIENCE_VERSION,
   QUESTION_BANK_VERSION,
@@ -214,6 +215,8 @@ function showScreen(name) {
     screen.classList.toggle("is-active", screen.dataset.screen === name);
   });
   state.currentScreen = name;
+  const heading = screens[name]?.querySelector('h1, h2');
+  if (heading) { heading.setAttribute('tabindex', '-1'); heading.focus(); }
   progressShell.hidden = name === "intro";
   if (name === "record" || name === "analysis") {
     progressMap[name] = [
@@ -564,6 +567,7 @@ async function ensureMicrophone() {
 
 function cancelCountdown() {
   if (!recordingInteraction.cancelCountdown()) return false;
+  releaseTracks(state.stream); state.stream = null;
   clearInterval(state.countdownId);
   state.countdownId = null;
   state.recordingIntent = false;
@@ -627,6 +631,10 @@ function beginCountdown() {
 }
 
 function resetRecorder() {
+  const previousRecorder = state.recorder;
+  state.recorder = null;
+  if (previousRecorder?.state === 'recording') previousRecorder.stop();
+  releaseTracks(state.stream); state.stream = null;
   recordingInteraction.reset();
   clearInterval(state.countdownId);
   state.countdownId = null;
@@ -648,7 +656,7 @@ function resetRecorder() {
 }
 
 function selectMimeType() {
-  return ["audio/webm;codecs=opus", "audio/webm", "audio/mp4"].find((type) => MediaRecorder.isTypeSupported(type)) || "";
+  return recordingMime();
 }
 
 function startRecording() {
@@ -679,12 +687,18 @@ function startRecording() {
   if (!state.stream || state.recorder?.state === "recording") return;
   state.chunks = [];
   const mimeType = selectMimeType();
-  state.recorder = new MediaRecorder(state.stream, mimeType ? { mimeType } : undefined);
+  try { state.recorder = new MediaRecorder(state.stream, mimeType ? { mimeType } : undefined); }
+  catch { releaseTracks(state.stream); state.stream = null; recordingInteraction.reset(); setRecordStatus('Kayıt başlatılamadı. Lütfen tekrar dene.'); $('[data-record-button]').disabled = false; return; }
+  const activeRecorder = state.recorder;
+  const activeStream = state.stream;
   state.recorder.addEventListener("dataavailable", (event) => {
     if (event.data.size) state.chunks.push(event.data);
   });
   state.recorder.addEventListener("stop", () => {
-    state.blob = new Blob(state.chunks, { type: state.recorder.mimeType || "audio/webm" });
+    releaseTracks(activeStream);
+    if (state.recorder !== activeRecorder) return;
+    state.blob = new Blob(state.chunks, { type: activeRecorder.mimeType || "audio/webm" });
+    releaseTracks(state.stream); state.stream = null; state.recorder = null;
     $("[data-recorder]").classList.remove("is-recording");
     $("[data-record-label]").textContent = "Kayıt Tamamlandı";
     $("[data-record-hint]").textContent = `${state.recordingDuration - state.remaining} saniyelik cevap hazır.`;
@@ -692,7 +706,16 @@ function startRecording() {
     setRecordStatus("Kayıt tamamlandı");
     recordingInteraction.markRecorded();
   }, { once: true });
-  state.recorder.start(250);
+  const recordingFailed = () => {
+    releaseTracks(activeStream);
+    if (state.recorder !== activeRecorder) return;
+    releaseTracks(state.stream); state.stream = null; state.recorder = null;
+    clearInterval(state.timerId); recordingInteraction.reset();
+    setRecordStatus('Kayıt kesildi. Lütfen tekrar kaydet.');
+    $('[data-record-button]').disabled = false;
+  };
+  state.recorder.addEventListener('error', recordingFailed, { once: true });
+  try { state.recorder.start(250); } catch { recordingFailed(); return; }
   advanceParticipant(state.phase === "retry"
     ? { retry_status: "recording" }
     : { first_recording_status: "recording" }).catch(() => {});
@@ -1455,7 +1478,7 @@ window.addEventListener("beforeunload", (event) => {
     const completedSteps = [state.situation, state.reportedLevel, state.recordingDuration, state.emotionalState].filter(Boolean).length;
     trackEvent("setup_abandoned", "setup", { completed_steps: completedSteps }, "setup_abandoned");
   }
-  state.stream?.getTracks().forEach((track) => track.stop());
+  releaseTracks(state.stream); state.stream = null;
   if (state.blob && !state.submitting && state.currentScreen === "record") {
     event.preventDefault();
     event.returnValue = "";

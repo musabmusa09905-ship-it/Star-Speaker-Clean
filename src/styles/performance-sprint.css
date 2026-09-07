@@ -15,7 +15,7 @@
 }
 
 * { box-sizing: border-box; }
-html { min-width: 320px; background: var(--black); color-scheme: dark; }
+html { min-width: 0; background: var(--black); color-scheme: dark; }
 body {
   min-height: 100vh;
   margin: 0;

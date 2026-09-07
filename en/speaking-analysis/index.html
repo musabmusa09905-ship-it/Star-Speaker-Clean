@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Free English Speaking Analysis | Star Speaker</title>
+    <meta
+      name="description"
+      content="Answer one English question, get focused feedback, and retry once. A free speaking analysis of your answer, with clear evidence and one useful next step."
+    />
+    <link
+      rel="canonical"
+      href="https://starspeakerstudio.com/en/speaking-analysis/"
+    />
+    <meta
+      property="og:title"
+      content="Free English Speaking Analysis | Star Speaker"
+    />
+    <meta
+      property="og:description"
+      content="One question, focused feedback and one retry. Find a useful next step for your English answer."
+    />
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:url"
+      content="https://starspeakerstudio.com/en/speaking-analysis/"
+    />
+    <meta
+      property="og:image"
+      content="https://starspeakerstudio.com/public/assets/star-speaker/star-speaker-monogram-transparent.png"
+    />
+    <meta name="twitter:card" content="summary" />
+    <link rel="stylesheet" href="/src/styles/english-analysis.css" />
+  </head>
+  <body>
+    <header>
+      <a href="/en/" aria-label="Star Speaker home">
+        <img
+          src="/public/assets/star-speaker/star-speaker-monogram-transparent.png"
+          width="46"
+          height="46"
+          alt=""
+        />
+        STAR SPEAKER
+      </a>
+      <span>Free Speaking Analysis</span>
+    </header>
+    <main id="analysis">
+      <section data-screen="setup">
+        <p class="eyebrow">ONE ANSWER. ONE USEFUL NEXT STEP.</p>
+        <h1 tabindex="-1">Find a focus for your English speaking.</h1>
+        <p>
+          Answer one question. Get feedback on your answer, then try the same
+          question once more.
+        </p>
+        <p class="muted">
+          This is a short practice sample, not a level test. We do not assess
+          pronunciation or accent.
+        </p>
+        <form id="setup">
+          <label for="level">Choose your practice level</label>
+          <select id="level" required>
+            <option value="b1">B1</option>
+            <option value="b1_plus">B1+</option>
+            <option value="b2">B2</option>
+            <option value="b2_plus">B2+</option>
+            <option value="c1">C1</option>
+          </select>
+          <label for="category">Choose a context</label>
+          <select id="category">
+            <option value="everyday_life">Everyday Life</option>
+            <option value="work">Work</option>
+            <option value="study">Study</option>
+            <option value="speaking_under_pressure">
+              Speaking Under Pressure
+            </option>
+            <option value="opinions">Opinions &amp; Explaining Ideas</option>
+          </select>
+          <p class="muted">
+            Context describes the question. We do not measure how nervous or
+            confident you feel.
+          </p>
+          <button type="submit">Start my analysis</button>
+        </form>
+      </section>
+      <section data-screen="record" hidden>
+        <p class="eyebrow" id="attempt-label">YOUR FIRST ANSWER</p>
+        <h1 tabindex="-1">Your question</h1>
+        <p id="question" class="question"></p>
+        <p>Speak for up to 60 seconds. You can stop earlier.</p>
+        <aside>
+          We send your audio for transcription and analysis. Your transcript and
+          feedback may be stored to deliver and recover your result. Star
+          Speaker does not store the raw audio. We do not analyse pronunciation
+          or accent.
+        </aside>
+        <p id="record-state" role="status">Ready when you are.</p>
+        <p id="timer" aria-label="Seconds remaining">60 seconds</p>
+        <div class="actions">
+          <button id="record">Start Now</button>
+          <button id="prepare" class="secondary">Prepare for 5 seconds</button>
+          <button id="stop" hidden>Stop recording</button>
+          <button id="again" hidden>Record Again</button>
+          <button id="submit" hidden>Submit my answer</button>
+        </div>
+        <button class="secondary" id="cancel">Cancel recording</button>
+      </section>
+      <section data-screen="processing" hidden>
+        <p class="eyebrow">YOUR ANSWER</p>
+        <h1 tabindex="-1">Preparing your feedback</h1>
+        <p role="status" aria-live="polite">
+          Your recording is being transcribed and your answer reviewed. This may
+          take a moment.
+        </p>
+      </section>
+      <section data-screen="feedback" hidden>
+        <p class="eyebrow">YOUR FIRST ANSWER</p>
+        <h1 tabindex="-1">One focus for this answer</h1>
+        <div id="first-feedback"></div>
+        <button id="retry">Try the same question once more</button>
+      </section>
+      <section data-screen="comparison" hidden>
+        <p class="eyebrow">YOUR RETRY</p>
+        <h1 tabindex="-1" id="outcome">Your two answers</h1>
+        <div id="comparison"></div>
+        <details>
+          <summary>Your first feedback</summary>
+          <div id="original-feedback"></div>
+        </details>
+        <h2>Continue with Star Speaker</h2>
+        <p>Talk with us about what you would like to practise next.</p>
+        <a
+          class="button"
+          id="whatsapp"
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://wa.me/905525247746?text=Hi%2C%20I%20completed%20the%20free%20Star%20Speaker%20Speaking%20Analysis%20and%20would%20like%20to%20discuss%20my%20next%20step."
+        >
+          Ask on WhatsApp
+        </a>
+        <p class="muted">
+          If WhatsApp does not open, contact +90 552 524 77 46 in WhatsApp.
+        </p>
+      </section>
+      <section data-screen="error" hidden>
+        <h1 tabindex="-1">Let’s get you back on track</h1>
+        <p id="error-message" role="alert"></p>
+        <div class="actions">
+          <button id="recover">Recover result</button>
+          <button id="rerecord">Record again</button>
+          <button id="resubmit" hidden>Try sending again</button>
+          <button id="restart" class="secondary">Start a new session</button>
+        </div>
+      </section>
+    </main>
+    <footer>
+      <a href="/en/">Back to Star Speaker</a>
+      <span>© 2026 Star Speaker</span>
+    </footer>
+    <script src="/src/scripts/supabase-config.js"></script>
+    <script type="module" src="/src/scripts/english-analysis.js"></script>
+  </body>
+</html>
