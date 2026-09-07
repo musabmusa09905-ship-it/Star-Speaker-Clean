@@ -118,6 +118,9 @@ await writeFile(
   <url>
     <loc>https://starspeakerstudio.com/tr/performans-testi/</loc>
   </url>
+  <url>
+    <loc>https://starspeakerstudio.com/en/speaking-analysis/</loc>
+  </url>
 </urlset>
 `,
   "utf8",

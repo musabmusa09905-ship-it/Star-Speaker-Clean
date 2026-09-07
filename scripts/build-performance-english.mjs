@@ -62,6 +62,21 @@ html = html.replace(
   /\s*<button\b[^>]*data-level="(?:a2_1|a2_2|unsure)"[\s\S]*?<\/button>/g,
   "",
 );
+const socialTitle = "Free Career English Analysis | Star Speaker";
+const socialDescription = "Answer a question aloud, receive focused feedback based on your transcript, and try the same question again.";
+const socialImage = "https://starspeakerstudio.com/public/assets/images/hero/hero-international-meeting-v2.png";
+html = html.replace("  </head>", `    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Star Speaker">
+    <meta property="og:locale" content="en_GB">
+    <meta property="og:title" content="${socialTitle}">
+    <meta property="og:description" content="${socialDescription}">
+    <meta property="og:url" content="https://starspeakerstudio.com/en/speaking-analysis/">
+    <meta property="og:image" content="${socialImage}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="${socialTitle}">
+    <meta name="twitter:description" content="${socialDescription}">
+    <meta name="twitter:image" content="${socialImage}">
+  </head>`);
 for (const [old, label] of Object.entries({
   "B1.1": "B1",
   "B1.2": "B1+",
