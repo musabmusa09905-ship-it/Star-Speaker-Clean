@@ -26,7 +26,7 @@ const queries = [
 for (const search of queries) {
   for (const hash of [...hashes, "", "#unknown"]) {
     const input = new URLSearchParams(search);
-    const expectedLocale = input.get("lang") === "en" ? "en" : "tr";
+    const expectedLocale = input.get("lang") === "tr" ? "tr" : "en";
     input.delete("lang");
     const result = redirect(root, search, hash);
     assert.equal(result.pathname, `/${expectedLocale}/`);

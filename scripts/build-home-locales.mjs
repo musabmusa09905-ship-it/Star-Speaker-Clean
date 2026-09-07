@@ -78,12 +78,24 @@ ${indentation}target="_blank"
 ${indentation}rel="noopener noreferrer"`,
     );
   }
+  if (locale === "en") output = output.replace(/(<a[^>]*class="stage-home-action stage-home-test"[\s\S]*?<span>)Programs(<\/span>)/, '$1Explore Programs$2');
   const faqEntities = homepageLocales[locale].faqItems.map(({ question, answer }) => ({
     "@type": "Question",
     name: question,
     acceptedAnswer: { "@type": "Answer", text: answer },
   }));
-  output = output.replace('"mainEntity": []', `"mainEntity": ${JSON.stringify(faqEntities)}`);
+  output = output.replace(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/, (_, json) => {
+    const graph = JSON.parse(json);
+    const organization = graph["@graph"].find(entry => entry["@type"] === "Organization");
+    organization.description = homepageCopy.organizationDescription[locale];
+    const service = graph["@graph"].find(entry => entry["@type"] === "Service");
+    service.name = homepageCopy.serviceName[locale];
+    service.serviceType = homepageCopy.serviceType[locale];
+    service.description = homepageCopy.serviceDescription[locale];
+    delete service.areaServed;
+    graph["@graph"].find(entry => entry["@type"] === "FAQPage").mainEntity = faqEntities;
+    return '<script type="application/ld+json">' + JSON.stringify(graph, null, 2) + '</script>';
+  });
   return output;
 }
 

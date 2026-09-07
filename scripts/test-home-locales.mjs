@@ -66,8 +66,8 @@ for (const locale of supportedHomepageLocales) {
     "stage-home-hero",
     "stage-program",
     "stage-method",
-    "stage-results",
     "stage-programs",
+    "stage-results",
     "stage-closing-faq",
     "stage-final-cta",
     "stage-closing-footer",
@@ -260,7 +260,7 @@ for (const page of Object.values(pages)) {
 }
 
 const rootPage = await readFile(resolve("index.html"), "utf8");
-assert.match(rootPage, /http-equiv="refresh" content="0; url=\/tr\/"/);
+assert.match(rootPage, /http-equiv="refresh" content="0; url=\/en\/"/);
 assert.match(rootPage, /location\.replace/);
 assert.doesNotMatch(rootPage, /stage-home-hero/);
 

@@ -1,15 +1,25 @@
 export const homepageCopy = {
+  situationEverydayBody: { tr: "Bir deneyimi anlatmak, soru sormak ve sohbeti sürdürmek.", en: "Sharing an experience, asking questions, and keeping a conversation going." },
+  situationEveryday: { tr: "Günlük iletişim", en: "Everyday communication" },
+  situationStudyBody: { tr: "Sınıf tartışmaları, yeni insanlarla tanışmak ve yurt dışında günlük konuşmalar.", en: "Class discussions, meeting new people, and everyday conversations abroad." },
+  situationStudy: { tr: "Eğitim ve uluslararası yaşam", en: "Study and international life" },
+  situationExamsBody: { tr: "IELTS Speaking gibi sınavlar için cevaplarını düzenleme pratiği.", en: "Practice organizing answers for exams such as IELTS Speaking." },
+  situationExams: { tr: "Konuşma sınavları", en: "Speaking exams" },
+  situationCareerBody: { tr: "Mülakatlar, toplantılar, sunumlar ve fikirlerini açıklamak.", en: "Interviews, meetings, presentations, and explaining your ideas." },
+  situationCareer: { tr: "Kariyer", en: "Career" },
+  situationsTitle: { tr: "İngilizceyi nerede kullanmak istiyorsun?", en: "Where do you want to use your English?" },
+  problemKicker: { tr: "KONUŞMA PRATİĞİ", en: "SPEAKING PRACTICE" },
   metaTitle: {
-    tr: "Star Speaker | Kariyer İngilizcesi",
-    en: "Star Speaker | Career English",
+    tr: "Star Speaker | Önemli Anlarda İngilizce Konuş",
+    en: "Star Speaker | Speak English When It Matters",
   },
   metaDescription: {
-    tr: "Mülakatlarda, toplantılarda, sunumlarda ve uluslararası çalışma ortamlarında İngilizceyi daha net, güvenli ve etkili konuş. Ücretsiz konuşma analizine başla.",
-    en: "Speak English clearly and confidently in interviews, meetings, presentations, and international career situations.",
+    tr: "B1 ve üzeri İngilizce bilenler için konuşma pratiği ve odaklı geri bildirim. İş, eğitim ve günlük yaşamda önemli konuşmalara hazırlan.",
+    en: "Speaking practice and focused feedback for people with roughly B1 English and above. Prepare for conversations that matter in work, study, and everyday life.",
   },
   organizationDescription: {
-    tr: "Star Speaker, insanların kariyerlerini etkileyen anlarda İngilizceyi net ve güvenli konuşmalarına yardımcı olur.",
-    en: "Star Speaker helps people speak English clearly and confidently in the moments that shape their careers.",
+    tr: "Star Speaker, önemli anlarda fikirlerini İngilizce daha net ifade etmene yardımcı olan konuşma pratiği sunar.",
+    en: "Star Speaker offers speaking practice to help you express your ideas more clearly in the moments that matter.",
   },
   serviceName: {
     tr: "Star Speaker Kariyer İngilizcesi Programı",
@@ -44,27 +54,36 @@ export const homepageCopy = {
     tr: "Ücretsiz Performans Testini Başlat",
     en: "Ask on WhatsApp",
   },
-  categoryLabel: { tr: "KARİYER İNGİLİZCESİ", en: "CAREER ENGLISH" },
-  brandDescriptor: { tr: "Kariyer İngilizcesi", en: "Career English" },
-  heroTitleOne: { tr: "İngilizcen, kariyerini", en: "Don’t let your English" },
+  categoryLabel: {
+    tr: "KONUŞMA PERFORMANSI",
+    en: "SPEAKING PERFORMANCE",
+  },
+  brandDescriptor: {
+    tr: "Konuşma Performansı",
+    en: "Speaking Performance",
+  },
+  heroTitleOne: {
+    tr: "Önemli anlarda",
+    en: "Speak English",
+  },
   heroTitleTwo: {
-    tr: "geride tutmasın.",
-    en: "hold your career back.",
+    tr: "İngilizce konuş.",
+    en: "when it matters.",
   },
   heroBody: {
-    tr: "Mülakatlarda, toplantılarda, sunumlarda ve uluslararası çalışma ortamlarında İngilizceyi net, güvenli ve etkili şekilde konuş.",
-    en: "Speak English clearly, confidently, and effectively in interviews, meetings, presentations, and international work environments.",
+    tr: "İngilizce biliyorsun. Ama önemli anlarda kullanmak hâlâ zor geliyor. Star Speaker, fikirlerini daha net ifade etmene, daha etkili cevap vermene ve senin için önemli durumlara pratikle hazırlanmana yardımcı olur.",
+    en: "You know English. But using it when it matters is still difficult. Star Speaker helps you express your ideas more clearly, respond more effectively, and practice for the situations that matter to you.",
   },
   homepageActions: { tr: "Ana sayfa eylemleri", en: "Homepage actions" },
   askWhatsapp: { tr: "WhatsApp’tan Sor", en: "Ask on WhatsApp" },
   freeTest: { tr: "Ücretsiz Test", en: "Free Test" },
   programTitle: {
-    tr: "İngilizce öğrenmiyorsun. Kariyerin için İngilizce konuşmayı öğreniyorsun.",
-    en: "You are not learning English. You are learning to speak English for your career.",
+    tr: "Konuşurken seni ne zorluyor?",
+    en: "What gets difficult when you speak?",
   },
   programBody: {
-    tr: "Star Speaker, İngilizceyi anlayan ancak önemli kariyer anlarında konuşurken donan insanlar için tasarlanmış uygulamalı bir konuşma programıdır.",
-    en: "Star Speaker is a practical speaking program for people who understand English but freeze during important career moments.",
+    tr: "Bazen kelimeyi bulamaz, cümleye başlayamaz ya da fikirlerini toparlayamazsın. Bildiğin dil bilgisini konuşurken kullanmak, duyduğunu anlayıp cevap vermek veya baskı altında kendini açıklamak da zor gelebilir. İhtiyaç herkes için aynı değildir.",
+    en: "Sometimes it is finding a word, starting a sentence, or organizing your ideas. Using grammar while speaking, listening and responding, or explaining yourself under pressure can also be difficult. Different people need different practice.",
   },
   programAltInterview: {
     tr: "Bir adayın profesyonel iş görüşmesinde soruları yanıtlaması",
@@ -95,9 +114,18 @@ export const homepageCopy = {
     tr: "Sunum yaparken özgüvenini kaybetmek",
     en: "Losing confidence during a presentation",
   },
-  transformationTitle: { tr: "Programdan önce ve sonra", en: "Before and after the program" },
-  before: { tr: "Önce", en: "Before" },
-  after: { tr: "Sonra", en: "After" },
+  transformationTitle: {
+    tr: "Pratikte neye odaklanabiliriz?",
+    en: "What can we work on?",
+  },
+  before: {
+    tr: "Zorlandığın anlar",
+    en: "The challenge",
+  },
+  after: {
+    tr: "Pratik hedefleri",
+    en: "Practice goals",
+  },
   beforeOne: { tr: "Cümleye başlamakta zorlanmak", en: "Struggling to begin a sentence" },
   beforeTwo: { tr: "Bildiğin kelimelere ulaşamamak", en: "Being unable to access words you already know" },
   beforeThree: { tr: "Kısa ve güvensiz cevaplar vermek", en: "Giving short, uncertain answers" },
@@ -112,71 +140,75 @@ export const homepageCopy = {
     en: "Expressing yourself clearly in meetings and interviews",
   },
   afterFour: { tr: "Yetkinliğini İngilizce güvenle göstermek", en: "Showing your capabilities confidently in English" },
-  transformationBridge: { tr: "Star Speaker dönüşümü", en: "The Star Speaker transformation" },
-  transformationOutcome: { tr: "Aynı bilgi. Daha net, düzenli ve güçlü bir ifade.", en: "The same knowledge. A clearer, more structured, more powerful expression." },
-  transformationCue: { tr: "Dağınık cevap → Net ve yapılandırılmış cevap", en: "Scattered answer → Clear, structured answer" },
+  transformationBridge: {
+    tr: "Odaklı pratik",
+    en: "Focused practice",
+  },
+  transformationOutcome: {
+    tr: "Fikirlerini daha net ve düzenli ifade etmeye çalış.",
+    en: "Work toward clearer, more organized expression.",
+  },
+  transformationCue: {
+    tr: "Bir cevabı adım adım geliştir.",
+    en: "Build your answer one step at a time.",
+  },
   methodKicker: { tr: "NASIL ÇALIŞIR?", en: "HOW DOES IT WORK?" },
   methodTitle: {
-    tr: "Gelişim tesadüfen değil, doğru sistemle gerçekleşir.",
-    en: "Progress does not happen by accident. It happens through the right system.",
+    tr: "Konuş. Geri bildirim al. Tekrar dene.",
+    en: "Speak. Get feedback. Try again.",
   },
   methodBody: {
-    tr: "Star Speaker, konuşma problemini belirler; sana hedefli pratik, uzman geri bildirimi ve gerçek kariyer senaryolarında tekrar sağlar.",
-    en: "Star Speaker identifies your speaking problem, then gives you focused practice, expert feedback, and repetition in real career scenarios.",
+    tr: "Bir cevaptan başlayarak üzerinde çalışabileceğin bir noktayı seç. Odaklı pratik ve tekrar, farklı durumlarda fikirlerini ifade etmeyi çalışmana yardımcı olur.",
+    en: "Start with an answer and choose something you can work on. Focused practice and repetition help you work on expressing your ideas in different situations.",
   },
-  methodAltOne: {
-    tr: "Bir katılımcının uzmanla konuşma analizi yaptığı bire bir görüşme",
-    en: "A participant completing a one-to-one speaking analysis with an expert",
+  methodOneTitle: {
+    tr: "Konuş",
+    en: "Speak",
   },
-  methodOneTitle: { tr: "Gerçek problemini belirle", en: "Identify the real problem" },
   methodOneBody: {
-    tr: "Konuşurken nerede donduğunu, neden netliğini kaybettiğini ve neye odaklanman gerektiğini belirle.",
-    en: "Find where you freeze, why you lose clarity, and what you need to focus on when speaking.",
+    tr: "Senin için anlamlı bir soruya cevap ver veya bir konuşma durumunu dene.",
+    en: "Answer a relevant question or try a conversation you want to prepare for.",
   },
-  methodAltTwo: {
-    tr: "Bir katılımcının telefonuyla kısa bir sesli konuşma çalışması yapması",
-    en: "A participant completing a short voice-speaking exercise on a phone",
+  methodTwoTitle: {
+    tr: "Odaklı geri bildirim al",
+    en: "Get focused feedback",
   },
-  methodTwoTitle: { tr: "Her gün konuşarak çalış", en: "Practice speaking every day" },
   methodTwoBody: {
-    tr: "Pasif dersler yerine, ihtiyacına göre hazırlanmış kısa ve hedefli konuşma görevlerini tamamla.",
-    en: "Instead of passive lessons, complete short, focused speaking tasks prepared for your needs.",
+    tr: "Cevabında görülebilen bir güçlü yönü ve üzerinde çalışabileceğin bir noktayı incele.",
+    en: "Look at a strength and a useful area to work on, based on what your answer shows.",
   },
-  methodAltThree: {
-    tr: "Uzman koçun konuşma kaydını inceleyerek geri bildirim vermesi",
-    en: "An expert coach reviewing a speaking recording and giving feedback",
+  methodThreeTitle: {
+    tr: "Pratik yap",
+    en: "Practice",
   },
-  methodThreeTitle: { tr: "Uzman geri bildirimiyle düzelt", en: "Improve with expert feedback" },
   methodThreeBody: {
-    tr: "Her seferinde tek bir önemli zayıflığa odaklan ve neyi nasıl düzelteceğini açıkça gör.",
-    en: "Focus on one important weakness at a time and see clearly what to improve and how.",
+    tr: "Seçtiğin noktaya yönelik kısa bir çalışma yap: örneğin fikrini düzenle veya açıklamanı geliştir.",
+    en: "Work on that point with a short exercise, such as organizing an idea or developing an explanation.",
   },
-  methodAltFour: {
-    tr: "Bir katılımcının profesyonel konuşma senaryosunu prova etmesi",
-    en: "A participant rehearsing a professional speaking scenario",
+  methodFourTitle: {
+    tr: "Tekrar dene",
+    en: "Try again",
   },
-  methodFourTitle: { tr: "Gerçek kariyer senaryolarında hazırlan", en: "Prepare with real career scenarios" },
   methodFourBody: {
-    tr: "İş görüşmeleri, toplantılar, sunumlar ve uluslararası çalışma durumları üzerinden tekrar yap.",
-    en: "Rehearse interviews, meetings, presentations, and international work situations.",
+    tr: "Aynı soruya yeniden cevap ver. Cevaplarını ve geri bildirimi karşılaştırarak neyin değiştiğine bak.",
+    en: "Answer the same question again. Compare your answers and feedback to see what changed.",
   },
-  methodAltFive: {
-    tr: "İlk ve son konuşma kayıtları arasındaki gelişimi gösteren ses dalgası karşılaştırması",
-    en: "A waveform comparison showing progress between the first and final speaking recordings",
+  methodFiveTitle: {
+    tr: "Adım adım ilerle",
+    en: "Keep building",
   },
-  methodFiveTitle: { tr: "Gelişimini kayıtlarla gör", en: "See your progress in your recordings" },
   methodFiveBody: {
-    tr: "İlk ve son kayıtlarını karşılaştırarak konuşmandaki gerçek değişimi görünür hale getir.",
-    en: "Compare your first and final recordings to make the real change in your speaking visible.",
+    tr: "Yeni sorular ve durumlarla pratiğe devam et. Önceki cevaplarını ve sonuçlarını sonraki çalışma hedefin için kullan.",
+    en: "Keep practicing with new questions and situations. Use earlier answers and results to choose what to work on next.",
   },
   resultsKicker: { tr: "GERÇEK ÖĞRENCİLER. GERÇEK DEĞİŞİM.", en: "REAL STUDENTS. REAL CHANGE." },
   resultsTitle: {
-    tr: "İngilizceyi bilmek yetmediğinde, doğru çalışma sistemi fark yaratır.",
-    en: "When knowing English is not enough, the right training system makes the difference.",
+    tr: "Farklı hedefler. Farklı konuşma zorlukları.",
+    en: "Different goals. Different speaking challenges.",
   },
   resultsBody: {
-    tr: "Farklı kariyerlerden insanlar, farklı konuşma problemleri ve gerçek hayatta görünür hale gelen gelişim.",
-    en: "Different careers, different speaking problems, and progress that becomes visible in real life.",
+    tr: "Toplantılardan IELTS Speaking pratiğine, öğrencilerin kendi deneyimleri.",
+    en: "From meetings to IELTS Speaking practice, students share their own experiences.",
   },
   carouselLabel: { tr: "Gerçek öğrenci sonuçları", en: "Real student results" },
   carouselRole: { tr: "karusel", en: "carousel" },
@@ -199,8 +231,8 @@ export const homepageCopy = {
     en: "Choose the training intensity that matches your goal.",
   },
   programsBody: {
-    tr: "Yaklaşan önemli bir kariyer hedefi için yoğun bir sprint veya İngilizce konuşma performansınızı sistemli şekilde geliştirmek için altı haftalık kapsamlı bir program seçin.",
-    en: "Choose an intensive sprint for an important career goal, or a comprehensive six-week program to develop your English speaking performance systematically.",
+    tr: "Şu anda sunulan kariyer odaklı programlar: yakın bir hedef için 21 günlük sprint veya düzenli pratik için altı haftalık Career Flow.",
+    en: "Our current career-focused offers: a 21-day sprint for a near-term goal or six weeks of regular practice with Career Flow.",
   },
   flowDesignation: { tr: "ANA PROGRAM", en: "FLAGSHIP PROGRAM" },
   flowName: { tr: "Star Speaker Career Flow", en: "Star Speaker Career Flow" },
@@ -334,34 +366,37 @@ export const homepageCopy = {
     en: "Free Speaking Performance Analysis",
   },
   analysisBody: {
-    tr: "Konuşmanı analiz et, güçlü yönünü gör, ana konuşma problemini keşfet ve aynı soruya daha güçlü bir cevap ver.",
-    en: "Analyze your speaking, see your strength, discover your main speaking problem, and give a stronger answer to the same question.",
+    tr: "Türkçe sunulan ücretsiz akışta bir soruya sesli cevap ver. Yazıya dökülen cevabına dayalı geri bildirimi incele, sonra aynı soruyu tekrar dene.",
+    en: "The free public flow is available in Turkish: answer one question aloud, review feedback based on the transcript, then try again. Ask on WhatsApp about the next step for your goal.",
   },
   analysisOutcomesLabel: { tr: "Konuşma analizi çıktıları", en: "Speaking analysis outcomes" },
   analysisOutcomeOne: { tr: "1 güçlü yönün", en: "1 strength" },
-  analysisOutcomeTwo: { tr: "1 ana konuşma problemin", en: "1 main speaking problem" },
+  analysisOutcomeTwo: {
+    tr: "Cevabında çalışılabilecek 1 nokta",
+    en: "1 area to work on in your answer",
+  },
   analysisOutcomeThree: { tr: "1 odaklı düzeltme", en: "1 focused correction" },
   analysisOutcomeFour: { tr: "İlk ve geliştirilmiş cevabın", en: "Your first and improved answers" },
   analysisCta: { tr: "Ücretsiz Analize Başla", en: "Ask on WhatsApp" },
   analysisReassurance: {
-    tr: "Yaklaşık 3 dakika · Online · Satın alma zorunluluğu yok",
-    en: "About 3 minutes · Online · No obligation to purchase",
+    tr: "Online · Süre kişiye göre değişir · Satın alma zorunluluğu yok",
+    en: "Online · Time varies · No obligation to purchase",
   },
   faqHeading: {
     tr: "Aklınızdaki son soruları netleştirelim.",
     en: "Let’s clarify the final questions on your mind.",
   },
   finalCtaTitle: {
-    tr: "Bir sonraki kariyer fırsatınıza daha hazır girin.",
-    en: "Be better prepared for your next career opportunity.",
+    tr: "Senin için önemli konuşmaya hazırlan.",
+    en: "Prepare for the conversation that matters to you.",
   },
   finalCtaBody: {
-    tr: "3 dakikalık ücretsiz konuşma analizinde güçlü yönünüzü, ana konuşma probleminizi ve geliştirmeniz gereken önceliği görün.",
-    en: "In the free three-minute speaking analysis, see your strength, your main speaking problem, and the priority you need to improve.",
+    tr: "Ücretsiz Konuşma Analizi ile bir cevabını incele, odaklı geri bildirim al ve tekrar dene.",
+    en: "Tell us what you want to use English for. Ask on WhatsApp about practice and the next step that fits your goal.",
   },
   finalCtaReassurance: {
-    tr: "3 dakika · Online · Satın alma zorunluluğu yok",
-    en: "3 minutes · Online · No obligation to purchase",
+    tr: "Online · Satın alma zorunluluğu yok",
+    en: "No obligation to purchase",
   },
   footerNavigation: { tr: "Alt bilgi navigasyonu", en: "Footer navigation" },
   footerHome: { tr: "Ana Sayfa", en: "Home" },
@@ -369,8 +404,8 @@ export const homepageCopy = {
   footerResults: { tr: "Sonuçlar", en: "Results" },
   footerPrograms: { tr: "Programlar", en: "Programs" },
   footerBrandLine: {
-    tr: "KARİYER İNGİLİZCESİ",
-    en: "CAREER ENGLISH",
+    tr: "Önemli anlar için İngilizce konuşma pratiği.",
+    en: "Speaking practice for the moments that matter.",
   },
   footerCopyright: {
     tr: "© 2026 Star Speaker. Tüm hakları saklıdır.",
@@ -385,12 +420,12 @@ export const homepageLocales = {
       {
         question: "Bu programlar kimler için?",
         answer:
-          "İngilizceyi anlayan ancak mülakatlarda, toplantılarda, sunumlarda, uluslararası çalışma ortamlarında veya baskı altında konuşurken kendini istediği kadar net ve güvenli ifade edemeyen insanlar için. Mühendis olmanız gerekmez.",
+          "İngilizce bilen ama işte, eğitimde, konuşma sınavlarında veya günlük yaşamda kendini ifade ederken zorlanan insanlar için. Ana odağımız yaklaşık B1 ve üzeridir; program uygunluğu kişiye göre değerlendirilir.",
       },
       {
         question: "Bu bir genel İngilizce kursu mu?",
         answer:
-          "Hayır. Star Speaker konuşma odaklıdır; genel İngilizce konularını sırayla tamamlamak yerine kariyeriniz için önemli anlarda kullanabileceğiniz konuşma performansını pratik, geri bildirim, düzeltme ve tekrar yoluyla geliştirir.",
+          "Star Speaker konuşma pratiğine odaklanır. Genel İngilizce konularını sırayla tamamlamak yerine, önemli konuşmalara pratik, odaklı geri bildirim ve tekrar ile hazırlanırsın.",
       },
       {
         question: "Career Flow ile 21 Günlük Performans Sprinti arasındaki fark nedir?",
@@ -400,27 +435,27 @@ export const homepageLocales = {
       {
         question: "Hangi programın bana uygun olduğunu nasıl anlayacağım?",
         answer:
-          "Önce ücretsiz konuşma analizini tamamlarsınız. Hedefinizin ne kadar yakın olduğu, mevcut konuşma performansınız ve ihtiyaç duyduğunuz destek seviyesi analiz ve sonrasındaki görüşmede değerlendirilir; program uygunluğu bu aşamadan sonra netleştirilir.",
+          "Hedefini WhatsApp üzerinden paylaşabilirsin. Türkçe ücretsiz konuşma analizi de bir başlangıç olabilir. Hedefin, zamanın ve ihtiyaç duyduğun destek görüşmede değerlendirilir.",
       },
       {
         question: "Programlara katılmak için hangi İngilizce seviyesinde olmam gerekiyor?",
         answer:
-          "Programlar A2.1 seviyesinden C1.1 seviyesine kadar İngilizce kullanıcılarını destekler. Kesin uygunluk, konuşma analizi ve sonrasındaki görüşmede hedefiniz ve mevcut konuşma performansınız değerlendirilerek belirlenir.",
+          "Ana odağımız yaklaşık B1 ve üzeridir. Mevcut programların desteklediği A2.1–C1.1 aralığı korunur; A2 düzeyinde de uygunluk hedefin ve mevcut konuşma becerilerin değerlendirilerek belirlenir.",
       },
       {
         question: "Ücretsiz Konuşma Performans Analizi nasıl ilerliyor?",
         answer:
-          "Yaklaşık üç dakikalık online akışta bir soruya sesli cevap verirsiniz. Cevabınızdan bir güçlü yön, bir ana konuşma problemi ve odaklı bir düzeltme görür; ardından aynı soruya daha güçlü bir cevap vererek iki kaydı karşılaştırırsınız. Bu analiz, sonrasındaki danışmanlık görüşmesinden ayrı bir ilk adımdır.",
+          "Türkçe ücretsiz akışta bir soruya sesli cevap verir, yazıya dökülen cevabına dayalı bir güçlü yön ve bir çalışma noktası görür, sonra tekrar denersin. Cevaplarını, metinlerini ve sonuçlarını karşılaştırabilirsin. Bu, telaffuz, aksan, ses hızı veya özgüven ölçümü değildir. Süre kişiye göre değişir. Giriş gerektiren Üye Tanılama daha geniş bir konuşma ve dinleme değerlendirmesidir; bu tek soruluk akıştan ayrıdır.",
       },
       {
         question: "Star Speaker geleneksel İş İngilizcesinden nasıl farklı?",
         answer:
-          "Geleneksel İş İngilizcesi çoğunlukla kurumsal kelimeler, kalıplar veya yazışma içerikleri öğretir. Star Speaker ise mülakat, toplantı, sunum ve uluslararası çalışma gibi gerçek kariyer durumlarında konuşma pratiği, odaklı geri bildirim, düzeltme, tekrar ve simülasyon yoluyla kullanılabilir konuşma performansı geliştirir.",
+          "İş İngilizcesi iş ortamındaki dil ihtiyaçlarına odaklanır. Star Speaker ise iş, eğitim ve günlük yaşamda konuşma pratiğini öne çıkarır. Career Flow ve Sprint, bu yaklaşımın mevcut kariyer odaklı programlarıdır.",
       },
       {
         question: "Yurt dışında çalışmaya hazırlanmak için uygun mu?",
         answer:
-          "Evet, yurt dışındaki mülakatlara, uluslararası ekip toplantılarına, sunumlara ve günlük profesyonel konuşmalara hazırlanmak hedefler arasında olabilir. İçerik hedefinize göre uyarlanır; belirli bir iş veya sonuç garantisi verilmez.",
+          "Yurt dışında iş, eğitim veya günlük yaşam için konuşmalara hazırlanmak bir hedef olabilir. Konuşma sınavları için de cevaplarını düzenleme pratiği yapabilirsin. Belirli bir iş, kabul veya sınav puanı garantisi verilmez.",
       },
     ],
     carousel: {
@@ -474,12 +509,12 @@ export const homepageLocales = {
       {
         question: "Who are these programs for?",
         answer:
-          "They are for people who understand English but cannot express themselves as clearly and confidently as they would like in interviews, meetings, presentations, international work, or other high-pressure conversations. You do not need to be an engineer.",
+          "For people who know some English but find it difficult to express themselves at work, in study, speaking exams, or everyday life. Our main focus is roughly B1 and above; program suitability is considered individually.",
       },
       {
         question: "Is this a general English course?",
         answer:
-          "No. Star Speaker is speaking-first. Instead of moving through a standard sequence of general English topics, it develops the speaking performance you need in important career moments through practice, feedback, correction, and repetition.",
+          "Star Speaker focuses on speaking practice. Rather than following a full general English syllabus, you prepare for relevant conversations through practice, focused feedback, and repetition.",
       },
       {
         question: "What is the difference between Career Flow and the 21-Day Performance Sprint?",
@@ -489,27 +524,27 @@ export const homepageLocales = {
       {
         question: "How will I know which program is right for me?",
         answer:
-          "You begin with the free speaking analysis. Your timeline, current speaking performance, and required level of support are then considered during the analysis and follow-up consultation before program suitability is confirmed.",
+          "Share your goal on WhatsApp. The free Turkish speaking analysis can also be a starting point. Your goal, timeline, and support needs are discussed before program suitability is confirmed.",
       },
       {
         question: "What level of English do I need to join?",
         answer:
-          "The programs support English users from A2.1 through C1.1. Final suitability is determined after your goal and current speaking performance are considered during the speaking analysis and follow-up consultation.",
+          "Our main focus is roughly B1 and above. Current programs support A2.1–C1.1; people at A2 can still be considered based on their goals and current speaking skills.",
       },
       {
         question: "What happens during the Free Speaking Performance Analysis?",
         answer:
-          "In an online flow that takes about three minutes, you answer one question aloud. You see one strength, one main speaking problem, and a focused correction, then answer the same question more strongly and compare the two recordings. This analysis is a separate first step before any later consultation.",
+          "In the free Turkish flow, you answer one question aloud, see a strength and an area to work on based on the transcript, then try again. You can compare answers, transcripts, and results. It does not measure pronunciation, accent, acoustic speed, or confidence. Time varies. The Member Diagnostic requires sign-in and covers broader speaking and listening; it is separate from this one-question flow.",
       },
       {
         question: "How is Star Speaker different from traditional Business English?",
         answer:
-          "Traditional Business English often focuses on corporate vocabulary, expressions, or written communication. Star Speaker develops usable speaking performance through practice, focused feedback, correction, repetition, and simulations for real career situations such as interviews, meetings, presentations, and international work.",
+          "Business English focuses on language needs at work. Star Speaker emphasizes speaking practice across work, study, and everyday life. Career Flow and Sprint are the current career-focused programs within that approach.",
       },
       {
         question: "Is it suitable for preparing to work abroad?",
         answer:
-          "Yes. Your goal can include preparing for international interviews, team meetings, presentations, and everyday professional conversations abroad. Practice is adapted to your goal, but no particular job or outcome is guaranteed.",
+          "Work, study, and everyday conversations abroad can be practice goals. Speaking-exam practice can also help you work on organizing answers. No particular job, admission, or exam score is guaranteed.",
       },
     ],
     carousel: {

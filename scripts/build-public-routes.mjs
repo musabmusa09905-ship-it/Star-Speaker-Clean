@@ -25,22 +25,22 @@ const legacyRoutes = new Map([
 
 function rootRedirectDocument() {
   return `<!doctype html>
-<html lang="tr">
+<html lang="en">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="noindex, follow">
-    <meta http-equiv="refresh" content="0; url=/tr/">
-    <link rel="canonical" href="https://starspeakerstudio.com/tr/">
+    <meta http-equiv="refresh" content="0; url=/en/">
+    <link rel="canonical" href="https://starspeakerstudio.com/en/">
     <link rel="alternate" hreflang="tr" href="https://starspeakerstudio.com/tr/">
     <link rel="alternate" hreflang="en" href="https://starspeakerstudio.com/en/">
-    <link rel="alternate" hreflang="x-default" href="https://starspeakerstudio.com/tr/">
+    <link rel="alternate" hreflang="x-default" href="https://starspeakerstudio.com/en/">
     <title>Star Speaker</title>
     <script>
       (() => {
         const query = new URLSearchParams(location.search);
         const requestedLocale = query.get("lang");
-        const locale = requestedLocale === "en" ? "en" : "tr";
+        const locale = requestedLocale === "tr" ? "tr" : "en";
         query.delete("lang");
         const search = query.size ? \`?\${query}\` : "";
         const supportedHashes = new Set(${JSON.stringify([...supportedHashes])});
@@ -50,7 +50,7 @@ function rootRedirectDocument() {
     </script>
   </head>
   <body>
-    <p><a href="/tr/">Star Speaker Türkçe ana sayfasını aç</a></p>
+    <p><a href="/en/">Open the Star Speaker English homepage</a></p>
   </body>
 </html>
 `;
@@ -107,13 +107,13 @@ await writeFile(
     <loc>https://starspeakerstudio.com/tr/</loc>
     <xhtml:link rel="alternate" hreflang="tr" href="https://starspeakerstudio.com/tr/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://starspeakerstudio.com/en/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://starspeakerstudio.com/tr/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://starspeakerstudio.com/en/"/>
   </url>
   <url>
     <loc>https://starspeakerstudio.com/en/</loc>
     <xhtml:link rel="alternate" hreflang="tr" href="https://starspeakerstudio.com/tr/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://starspeakerstudio.com/en/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://starspeakerstudio.com/tr/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://starspeakerstudio.com/en/"/>
   </url>
   <url>
     <loc>https://starspeakerstudio.com/tr/performans-testi/</loc>

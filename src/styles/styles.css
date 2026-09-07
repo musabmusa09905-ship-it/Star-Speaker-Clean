@@ -10165,3 +10165,82 @@ body.stage-one-home.nav-open {
 @media (prefers-reduced-motion: reduce) {
   .stage-transformation-arrow, .stage-transformation-icon { animation: none; transition: none; }
 }
+
+/* Homepage positioning: compact sections, readable steps and situations. */
+.stage-one-home .stage-program,
+.stage-one-home .stage-method,
+.stage-one-home .stage-programs,
+.stage-one-home .stage-results,
+.stage-one-home .stage-closing-faq,
+.stage-one-home .stage-final-cta { padding-block: 64px; }
+.stage-one-home .stage-program-intro,
+.stage-one-home .stage-method-intro { margin-bottom: 32px; padding-bottom: 0; }
+.stage-one-home .stage-program-transformation { margin-top: 40px; }
+.stage-one-home .stage-program-visual { height: 180px; min-height: 0; }
+.stage-one-home .stage-program-visual img { height: 100%; object-fit: cover; }
+.stage-one-home .stage-program-comparison li { min-height: 64px; }
+.stage-one-home .stage-method-journey { display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 24px; margin-top: 36px; }
+.stage-one-home .stage-method-step { display: block; min-height: 0; margin: 0; padding: 0; }
+.stage-one-home .stage-method-step::before,
+.stage-one-home .stage-method-step::after,
+.stage-one-home .stage-method-journey::before { display: none; }
+.stage-one-home .stage-method-copy { padding: 0; width: auto; max-width: none; }
+.stage-one-home .stage-method-copy h3 { font-size: 25px; margin-block: 16px; }
+.stage-one-home .stage-method-copy p { font-size: 16px; }
+.stage-one-home .stage-method-number { position: static; font-size: 28px; }
+.stage-situations { background: #0c0c0c; color: #f7f1e4; padding-block: 56px; }
+.stage-situations-container { width: min(calc(100% - 64px),1180px); margin-inline: auto; }
+.stage-situations h2 { font-family: Georgia,serif; font-weight: 400; font-size: clamp(30px,3vw,44px); max-width: 760px; margin: 0 0 32px; }
+.stage-situations-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 28px; }
+.stage-situations article { border-top: 1px solid #bfa46a; padding-top: 20px; }
+.stage-situations h3 { color: #e6d3a3; font-size: 20px; margin-bottom: 12px; }
+.stage-situations p { font-size: 16px; line-height: 1.6; }
+.stage-one-home .stage-closing-footer-line { letter-spacing: .03em; text-transform: none; line-height: 1.6; padding-inline: 20px; }
+@media (max-width: 1024px) {
+ .stage-one-home .stage-method-journey { grid-template-columns: repeat(2,minmax(0,1fr)); }
+ .stage-situations-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+}
+@media (max-width: 760px) {
+ .stage-one-home .stage-home-brand { position: static; transform: none; }
+}
+@media (max-width: 560px) {
+ .stage-one-home .stage-home-mobile-image { display: none; }
+ .stage-one-home .stage-home-hero-inner { padding-top: 32px; }
+ .stage-one-home .stage-home-copy h1 { font-size: 36px; }
+ .stage-one-home .stage-program,
+ .stage-one-home .stage-method,
+ .stage-one-home .stage-programs,
+ .stage-one-home .stage-results,
+ .stage-one-home .stage-closing-faq,
+ .stage-one-home .stage-final-cta { padding-block: 42px; }
+ .stage-one-home .stage-method-journey { grid-template-columns: 1fr; gap: 28px; }
+ .stage-one-home .stage-method-copy { border-top: 1px solid rgba(191,164,106,.35); padding-top: 16px; }
+ .stage-situations-container { width: calc(100% - 40px); }
+ .stage-situations-grid { grid-template-columns: 1fr; gap: 24px; }
+ .stage-one-home .stage-program-visual { height: 150px; }
+}
+.stage-one-home .stage-program-scenarios { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 24px; }
+.stage-one-home .stage-program-scenario { display: flex; flex-direction: column; gap: 0; min-height: 0; margin: 0; }
+.stage-one-home .stage-program-scenario .stage-program-visual { width: 100%; margin: 0; order: 0; }
+.stage-one-home .stage-program-scenario figcaption { display: block; width: 100%; padding: 20px 0 0; margin: 0; order: 1; text-align: left; }
+.stage-one-home .stage-program-number { display: none; }
+.stage-one-home .stage-program-rule { display: none; }
+.stage-one-home .stage-program-scenario-label { font-size: 20px; line-height: 1.4; }
+.stage-one-home .stage-method-copy::after { display: none; }
+@media (max-width:1024px) {
+ .stage-one-home .stage-program-scenarios { grid-template-columns: repeat(2,minmax(0,1fr)); }
+ .stage-one-home .stage-home-mobile-image { display: none; }
+ .stage-one-home .stage-home-hero-inner { min-height: 0; padding-block: 40px; }
+ .stage-one-home .stage-home-hero { min-height: 0; }
+}
+@media (max-width:560px) {
+ .stage-one-home .stage-program-scenarios { grid-template-columns: 1fr; gap: 24px; }
+ .stage-one-home .stage-program-scenario-label { font-size: 18px; }
+ .stage-one-home .stage-home-hero-inner { padding-block: 32px; }
+ .stage-one-home .stage-program-before,
+ .stage-one-home .stage-program-after { padding: 22px 18px; }
+ .stage-one-home .stage-transformation-bridge { min-height: 72px; }
+ .stage-one-home .stage-programs-flow,
+ .stage-one-home .stage-programs-sprint,
+ .stage-one-home .stage-programs-analysis { padding: 24px 20px; }
+}
