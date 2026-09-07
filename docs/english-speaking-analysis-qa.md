@@ -1,32 +1,57 @@
-# English Speaking Analysis — frontend QA
+# English Speaking Analysis — corrected localization QA
 
-Implementation branch: `feat/english-speaking-analysis`, based on marketing production `f971f7b98438dac93e573c6df2f9c9a35f8d347d`.
+Status: corrected implementation; founder QA pending. No deployment or homepage CTA switch.
 
-The `/en/speaking-analysis/` document is implemented but not released. Homepage CTAs and the sitemap remain unchanged until the controlled real-microphone gate passes. Backend migration/deployment must precede publishing this frontend. The authoritative backend and detailed release/rollback record are in the sibling `StarSpeaker-English-Analysis` worktree, `docs/english-speaking-analysis-release.md`.
+## Canonical product and architecture
 
-## Architecture
+`/tr/performans-testi/` is the behavioral source. `scripts/build-performance-english.mjs` generates the English document/controller/contact copy from that source and `src/i18n/performance-english-copy.json`. Commit generated outputs. Run `node scripts/build-site.mjs` after editing source or translations. `node scripts/test-english-analysis.mjs` rejects stale generated files.
 
-The English controller is independent of Turkish contact/booking presentation. Shared `speaking-core.js` owns recording lifecycle helpers, MIME selection, the English recorder and bounded network requests. Turkish imports shared track release and MIME selection; its established questions, timing choices, evaluator fields, contact form and booking flow remain intact. This avoids copying the 1,480-line Turkish controller or refactoring unrelated Turkish product state.
+English route: `/en/speaking-analysis/`. It uses the same `performance-sprint.css`, with one English-only mobile pseudo-element translation. The Turkish controller remains as it was before scope correction; the previously committed microphone cleanup and heading focus fixes remain.
 
-English has five levels, five contexts, optional five-second preparation or immediate Start Now, a fixed 60-second maximum, no required name/emotion/contact form, one server-enforced successful retry, no scores, exact quoted evidence, recoverable server results and direct WhatsApp after value. The original feedback remains available after retry. The approved monogram is reused unchanged.
+Setup retains first name, four situations, level, four duration choices, and five feelings. Public labels B1/B1+/B2/B2+/C1 map to b1_1/b1_2/b2_1/b2_2/c1_1. The original bank remains 128 questions; 80 are eligible in English. Server history/rotation and same-question retry remain unchanged. The redundant Turkish translation under each English question is empty in English; English context and structure hints remain.
 
-## Results
+Four metric scores, the overall score ring, one strength/correction/evidence/opening, one retry, before/after scores, transcript comparison, result summary, contact, budget, urgency, calendar and booking management are retained.
 
-- All eight prior marketing/Turkish suites pass.
-- New English entry contract and shared recording lifecycle/MIME/timeout tests pass.
-- Chromium all-state flow passes at 320, 360, 390, 768 and 1440 pixels: setup, real MediaRecorder with synthetic media, stop, submission, lost response, recovery, first feedback, refresh, retry, comparison and WhatsApp link. No horizontal overflow. Active heading focus verified.
-- Chrome and Edge repeat the full flow at 390 pixels successfully.
-- Permission denied, unavailable/busy device and unsupported recording states have distinct copy, keyboard focus, rerecord recovery and no overflow at all five widths.
-- Normal stop releases every captured track. Unit checks also cover cancel, recorder error, interrupted tracks, start failure, a permission response arriving after cancellation, MIME fallback and request timeout.
-- Visual screenshots reviewed at 320 and 1440: readable hierarchy, no clipped controls, approved black/champagne/ivory styling and original logo.
-- Static build and diff whitespace checks pass.
+English session, history, anonymous identity and booking storage use separate keys. A thin transport adds locale and a random recovery token, bounds requests, and gives safe English errors. Recovery uses server-owned first/retry results in the canonical renderers. Product logic is generated rather than independently redesigned. The obsolete 60-second-only recorder class and separate English stylesheet were removed.
 
-## Open release gate
+## Validation
 
-A controlled human microphone first answer/retry with submission and result recovery is still required in desktop Chromium and one additional browser. Automated synthetic audio is not presented as human microphone evidence. Firefox's downloaded binary could not launch (`spawn UNKNOWN`); Windows WebKit could not start automated capture. Desktop Safari and physical iOS Safari are not verified.
+- All nine existing Turkish/shared/home/routing script checks pass; the corrected English generation/copy/parity test passes.
+- Chrome: 17 matching states in both languages at each of 320, 360, 390, 768 and 1440 pixels (170 state captures). Checks compare element/class structure, bounds of visible elements, English text including CSS pseudo-elements, score display, same-question retry, and ended microphone tracks. Browser microphone and backend responses are synthetic fixtures; no production traffic.
+- The additional 390px pass passed for denied microphone permission, countdown cancellation, rerecording, heading focus, appointment confirmation, rescheduling and cancellation.
+- Shared utilities: track cleanup, MIME fallback, timeout, locale/token transport and safe error translation pass.
+- Backend: 1,936 unit tests, 24 database behavior checks (zero residual fixtures), local endpoint/DB ownership/rotation/evidence/recovery checks, build and function-manifest hash check pass.
+- Real provider, authored transcripts: first/retry use the original scored schema in English. Representative scores were 58 and 84; the comparison is computed by the unchanged four-metric mean. These are QA fixture results, not calibration guarantees.
+- Real transcription provider accepted an authored synthetic WAV through the canonical transcription function.
 
-## Release and rollback
+Browser reproduction: `node scripts/qa-english-browser.mjs`. Optional `QA_WIDTHS=390`, `QA_EXECUTABLE` and `QA_OUTPUT`. Screenshots from this run are outside git at `../english-localization-qa/`. Review screenshots alongside their Turkish counterparts.
 
-Do not switch homepage CTAs yet. After the remaining gate: deploy the additive database migration and authoritative functions; verify backend; publish and smoke the English route; only then add its generated sitemap entry and switch the English primary CTA to Free Speaking Analysis with WhatsApp secondary. Rerun all homepage/routing tests and verify production commit contents.
+## Founder QA / launch gates
 
-Rollback the English marketing route and CTA using revert commits. Keep the shared Turkish microphone/security fixes where possible. Do not drop database history or change Turkish booking. The prior marketing production commit is the verified full-site fallback, but it predates the new microphone fixes.
+No release action is authorized before corrected founder QA. The earlier human-microphone test covered the superseded design and is not approval for this product. A fresh human-microphone check and target-device checks, including real Safari/iOS, remain required before launch.
+
+Booking preserves the existing +90 Turkish mobile validation, TL budget choices and Europe/Istanbul schedule. English explains the phone restriction and offers the same WhatsApp destination for other countries. First-name validation retains the existing Latin/Turkish-letter constraint and provides an English explanation. No booking or messaging was sent during these tests.
+
+The English page needs the corrected backend branch at release time. Main still has the old backend response-language behavior. Keep the English homepage CTA “Ask on WhatsApp” until the release gate is satisfied.
+
+## Corrective file manifest
+
+```text
+M	docs/english-speaking-analysis-qa.md
+M	en/speaking-analysis/index.html
+M	scripts/build-site.mjs
+M	scripts/qa-english-browser.mjs
+D	scripts/qa-english-errors.mjs
+M	scripts/test-english-analysis.mjs
+M	scripts/test-speaking-core.mjs
+M	src/scripts/english-analysis.js
+M	src/scripts/speaking-core.js
+D	src/styles/english-analysis.css
+M	src/styles/performance-sprint.css
+A	docs/english-localization-recovery.md
+A	scripts/build-performance-english.mjs
+A	src/i18n/performance-english-copy.json
+A	src/scripts/performance-english-config.js
+A	src/scripts/performance-english-contact.js
+A	src/scripts/performance-english-transport.js
+```

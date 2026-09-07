@@ -1,162 +1,422 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Free English Speaking Analysis | Star Speaker</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta
       name="description"
-      content="Answer one English question, get focused feedback, and retry once. A free speaking analysis of your answer, with clear evidence and one useful next step."
-    />
-    <link
-      rel="canonical"
-      href="https://starspeakerstudio.com/en/speaking-analysis/"
-    />
-    <meta
-      property="og:title"
-      content="Free English Speaking Analysis | Star Speaker"
-    />
-    <meta
-      property="og:description"
-      content="One question, focused feedback and one retry. Find a useful next step for your English answer."
-    />
-    <meta property="og:type" content="website" />
-    <meta
-      property="og:url"
-      content="https://starspeakerstudio.com/en/speaking-analysis/"
-    />
-    <meta
-      property="og:image"
-      content="https://starspeakerstudio.com/public/assets/star-speaker/star-speaker-monogram-transparent.png"
-    />
-    <meta name="twitter:card" content="summary" />
-    <link rel="stylesheet" href="/src/styles/english-analysis.css" />
+      content="Free Career English analysis: answer a question tailored to you, receive personalized corrections, and try answering the same question again more powerfully."
+    >
+    <meta name="theme-color" content="#070707">
+    <meta name="robots" content="index, follow">
+    <title>Free Career English Analysis | Star Speaker</title>
+    <link rel="canonical" href="https://starspeakerstudio.com/en/speaking-analysis/">
+    <link rel="icon" href="/public/favicon/favicon.ico" sizes="any">
+    <link rel="apple-touch-icon" sizes="180x180" href="/public/favicon/apple-touch-icon.png">
+    <link rel="stylesheet" href="/src/styles/performance-sprint.css?v=20260831-start-now">
   </head>
-  <body>
-    <header>
-      <a href="/en/" aria-label="Star Speaker home">
+  <body class="performance-sprint">
+    <a class="sprint-skip-link" href="#sprint-main">Skip to content</a>
+    <div class="sprint-demo-badge" data-demo-badge hidden>LOCAL DEMO · No real analysis is submitted</div>
+
+    <header class="sprint-header">
+      <a class="sprint-brand" href="/en/" aria-label="Star Speaker homepage">
         <img
           src="/public/assets/star-speaker/star-speaker-monogram-transparent.png"
-          width="46"
-          height="46"
           alt=""
-        />
-        STAR SPEAKER
+          width="64"
+          height="65"
+        >
+        <span>
+          <strong>STAR SPEAKER</strong>
+          <small>CAREER ENGLISH</small>
+        </span>
       </a>
-      <span>Free Speaking Analysis</span>
+      <div class="sprint-header-status" aria-label="Analysis duration">
+        <span class="sprint-status-dot" aria-hidden="true"></span>
+        Free analysis
+      </div>
     </header>
-    <main id="analysis">
-      <section data-screen="setup">
-        <p class="eyebrow">ONE ANSWER. ONE USEFUL NEXT STEP.</p>
-        <h1 tabindex="-1">Find a focus for your English speaking.</h1>
-        <p>
-          Answer one question. Get feedback on your answer, then try the same
-          question once more.
-        </p>
-        <p class="muted">
-          This is a short practice sample, not a level test. We do not assess
-          pronunciation or accent.
-        </p>
-        <form id="setup">
-          <label for="level">Choose your practice level</label>
-          <select id="level" required>
-            <option value="b1">B1</option>
-            <option value="b1_plus">B1+</option>
-            <option value="b2">B2</option>
-            <option value="b2_plus">B2+</option>
-            <option value="c1">C1</option>
-          </select>
-          <label for="category">Choose a context</label>
-          <select id="category">
-            <option value="everyday_life">Everyday Life</option>
-            <option value="work">Work</option>
-            <option value="study">Study</option>
-            <option value="speaking_under_pressure">
-              Speaking Under Pressure
-            </option>
-            <option value="opinions">Opinions &amp; Explaining Ideas</option>
-          </select>
-          <p class="muted">
-            Context describes the question. We do not measure how nervous or
-            confident you feel.
+
+    <main id="sprint-main">
+      <div class="sprint-progress-shell" hidden data-progress-shell>
+        <div class="sprint-progress-copy">
+          <span data-progress-label>Choose your situation</span>
+          <span data-progress-count>1 / 5</span>
+        </div>
+        <div
+          class="sprint-progress-track"
+          role="progressbar"
+          aria-label="Analysis progress"
+          aria-valuemin="1"
+          aria-valuemax="5"
+          aria-valuenow="1"
+          data-progress
+        >
+          <span data-progress-fill></span>
+        </div>
+      </div>
+
+      <section class="sprint-screen sprint-intro is-active" data-screen="intro" aria-labelledby="sprint-title">
+        <div class="sprint-intro-copy">
+          <p class="sprint-kicker">CAREER ENGLISH · FREE</p>
+          <h1 id="sprint-title">Make your English answer<br><em>stronger.</em> </h1>
+          <p class="sprint-lead">
+            Answer a career-related question suited to you out loud, get your personal correction, then try the same answer again.
           </p>
-          <button type="submit">Start my analysis</button>
+          <ol class="sprint-flow-summary" aria-label="The three steps of your analysis">
+            <li><span>1</span><strong>Give a spoken answer</strong></li>
+            <li aria-hidden="true" class="sprint-flow-arrow">→</li>
+            <li><span>2</span><strong>Get your correction</strong></li>
+            <li aria-hidden="true" class="sprint-flow-arrow">→</li>
+            <li><span>3</span><strong>Try again</strong></li>
+          </ol>
+          <button class="sprint-primary sprint-intro-cta" type="button" data-start>
+            Start Free Analysis <span aria-hidden="true">→</span>
+          </button>
+          <p class="sprint-reassurance">
+            <span aria-hidden="true">●</span>
+            Not a level test · No preparation required · Your result is ready immediately
+          </p>
+        </div>
+      </section>
+
+      <section class="sprint-screen" data-screen="setup" aria-labelledby="setup-title">
+        <form class="sprint-card sprint-setup-card" data-setup-form novalidate>
+          <p class="sprint-kicker">1 · QUICK START</p>
+          <h2 id="setup-title">Let’s tailor the question to you.</h2>
+          <ol class="sprint-setup-progress" aria-label="Preparation choices" data-setup-progress>
+            <li data-setup-step="situation"><span>1</span>Situation</li>
+            <li data-setup-step="level"><span>2</span>Level</li>
+            <li data-setup-step="duration"><span>3</span>Duration</li>
+            <li data-setup-step="feeling"><span>4</span>Feeling</li>
+          </ol>
+
+          <label class="sprint-name-field">
+            <span>What is your name?</span>
+            <input
+              type="text"
+              name="firstName"
+              autocomplete="given-name"
+              maxlength="40"
+              inputmode="text"
+              aria-describedby="setup-error"
+              required
+            >
+          </label>
+
+          <fieldset class="sprint-setup-group">
+            <legend>In what situation do you want to speak English?</legend>
+            <p class="sprint-setup-helper">Choose the option that is closest to you.</p>
+            <div class="sprint-situation-options">
+              <button class="sprint-choice-card sprint-choice-card--purpose sprint-situation-option" type="button" aria-pressed="false" data-situation="meeting">
+                <span class="sprint-choice-card__content"><span class="sprint-choice-card__icon sprint-choice-emoji" aria-hidden="true">💬</span><strong>Meeting</strong></span>
+              </button>
+              <button class="sprint-choice-card sprint-choice-card--purpose sprint-situation-option" type="button" aria-pressed="false" data-situation="interview">
+                <span class="sprint-choice-card__content"><span class="sprint-choice-card__icon sprint-choice-emoji" aria-hidden="true">🤝</span><strong>Interview</strong></span>
+              </button>
+              <button class="sprint-choice-card sprint-choice-card--purpose sprint-situation-option" type="button" aria-pressed="false" data-situation="presentation">
+                <span class="sprint-choice-card__content"><span class="sprint-choice-card__icon sprint-choice-emoji" aria-hidden="true">🎤</span><strong>Presentation</strong></span>
+              </button>
+              <button class="sprint-choice-card sprint-choice-card--purpose sprint-situation-option" type="button" aria-pressed="false" data-situation="other">
+                <span class="sprint-choice-card__content"><span class="sprint-choice-card__icon sprint-choice-emoji" aria-hidden="true">✨</span><strong>Another Purpose</strong></span>
+              </button>
+            </div>
+          </fieldset>
+
+          <fieldset class="sprint-setup-group">
+            <legend>Which of these is closest to your English speaking level?</legend>
+            <div class="sprint-level-options">
+              <button class="sprint-choice-card sprint-choice-card--level" type="button" aria-pressed="false" data-level="b1_1"><span class="sprint-choice-card__content"><span class="sprint-level-mark sprint-level-mark--3" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span><strong>B1</strong></span></button>
+              <button class="sprint-choice-card sprint-choice-card--level" type="button" aria-pressed="false" data-level="b1_2"><span class="sprint-choice-card__content"><span class="sprint-level-mark sprint-level-mark--3" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span><strong>B1+</strong></span></button>
+              <button class="sprint-choice-card sprint-choice-card--level" type="button" aria-pressed="false" data-level="b2_1"><span class="sprint-choice-card__content"><span class="sprint-level-mark sprint-level-mark--4" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span><strong>B2</strong></span></button>
+              <button class="sprint-choice-card sprint-choice-card--level" type="button" aria-pressed="false" data-level="b2_2"><span class="sprint-choice-card__content"><span class="sprint-level-mark sprint-level-mark--4" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span><strong>B2+</strong></span></button>
+              <button class="sprint-choice-card sprint-choice-card--level" type="button" aria-pressed="false" data-level="c1_1"><span class="sprint-choice-card__content"><span class="sprint-level-mark sprint-level-mark--5" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span><strong>C1</strong></span></button>
+            </div>
+            <p class="sprint-level-note">Choose the level closest to your current speaking.</p>
+          </fieldset>
+
+          <fieldset class="sprint-setup-group">
+            <legend>How long would you like to speak?</legend>
+            <div class="sprint-level-options sprint-duration-options">
+              <button class="sprint-choice-card sprint-choice-card--duration" type="button" aria-pressed="false" data-duration="45"><span class="sprint-choice-card__content"><svg class="sprint-duration-mark" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7.5"></circle><path d="M12 13V8.5M9 3.5h6"></path></svg><span class="sprint-choice-card__copy"><strong>45 sec</strong><small>Short</small></span></span></button>
+              <button class="sprint-choice-card sprint-choice-card--duration" type="button" aria-pressed="false" data-duration="60"><span class="sprint-choice-card__content"><svg class="sprint-duration-mark" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7.5"></circle><path d="M12 13V7M9 3.5h6"></path></svg><span class="sprint-choice-card__copy"><strong>60 sec</strong><small>Recommended</small></span></span></button>
+              <button class="sprint-choice-card sprint-choice-card--duration" type="button" aria-pressed="false" data-duration="90"><span class="sprint-choice-card__content"><svg class="sprint-duration-mark" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7.5"></circle><path d="M12 13l4-3M9 3.5h6"></path></svg><span class="sprint-choice-card__copy"><strong>90 sec</strong><small>Detailed</small></span></span></button>
+              <button class="sprint-choice-card sprint-choice-card--duration" type="button" aria-pressed="false" data-duration="120"><span class="sprint-choice-card__content"><svg class="sprint-duration-mark" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7.5"></circle><path d="M12 13l4 3M9 3.5h6"></path></svg><span class="sprint-choice-card__copy"><strong>120 sec</strong><small>Long</small></span></span></button>
+            </div>
+            <p class="sprint-level-note" data-duration-note>We'll recommend a suitable duration when you choose your level; you can change it if you'd like.</p>
+          </fieldset>
+
+          <fieldset class="sprint-setup-group">
+            <legend>How do you feel speaking English today?</legend>
+            <div class="sprint-feeling-options">
+              <button class="sprint-choice-card sprint-choice-card--feeling" type="button" aria-pressed="false" data-feeling="fantastic"><span class="sprint-choice-card__content"><span class="sprint-choice-card__icon" aria-hidden="true">🤩</span><strong>Great</strong></span></button>
+              <button class="sprint-choice-card sprint-choice-card--feeling" type="button" aria-pressed="false" data-feeling="confident"><span class="sprint-choice-card__content"><span class="sprint-choice-card__icon" aria-hidden="true">😎</span><strong>I feel confident</strong></span></button>
+              <button class="sprint-choice-card sprint-choice-card--feeling" type="button" aria-pressed="false" data-feeling="calm"><span class="sprint-choice-card__content"><span class="sprint-choice-card__icon" aria-hidden="true">😌</span><strong>I'm calm</strong></span></button>
+              <button class="sprint-choice-card sprint-choice-card--feeling" type="button" aria-pressed="false" data-feeling="nervous"><span class="sprint-choice-card__content"><span class="sprint-choice-card__icon" aria-hidden="true">😬</span><strong>I'm nervous</strong></span></button>
+              <button class="sprint-choice-card sprint-choice-card--feeling" type="button" aria-pressed="false" data-feeling="tired"><span class="sprint-choice-card__content"><span class="sprint-choice-card__icon" aria-hidden="true">😴</span><strong>I'm tired</strong></span></button>
+            </div>
+            <p class="sprint-level-note">This choice only personalizes the tone of your feedback; it does not affect your score.</p>
+          </fieldset>
+
+          <p class="sprint-setup-ready-copy">When you're ready, let's show you the right question for you.</p>
+          <button class="sprint-primary sprint-setup-submit" type="submit" disabled>
+            View Your Question <span aria-hidden="true">→</span>
+          </button>
+          <p id="setup-error" class="sprint-inline-error" role="alert" data-setup-error hidden></p>
         </form>
       </section>
-      <section data-screen="record" hidden>
-        <p class="eyebrow" id="attempt-label">YOUR FIRST ANSWER</p>
-        <h1 tabindex="-1">Your question</h1>
-        <p id="question" class="question"></p>
-        <p>Speak for up to 60 seconds. You can stop earlier.</p>
-        <aside>
-          We send your audio for transcription and analysis. Your transcript and
-          feedback may be stored to deliver and recover your result. Star
-          Speaker does not store the raw audio. We do not analyse pronunciation
-          or accent.
-        </aside>
-        <p id="record-state" role="status">Ready when you are.</p>
-        <p id="timer" aria-label="Seconds remaining">60 seconds</p>
-        <div class="actions">
-          <button id="record">Start Now</button>
-          <button id="prepare" class="secondary">Prepare for 5 seconds</button>
-          <button id="stop" hidden>Stop recording</button>
-          <button id="again" hidden>Record Again</button>
-          <button id="submit" hidden>Submit my answer</button>
+
+      <section class="sprint-screen" data-screen="record" aria-labelledby="record-title">
+        <div class="sprint-card sprint-record-card">
+          <div class="sprint-record-layout">
+            <div class="sprint-question-panel">
+              <div class="sprint-record-meta">
+                <p class="sprint-kicker" data-record-kicker>FIRST RESPONSE · 30–45 SECONDS</p>
+              </div>
+              <h2 id="record-title" data-prompt-title></h2>
+              <aside class="sprint-correction-reminder" data-correction-reminder hidden>
+                <span>YOUR SOLE FOCUS THIS TIME</span>
+                <strong data-retry-focus></strong>
+                <p data-retry-opening></p>
+              </aside>
+              <p class="sprint-prompt-context" data-prompt-context></p>
+              <p class="sprint-prompt-translation" data-prompt-translation></p>
+              <div class="sprint-prompt-guide">
+                <span>THINKING TIP</span>
+                <strong data-prompt-guide></strong>
+              </div>
+            </div>
+
+            <aside class="sprint-record-control-panel" aria-label="Recording check">
+              <div class="sprint-record-control-header">
+                <svg viewBox="0 0 28 18" aria-hidden="true"><path d="M1 9h3l2-5 3 10 3-8 3 6 3-10 3 13 3-6h3"></path></svg>
+                <span>RECORDING CHECK</span>
+              </div>
+              <div class="sprint-record-dashboard">
+                <div class="sprint-record-timer-block">
+                  <span>Time remaining</span>
+                  <strong class="sprint-timer" data-timer>00:45</strong>
+                </div>
+                <div class="sprint-record-status-block">
+                  <span>Recording status</span>
+                  <strong id="record-status" data-record-status role="status" aria-live="polite">Ready</strong>
+                </div>
+              </div>
+              <div class="sprint-record-advice">
+                <span data-record-advice-label>TIP</span>
+                <p data-record-advice>Be clear, natural, and yourself. Fluency is more valuable than sentence length.</p>
+              </div>
+              <div class="sprint-recorder" data-recorder>
+                <div class="sprint-countdown" data-countdown hidden role="status" aria-live="assertive" aria-atomic="true">
+                  <strong data-countdown-number>5</strong>
+                  <span>Recording will begin shortly</span>
+                  <div class="sprint-countdown-actions">
+                    <button type="button" class="sprint-primary" data-countdown-start-now>Start now</button>
+                    <button type="button" class="sprint-text-button" data-countdown-cancel>Cancel</button>
+                  </div>
+                </div>
+                <div class="sprint-wave" aria-hidden="true">
+                  <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+                </div>
+                <button class="sprint-record-button" type="button" data-record-button aria-describedby="record-status record-hint">
+                  <span class="sprint-record-button-icon" aria-hidden="true"></span>
+                  <strong data-record-label>Start Recording</strong>
+                </button>
+                <p id="record-hint" data-record-hint>Start when you're ready. Up to 45 seconds.</p>
+              </div>
+              <div class="sprint-record-actions" hidden data-record-actions>
+                <button class="sprint-secondary" type="button" data-record-again>Record Again</button>
+                <button class="sprint-primary" type="button" data-use-recording>Use This Recording <span aria-hidden="true">→</span></button>
+              </div>
+              <p class="sprint-inline-error" role="alert" data-record-error hidden></p>
+              <ul class="sprint-record-trust" aria-label="Recording features">
+                <li><span aria-hidden="true">◇</span>We respect your privacy</li>
+                <li><span aria-hidden="true">◇</span>Instant analysis</li>
+                <li><span aria-hidden="true">◇</span>Personalized feedback</li>
+              </ul>
+            </aside>
+          </div>
         </div>
-        <button class="secondary" id="cancel">Cancel recording</button>
       </section>
-      <section data-screen="processing" hidden>
-        <p class="eyebrow">YOUR ANSWER</p>
-        <h1 tabindex="-1">Preparing your feedback</h1>
-        <p role="status" aria-live="polite">
-          Your recording is being transcribed and your answer reviewed. This may
-          take a moment.
-        </p>
+
+      <section class="sprint-screen" data-screen="analysis" aria-labelledby="analysis-wait-title">
+        <div class="sprint-card sprint-analysis-card">
+          <div class="sprint-analysis-mark" aria-hidden="true"><span></span><span></span><span></span></div>
+          <p class="sprint-kicker">YOUR ANSWER IS BEING REVIEWED</p>
+          <h2 id="analysis-wait-title">Your personal correction is being prepared.</h2>
+          <p class="sprint-analysis-status" data-analysis-status>Your speech sample is being transcribed…</p>
+          <div class="sprint-insight" aria-live="polite">
+            <span>WHAT YOU NEED TO KNOW IN THE MEANTIME</span>
+            <p data-waiting-insight>A strong professional answer begins with a clear main idea before complex words.</p>
+          </div>
+          <div class="sprint-analysis-steps" aria-label="Analysis steps">
+            <span class="is-active" data-analysis-step="transcript">Voice</span>
+            <span data-analysis-step="structure">Structure</span>
+            <span data-analysis-step="clarity">Clarity</span>
+            <span data-analysis-step="result">Correction</span>
+          </div>
+          <button class="sprint-secondary" type="button" data-analysis-retry hidden>Try the Analysis Again</button>
+          <p class="sprint-inline-error" role="alert" data-analysis-error hidden></p>
+        </div>
       </section>
-      <section data-screen="feedback" hidden>
-        <p class="eyebrow">YOUR FIRST ANSWER</p>
-        <h1 tabindex="-1">One focus for this answer</h1>
-        <div id="first-feedback"></div>
-        <button id="retry">Try the same question once more</button>
+
+      <section class="sprint-screen" data-screen="correction" aria-labelledby="correction-title">
+        <div class="sprint-card sprint-correction-card">
+          <p class="sprint-kicker">3 · PERSONAL CORRECTION</p>
+          <div class="sprint-score-lockup">
+            <div class="sprint-score-ring" data-score-ring>
+              <strong data-overall-score>--</strong><span>/100</span>
+            </div>
+            <div>
+              <p>The point that slows down your speech the most</p>
+              <h2 id="correction-title" data-bottleneck-title></h2>
+            </div>
+          </div>
+          <div class="sprint-feedback-grid">
+            <article class="is-positive">
+              <span>STRONG POINT</span>
+              <p data-feedback-strength></p>
+            </article>
+            <article class="is-focus">
+              <span>SINGLE CORRECTION</span>
+              <p data-feedback-correction></p>
+            </article>
+          </div>
+          <div class="sprint-evidence">
+            <span>SIGN OF THIS IN YOUR ANSWER</span>
+            <p data-evidence></p>
+          </div>
+          <div class="sprint-retry-cue">
+            <span>YOU COULD START YOUR ANSWER LIKE THIS</span>
+            <p data-feedback-opening></p>
+          </div>
+          <button class="sprint-primary" type="button" data-start-retry>
+            Try the Same Question Again <span aria-hidden="true">→</span>
+          </button>
+          <p class="sprint-disclaimer">This short speech sample is not an official language-level assessment.</p>
+        </div>
       </section>
-      <section data-screen="comparison" hidden>
-        <p class="eyebrow">YOUR RETRY</p>
-        <h1 tabindex="-1" id="outcome">Your two answers</h1>
-        <div id="comparison"></div>
-        <details>
-          <summary>Your first feedback</summary>
-          <div id="original-feedback"></div>
-        </details>
-        <h2>Continue with Star Speaker</h2>
-        <p>Talk with us about what you would like to practise next.</p>
-        <a
-          class="button"
-          id="whatsapp"
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://wa.me/905525247746?text=Hi%2C%20I%20completed%20the%20free%20Star%20Speaker%20Speaking%20Analysis%20and%20would%20like%20to%20discuss%20my%20next%20step."
-        >
-          Ask on WhatsApp
-        </a>
-        <p class="muted">
-          If WhatsApp does not open, contact +90 552 524 77 46 in WhatsApp.
-        </p>
-      </section>
-      <section data-screen="error" hidden>
-        <h1 tabindex="-1">Let’s get you back on track</h1>
-        <p id="error-message" role="alert"></p>
-        <div class="actions">
-          <button id="recover">Recover result</button>
-          <button id="rerecord">Record again</button>
-          <button id="resubmit" hidden>Try sending again</button>
-          <button id="restart" class="secondary">Start a new session</button>
+
+      <section class="sprint-screen" data-screen="result" aria-labelledby="result-title">
+        <div class="sprint-card sprint-result-card">
+          <div class="sprint-result-celebration" aria-hidden="true">✦</div>
+          <p class="sprint-kicker">YOUR CAREER ENGLISH ANALYSIS IS COMPLETE</p>
+          <h2 id="result-title">You rebuilt the same answer with a single correction.</h2>
+          <div class="sprint-comparison">
+            <article>
+              <span>FIRST ANSWER</span><strong data-before-score>--</strong><small>/100</small>
+            </article>
+            <div class="sprint-comparison-arrow" aria-hidden="true">→</div>
+            <article class="is-after">
+              <span>RETRY</span><strong data-after-score>--</strong><small>/100</small>
+            </article>
+          </div>
+          <p class="sprint-improvement-copy" data-improvement-copy></p>
+          <div class="sprint-transcript-comparison">
+            <article><span>FROM YOUR FIRST ANSWER</span><p data-first-transcript></p></article>
+            <article><span>FROM YOUR RETRY</span><p data-retry-transcript></p></article>
+          </div>
+          <div class="sprint-result-summary">
+            <div><span>MAIN PROBLEM</span><strong data-result-bottleneck></strong></div>
+            <div><span>PERSONAL CORRECTION</span><strong data-result-correction></strong></div>
+            <div><span>NEXT FOCUS</span><strong data-result-next></strong></div>
+          </div>
+
+          <div class="sprint-human-cta">
+            <p class="sprint-kicker">NEXT STEP · OPTIONAL</p>
+            <h3>Would you like to review your result with a Star Speaker expert?</h3>
+            <p>Your result is ready. We only need your contact details if you would like to schedule a consultation.</p>
+            <a class="sprint-whatsapp-cta" href="#" target="_blank" rel="noopener noreferrer" data-whatsapp-cta>
+              Ask on WhatsApp <span aria-hidden="true">→</span>
+            </a>
+            <button class="sprint-secondary sprint-booking-open" type="button" data-open-contact>
+              Schedule a Free Consultation
+            </button>
+
+            <form class="sprint-contact-card" data-contact-form hidden novalidate><p class="sprint-level-note">Online booking currently supports Turkish mobile numbers (+90). If you use another country’s number, choose Ask on WhatsApp above. Appointment times are shown in Istanbul time.</p>
+              <div class="sprint-booking-step is-active" data-booking-step="contact">
+                <p class="sprint-booking-step__count">1 / 4 · Contact</p>
+                <div class="sprint-form-grid">
+                  <label><span>Your first and last name</span><input type="text" name="fullName" autocomplete="name" required maxlength="80"></label>
+                  <label><span>Your WhatsApp number</span><input type="tel" name="whatsapp" autocomplete="tel" inputmode="tel" required maxlength="24" pattern="[+0-9() .-]{10,24}"></label>
+                  <label><span>Email <small>(optional)</small></span><input type="email" name="email" autocomplete="email" maxlength="120"></label>
+                </div>
+                <label class="sprint-consent"><input type="checkbox" name="consent" required><span>I agree to my data being used to provide the communication I requested.</span></label>
+                <button class="sprint-primary" type="button" data-booking-next="budget">Continue <span aria-hidden="true">→</span></button>
+              </div>
+              <div class="sprint-booking-step" data-booking-step="budget" hidden>
+                <p class="sprint-booking-step__count">2 / 4 · Budget</p>
+                <h4>What budget are you considering for the development program?</h4>
+                <div class="sprint-choice-list" data-budget-options>
+                  <button type="button" data-budget="under_5000">Under 5,000 TL</button><button type="button" data-budget="5000_10000">5,000–10,000 TL</button>
+                  <button type="button" data-budget="10000_15000">10,000–15,000 TL</button><button type="button" data-budget="15000_25000">15,000–25,000 TL</button>
+                  <button type="button" data-budget="25000_plus">25,000 TL and above</button><button type="button" data-budget="unsure">I'm not sure</button>
+                </div>
+                <button class="sprint-text-button" type="button" data-booking-back="contact">← Back</button>
+              </div>
+              <div class="sprint-booking-step" data-booking-step="urgency" hidden>
+                <p class="sprint-booking-step__count">3 / 4 · Timing</p>
+                <h4>When would you like to start?</h4>
+                <div class="sprint-choice-list" data-urgency-options>
+                  <button type="button" data-urgency="immediately">Immediately</button><button type="button" data-urgency="within_1_month">Within 1 month</button>
+                  <button type="button" data-urgency="within_1_3_months">Within 1–3 months</button><button type="button" data-urgency="researching">I’m just exploring for now</button>
+                </div>
+                <button class="sprint-text-button" type="button" data-booking-back="budget">← Back</button>
+              </div>
+              <p class="sprint-inline-error" role="alert" data-contact-error hidden></p>
+            </form>
+
+            <section class="sprint-booking" data-booking hidden aria-labelledby="booking-title">
+              <div class="sprint-booking__intro">
+                <p class="sprint-kicker">FREE SPEAKING PERFORMANCE CONSULTATION</p>
+                <h3 id="booking-title">Schedule Your Free Consultation</h3>
+                <p>Schedule your consultation to evaluate your results with an expert and discover the development path that’s right for you.</p>
+                <small>15 minutes · Online · Turkey time</small>
+              </div>
+              <div class="sprint-booking__loading" data-booking-loading>Loading available times…</div>
+              <div class="sprint-booking__error sprint-inline-error" role="alert" data-booking-error hidden></div>
+              <div class="sprint-booking__picker" data-booking-picker hidden>
+                <p class="sprint-booking-step__count">4 / 4 · Date and time</p>
+                <button class="sprint-text-button" type="button" data-calendar-back>← Back to scheduling</button>
+                <div class="sprint-booking__dates" data-booking-dates aria-label="Appointment day"></div>
+                <div class="sprint-booking__slots" data-booking-slots aria-label="Appointment time"></div>
+                <div class="sprint-booking__review" data-booking-review hidden>
+                  <span>YOUR SELECTION</span>
+                  <strong data-booking-selection></strong>
+                  <button class="sprint-primary" type="button" data-booking-confirm>Confirm appointment</button>
+                </div>
+              </div>
+              <div class="sprint-booking__success" data-booking-success hidden>
+                <span class="sprint-result-celebration" aria-hidden="true">✦</span>
+                <h3>Your session has been scheduled.</h3>
+                <p>We’ll review your speaking performance in a free consultation at your selected date and time.</p>
+                <strong data-booking-confirmation></strong>
+                <div class="sprint-booking__actions">
+                  <a class="sprint-whatsapp-cta" href="#" target="_blank" rel="noopener noreferrer" data-booking-whatsapp>
+                    Confirm appointment via WhatsApp <span aria-hidden="true">→</span>
+                  </a>
+                  <button class="sprint-secondary" type="button" data-booking-reschedule>Change appointment</button>
+                  <button class="sprint-text-button" type="button" data-booking-cancel>Cancel appointment</button>
+                </div>
+              </div>
+              <p class="sprint-booking__fallback">
+                Couldn't find a suitable time?
+                <a href="#" target="_blank" rel="noopener noreferrer" data-booking-fallback-whatsapp>Contact us via WhatsApp.</a>
+              </p>
+            </section>
+          </div>
         </div>
       </section>
     </main>
-    <footer>
-      <a href="/en/">Back to Star Speaker</a>
+
+    <footer class="sprint-footer">
+      <a href="/en/">← Back to the Star Speaker homepage</a>
       <span>© 2026 Star Speaker</span>
     </footer>
+
+    <div class="sprint-toast" role="status" aria-live="polite" data-toast hidden></div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="/src/scripts/supabase-config.js"></script>
     <script type="module" src="/src/scripts/english-analysis.js"></script>
   </body>

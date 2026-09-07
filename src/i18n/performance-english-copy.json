@@ -1,0 +1,1550 @@
+[
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Netlik\"",
+    "text": "Netlik",
+    "english": "Clarity"
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Yapı\"",
+    "text": "Yapı",
+    "english": "Structure"
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Baskı altında sürdürme\"",
+    "text": "Baskı altında sürdürme",
+    "english": "Maintaining composure under pressure"
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Profesyonel etki\"",
+    "text": "Profesyonel etki",
+    "english": "Professional impact"
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Cevap yapısı\"",
+    "text": "Cevap yapısı",
+    "english": "Answer structure"
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Güçlü bir profesyonel cevap, karmaşık kelimelerden önce net bir ana fikirle başlar.\"",
+    "text": "Güçlü bir profesyonel cevap, karmaşık kelimelerden önce net bir ana fikirle başlar.",
+    "english": "A strong professional answer begins with a clear main idea before using complex words."
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Kısa bir cevapta tek bir ana mesajı desteklemek, çok sayıda ayrıntı vermekten daha etkilidir.\"",
+    "text": "Kısa bir cevapta tek bir ana mesajı desteklemek, çok sayıda ayrıntı vermekten daha etkilidir.",
+    "english": "In a short answer, supporting a single main message is more effective than providing numerous details."
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Bir örnek, ana fikrini dinleyici için daha anlaşılır ve akılda kalıcı yapar.\"",
+    "text": "Bir örnek, ana fikrini dinleyici için daha anlaşılır ve akılda kalıcı yapar.",
+    "english": "An example makes your main idea clearer and more memorable for the listener."
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Hızlı başlangıç\"",
+    "text": "Hızlı başlangıç",
+    "english": "Quick start"
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Kişisel düzeltme\"",
+    "text": "Kişisel düzeltme",
+    "english": "Personal feedback"
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Sonuç\"",
+    "text": "Sonuç",
+    "english": "Result"
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Katılımcı kaydı yapılandırılmamış.\"",
+    "text": "Katılımcı kaydı yapılandırılmamış.",
+    "english": "Participant registration is not configured."
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Katılımcı kaydı tamamlanamadı.\"",
+    "text": "Katılımcı kaydı tamamlanamadı.",
+    "english": "Participant registration could not be completed."
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Soru servisi yapılandırılmamış.\"",
+    "text": "Soru servisi yapılandırılmamış.",
+    "english": "Question service is not configured."
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Soru seçilemedi.\"",
+    "text": "Soru seçilemedi.",
+    "english": "A question could not be selected."
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Katılımcı kaydı bulunamadı.\"",
+    "text": "Katılımcı kaydı bulunamadı.",
+    "english": "Participant registration not found."
+  },
+  {
+    "kind": "TemplateElement",
+    "raw": "Hazırlık ",
+    "text": "Hazırlık ",
+    "english": "Preparation "
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Lütfen konuşmak istediğin durumu seç.\"",
+    "text": "Lütfen konuşmak istediğin durumu seç.",
+    "english": "Please select the situation you would like to talk about."
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Lütfen sana en yakın konuşma seviyesini seç.\"",
+    "text": "Lütfen sana en yakın konuşma seviyesini seç.",
+    "english": "Please select the speaking level closest to you."
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Lütfen bugün nasıl hissettiğini seç.\"",
+    "text": "Lütfen bugün nasıl hissettiğini seç.",
+    "english": "Please select how you feel today."
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Sorun hazırlanıyor…\"",
+    "text": "Sorun hazırlanıyor…",
+    "english": "Preparing the question…"
+  },
+  {
+    "kind": "TemplateElement",
+    "raw": "Şu anda devam edemedik. Lütfen tekrar dene. <button type=\"submit\" class=\"sprint-inline-retry\" data-setup-retry>Tekrar Dene</button>",
+    "text": "Şu anda devam edemedik. Lütfen tekrar dene. <button type=\"submit\" class=\"sprint-inline-retry\" data-setup-retry>Tekrar Dene</button>",
+    "english": "We couldn't continue right now. Please try again. <button type=\"submit\" class=\"sprint-inline-retry\" data-setup-retry>Try Again</button>"
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "'Sorunu Gör <span aria-hidden=\"true\">→</span>'",
+    "text": "Sorunu Gör <span aria-hidden=\"true\">→</span>",
+    "english": "View the question <span aria-hidden=\"true\">→</span>"
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"İLK CEVAP\"",
+    "text": "İLK CEVAP",
+    "english": "FIRST ANSWER"
+  },
+  {
+    "kind": "TemplateElement",
+    "raw": " SANİYE",
+    "text": " SANİYE",
+    "english": " SECONDS"
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"BU KEZ ŞUNA ODAKLAN\"",
+    "text": "BU KEZ ŞUNA ODAKLAN",
+    "english": "YOUR FOCUS THIS TIME"
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"İPUCU\"",
+    "text": "İPUCU",
+    "english": "TIP"
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Net, doğal ve kendin ol. Akıcılık, cümle uzunluğundan daha değerlidir.\"",
+    "text": "Net, doğal ve kendin ol. Akıcılık, cümle uzunluğundan daha değerlidir.",
+    "english": "Be clear, natural, and be yourself. Fluency is more valuable than sentence length."
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Bu tarayıcı ses kaydını desteklemiyor. Güncel Chrome, Edge veya Safari ile tekrar dene.\"",
+    "text": "Bu tarayıcı ses kaydını desteklemiyor. Güncel Chrome, Edge veya Safari ile tekrar dene.",
+    "english": "This browser does not support audio recording. Try again with the latest version of Chrome, Edge, or Safari."
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"tarayıcı\"",
+    "text": "tarayıcı",
+    "english": "browser"
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Mikrofon izni alınamadı. Tarayıcıdaki kilit simgesinden mikrofonu açıp tekrar dene.\"",
+    "text": "Mikrofon izni alınamadı. Tarayıcıdaki kilit simgesinden mikrofonu açıp tekrar dene.",
+    "english": "Microphone permission could not be obtained. Enable the microphone using the lock icon in your browser, then try again."
+  },
+  {
+    "kind": "TemplateElement",
+    "raw": "Hazır olduğunda başla. En fazla ",
+    "text": "Hazır olduğunda başla. En fazla ",
+    "english": "Start when you're ready. Maximum "
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Hazır\"",
+    "text": "Hazır",
+    "english": "Ready"
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"5 saniye içinde başlayacak\"",
+    "text": "5 saniye içinde başlayacak",
+    "english": "Will start within 5 seconds"
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Kaydı Başlat\"",
+    "text": "Kaydı Başlat",
+    "english": "Start Recording"
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Kaydı Bitir\"",
+    "text": "Kaydı Bitir",
+    "english": "Stop Recording"
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Yerel demo cevabı kaydediliyor.\"",
+    "text": "Yerel demo cevabı kaydediliyor.",
+    "english": "Your local demo response is being recorded."
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Kayıt yapılıyor\"",
+    "text": "Kayıt yapılıyor",
+    "english": "Recording in progress"
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "'Kayıt başlatılamadı. Lütfen tekrar dene.'",
+    "text": "Kayıt başlatılamadı. Lütfen tekrar dene.",
+    "english": "Recording could not be started. Please try again."
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Kayıt Tamamlandı\"",
+    "text": "Kayıt Tamamlandı",
+    "english": "Recording Complete"
+  },
+  {
+    "kind": "TemplateElement",
+    "raw": " saniyelik cevap hazır.",
+    "text": " saniyelik cevap hazır.",
+    "english": "-second response ready."
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Kayıt tamamlandı\"",
+    "text": "Kayıt tamamlandı",
+    "english": "Recording complete"
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "'Kayıt kesildi. Lütfen tekrar kaydet.'",
+    "text": "Kayıt kesildi. Lütfen tekrar kaydet.",
+    "english": "Recording was interrupted. Please record again."
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Doğal konuş. Kusursuz olmaya çalışma.\"",
+    "text": "Doğal konuş. Kusursuz olmaya çalışma.",
+    "english": "Speak naturally. Don't try to be perfect."
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Demo Kaydı Tamamlandı\"",
+    "text": "Demo Kaydı Tamamlandı",
+    "english": "Demo Recording Complete"
+  },
+  {
+    "kind": "TemplateElement",
+    "raw": " saniyelik demo cevabı hazır.",
+    "text": " saniyelik demo cevabı hazır.",
+    "english": "-second demo response ready."
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Analiz için en az birkaç saniye konuşman gerekiyor. Lütfen yeniden kaydet.\"",
+    "text": "Analiz için en az birkaç saniye konuşman gerekiyor. Lütfen yeniden kaydet.",
+    "english": "You need to speak for at least a few seconds for analysis. Please record again."
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Gönderiliyor\"",
+    "text": "Gönderiliyor",
+    "english": "Submitting"
+  },
+  {
+    "kind": "TemplateElement",
+    "raw": " Kaydın bu ekranda duruyor; tekrar kaydetmen gerekmiyor.",
+    "text": " Kaydın bu ekranda duruyor; tekrar kaydetmen gerekmiyor.",
+    "english": " Your recording remains on this screen; you don't need to record again."
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Gönderim hatası\"",
+    "text": "Gönderim hatası",
+    "english": "Submission error"
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Analiz servisi yapılandırılmamış.\"",
+    "text": "Analiz servisi yapılandırılmamış.",
+    "english": "The analysis service is not configured."
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"AI analizi şu anda tamamlanamadı.\"",
+    "text": "AI analizi şu anda tamamlanamadı.",
+    "english": "The AI analysis could not be completed right now."
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Konuşma örneğin yazıya dönüştürülüyor…\"",
+    "text": "Konuşma örneğin yazıya dönüştürülüyor…",
+    "english": "Your speech sample is being converted to text…"
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Analiz tamamlanamadı.\"",
+    "text": "Analiz tamamlanamadı.",
+    "english": "The analysis could not be completed."
+  },
+  {
+    "kind": "TemplateElement",
+    "raw": " Kaydın bu ekranda duruyor; yeniden kayıt yapman gerekmiyor.",
+    "text": " Kaydın bu ekranda duruyor; yeniden kayıt yapman gerekmiyor.",
+    "english": " Your recording is saved on this screen; you do not need to record again."
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Cevap yapın haritalanıyor…\"",
+    "text": "Cevap yapın haritalanıyor…",
+    "english": "Your answer structure is being mapped…"
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Netlik ve profesyonel etki karşılaştırılıyor…\"",
+    "text": "Netlik ve profesyonel etki karşılaştırılıyor…",
+    "english": "Clarity and professional impact are being compared…"
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"En değerli düzeltme seçiliyor…\"",
+    "text": "En değerli düzeltme seçiliyor…",
+    "english": "The most valuable correction is being selected…"
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Transkript oluşturulamadı.\"",
+    "text": "Transkript oluşturulamadı.",
+    "english": "The transcript could not be created."
+  },
+  {
+    "kind": "TemplateElement",
+    "raw": "Tekrar denemende genel gösterge ",
+    "text": "Tekrar denemende genel gösterge ",
+    "english": "Your overall indicator increased by "
+  },
+  {
+    "kind": "TemplateElement",
+    "raw": " puan yükseldi. Bu fark yalnızca ikinci cevabında gerçekten görülen değişime dayanıyor.",
+    "text": " puan yükseldi. Bu fark yalnızca ikinci cevabında gerçekten görülen değişime dayanıyor.",
+    "english": " points on your retry. This difference is based only on the change actually seen in your second answer."
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Genel gösterge aynı kaldı. Yine de artık hangi tek davranışa odaklanacağını ve cevabını nasıl başlatacağını biliyorsun.\"",
+    "text": "Genel gösterge aynı kaldı. Yine de artık hangi tek davranışa odaklanacağını ve cevabını nasıl başlatacağını biliyorsun.",
+    "english": "Your overall indicator stayed the same. Even so, you now know which single behavior to focus on and how to start your answer."
+  },
+  {
+    "kind": "TemplateElement",
+    "raw": "Tekrar denemendeki genel gösterge ",
+    "text": "Tekrar denemendeki genel gösterge ",
+    "english": "Your overall indicator was "
+  },
+  {
+    "kind": "TemplateElement",
+    "raw": " puan daha düşük çıktı. Bu bir başarısızlık değil; kısa cevaplarda dalgalanma normaldir ve sonraki odağın artık nettir.",
+    "text": " puan daha düşük çıktı. Bu bir başarısızlık değil; kısa cevaplarda dalgalanma normaldir ve sonraki odağın artık nettir.",
+    "english": " points lower on your retry. This is not a failure; variation is normal in short answers, and your next focus is now clear."
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Merhaba, Star Speaker Kariyer İngilizcesi Analizi'ni tamamladım.\"",
+    "text": "Merhaba, Star Speaker Kariyer İngilizcesi Analizi'ni tamamladım.",
+    "english": "Hello, I have completed the Star Speaker Career English Analysis."
+  },
+  {
+    "kind": "TemplateElement",
+    "raw": "Ana odağım: ",
+    "text": "Ana odağım: ",
+    "english": "My main focus: "
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Sonucumu bir Star Speaker uzmanıyla değerlendirmek istiyorum.\"",
+    "text": "Sonucumu bir Star Speaker uzmanıyla değerlendirmek istiyorum.",
+    "english": "I would like to evaluate my result with a Star Speaker expert."
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Merhaba, ücretsiz Konuşma Performansı Görüşmesi için uygun bir saat bulamadım. Yardımcı olabilir misiniz?\"",
+    "text": "Merhaba, ücretsiz Konuşma Performansı Görüşmesi için uygun bir saat bulamadım. Yardımcı olabilir misiniz?",
+    "english": "Hello, I couldn't find a suitable time for the free Speaking Performance Consultation. Could you help me?"
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"İletişim kaydı oluşturulamadı.\"",
+    "text": "İletişim kaydı oluşturulamadı.",
+    "english": "The contact record could not be created."
+  },
+  {
+    "kind": "TemplateElement",
+    "raw": " Lütfen tekrar dene. Sonucun ekranda kalmaya devam edecek.",
+    "text": " Lütfen tekrar dene. Sonucun ekranda kalmaya devam edecek.",
+    "english": " Please try again. Your result will remain on the screen."
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"İletişim servisi yapılandırılmamış.\"",
+    "text": "İletişim servisi yapılandırılmamış.",
+    "english": "The communication service is not configured."
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Randevu servisi yapılandırılmamış.\"",
+    "text": "Randevu servisi yapılandırılmamış.",
+    "english": "The appointment service is not configured."
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Randevu işlemi tamamlanamadı.\"",
+    "text": "Randevu işlemi tamamlanamadı.",
+    "english": "The appointment could not be completed."
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Önümüzdeki yedi gün içinde uygun randevu görünmüyor.\"",
+    "text": "Önümüzdeki yedi gün içinde uygun randevu görünmüyor.",
+    "english": "No available appointments are showing within the next seven days."
+  },
+  {
+    "kind": "TemplateElement",
+    "raw": " · Türkiye saati",
+    "text": " · Türkiye saati",
+    "english": " · Turkey time"
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Uygun saatler şu anda yüklenemiyor. Lütfen biraz sonra tekrar dene.\"",
+    "text": "Uygun saatler şu anda yüklenemiyor. Lütfen biraz sonra tekrar dene.",
+    "english": "Suitable times can't be loaded right now. Please try again later."
+  },
+  {
+    "kind": "TemplateElement",
+    "raw": "Merhaba, ücretsiz Konuşma Performansı Görüşmemi ",
+    "text": "Merhaba, ücretsiz Konuşma Performansı Görüşmemi ",
+    "english": "Hello, I scheduled my free Speaking Performance Consultation for "
+  },
+  {
+    "kind": "TemplateElement",
+    "raw": " için planladım. Randevumu onaylamak istiyorum.",
+    "text": " için planladım. Randevumu onaylamak istiyorum.",
+    "english": " and would like to confirm my appointment."
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Randevun planlanıyor…\"",
+    "text": "Randevun planlanıyor…",
+    "english": "Your appointment is being scheduled…"
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Randevunu iptal etmek istediğine emin misin?\"",
+    "text": "Randevunu iptal etmek istediğine emin misin?",
+    "english": "Are you sure you want to cancel your appointment?"
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Randevun iptal edildi. İstersen yeni bir saat seçebilirsin.\"",
+    "text": "Randevun iptal edildi. İstersen yeni bir saat seçebilirsin.",
+    "english": "Your appointment has been canceled. You can choose a new time if you'd like."
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Ana fikrini kariyer hedefinle ilişkilendirerek anlaşılır hale getirdin.\"",
+    "text": "Ana fikrini kariyer hedefinle ilişkilendirerek anlaşılır hale getirdin.",
+    "english": "You made your main idea clear by connecting it to your career goal."
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Ana cevabını ilk cümlede söyle; ayrıntıları daha sonra ekle.\"",
+    "text": "Ana cevabını ilk cümlede söyle; ayrıntıları daha sonra ekle.",
+    "english": "State your main answer in the first sentence; add the details afterward."
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Son cümlede kararının profesyonel etkisini açıkça bağla.\"",
+    "text": "Son cümlede kararının profesyonel etkisini açıkça bağla.",
+    "english": "Clearly connect the professional impact of your decision in the final sentence."
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Ana mesajın cevabın ikinci yarısında ortaya çıktı; dinleyici ilk cümlelerde yönü tahmin etmek zorunda kaldı.\"",
+    "text": "Ana mesajın cevabın ikinci yarısında ortaya çıktı; dinleyici ilk cümlelerde yönü tahmin etmek zorunda kaldı.",
+    "english": "Your main message emerged in the second half of your answer; the listener had to guess the direction from the first sentences."
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Bir sonraki cevabında aynı doğrudan açılışı koruyup somut bir örnekle bitir.\"",
+    "text": "Bir sonraki cevabında aynı doğrudan açılışı koruyup somut bir örnekle bitir.",
+    "english": "In your next answer, keep the same direct opening and finish with a concrete example."
+  },
+  {
+    "kind": "TemplateElement",
+    "raw": " saniyeyi öneriyoruz; istersen değiştirebilirsin.",
+    "text": " saniyeyi öneriyoruz; istersen değiştirebilirsin.",
+    "english": " seconds recommended; you can change this if you like."
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Lütfen geçerli bir ad ve soyad gir.\"",
+    "text": "Lütfen geçerli bir ad ve soyad gir.",
+    "english": "Please enter a valid first and last name."
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Lütfen geçerli bir WhatsApp numarası gir.\"",
+    "text": "Lütfen geçerli bir WhatsApp numarası gir.",
+    "english": "Please enter a Turkish mobile number (+90 5…). For another country, use Ask on WhatsApp."
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Lütfen geçerli bir e-posta adresi gir.\"",
+    "text": "Lütfen geçerli bir e-posta adresi gir.",
+    "english": "Please enter a valid email address."
+  },
+  {
+    "kind": "html",
+    "raw": "Ücretsiz Kariyer İngilizcesi Analizi | Star Speaker",
+    "text": "Ücretsiz Kariyer İngilizcesi Analizi | Star Speaker",
+    "english": "Free Career English Analysis | Star Speaker"
+  },
+  {
+    "kind": "html",
+    "raw": "İçeriğe geç",
+    "text": "İçeriğe geç",
+    "english": "Skip to content"
+  },
+  {
+    "kind": "html",
+    "raw": "YEREL DEMO · Gerçek analiz gönderilmez",
+    "text": "YEREL DEMO · Gerçek analiz gönderilmez",
+    "english": "LOCAL DEMO · No real analysis is submitted"
+  },
+  {
+    "kind": "html",
+    "raw": "STAR SPEAKER",
+    "text": "STAR SPEAKER",
+    "english": "STAR SPEAKER"
+  },
+  {
+    "kind": "html",
+    "raw": "KARİYER İNGİLİZCESİ",
+    "text": "KARİYER İNGİLİZCESİ",
+    "english": "CAREER ENGLISH"
+  },
+  {
+    "kind": "html",
+    "raw": "Ücretsiz analiz",
+    "text": "Ücretsiz analiz",
+    "english": "Free analysis"
+  },
+  {
+    "kind": "html",
+    "raw": "Durumunu seç",
+    "text": "Durumunu seç",
+    "english": "Choose your situation"
+  },
+  {
+    "kind": "html",
+    "raw": "KARİYER İNGİLİZCESİ · ÜCRETSİZ",
+    "text": "KARİYER İNGİLİZCESİ · ÜCRETSİZ",
+    "english": "CAREER ENGLISH · FREE"
+  },
+  {
+    "kind": "html",
+    "raw": "İngilizce cevabını",
+    "text": "İngilizce cevabını",
+    "english": "Make your English answer"
+  },
+  {
+    "kind": "html",
+    "raw": "daha güçlü",
+    "text": "daha güçlü",
+    "english": "stronger."
+  },
+  {
+    "kind": "html",
+    "raw": "kur.",
+    "text": "kur.",
+    "english": ""
+  },
+  {
+    "kind": "html",
+    "raw": "Sana uygun, gündelik bir kariyer sorusunu sesli yanıtla; kişisel düzeltmeni al ve aynı cevabı yeniden kur.",
+    "text": "Sana uygun, gündelik bir kariyer sorusunu sesli yanıtla; kişisel düzeltmeni al ve aynı cevabı yeniden kur.",
+    "english": "Answer a career-related question suited to you out loud, get your personal correction, then try the same answer again."
+  },
+  {
+    "kind": "html",
+    "raw": "Sesli cevap ver",
+    "text": "Sesli cevap ver",
+    "english": "Give a spoken answer"
+  },
+  {
+    "kind": "html",
+    "raw": "Düzeltmeni al",
+    "text": "Düzeltmeni al",
+    "english": "Get your correction"
+  },
+  {
+    "kind": "html",
+    "raw": "Tekrar dene",
+    "text": "Tekrar dene",
+    "english": "Try again"
+  },
+  {
+    "kind": "html",
+    "raw": "Ücretsiz Analize Başla",
+    "text": "Ücretsiz Analize Başla",
+    "english": "Start Free Analysis"
+  },
+  {
+    "kind": "html",
+    "raw": "Seviye sınavı değil · Hazırlık gerektirmez · Sonucun hemen hazır",
+    "text": "Seviye sınavı değil · Hazırlık gerektirmez · Sonucun hemen hazır",
+    "english": "Not a level test · No preparation required · Your result is ready immediately"
+  },
+  {
+    "kind": "html",
+    "raw": "1 · HIZLI BAŞLANGIÇ",
+    "text": "1 · HIZLI BAŞLANGIÇ",
+    "english": "1 · QUICK START"
+  },
+  {
+    "kind": "html",
+    "raw": "Sorunu sana uygun hale getirelim.",
+    "text": "Sorunu sana uygun hale getirelim.",
+    "english": "Let’s tailor the question to you."
+  },
+  {
+    "kind": "html",
+    "raw": "Durum",
+    "text": "Durum",
+    "english": "Situation"
+  },
+  {
+    "kind": "html",
+    "raw": "Seviye",
+    "text": "Seviye",
+    "english": "Level"
+  },
+  {
+    "kind": "html",
+    "raw": "Süre",
+    "text": "Süre",
+    "english": "Duration"
+  },
+  {
+    "kind": "html",
+    "raw": "His",
+    "text": "His",
+    "english": "Feeling"
+  },
+  {
+    "kind": "html",
+    "raw": "Adın nedir?",
+    "text": "Adın nedir?",
+    "english": "What is your name?"
+  },
+  {
+    "kind": "html",
+    "raw": "Hangi durumda İngilizce konuşmak istiyorsun?",
+    "text": "Hangi durumda İngilizce konuşmak istiyorsun?",
+    "english": "In what situation do you want to speak English?"
+  },
+  {
+    "kind": "html",
+    "raw": "Sana en yakın seçeneği seç.",
+    "text": "Sana en yakın seçeneği seç.",
+    "english": "Choose the option that is closest to you."
+  },
+  {
+    "kind": "html",
+    "raw": "Toplantı",
+    "text": "Toplantı",
+    "english": "Meeting"
+  },
+  {
+    "kind": "html",
+    "raw": "Mülakat",
+    "text": "Mülakat",
+    "english": "Interview"
+  },
+  {
+    "kind": "html",
+    "raw": "Sunum",
+    "text": "Sunum",
+    "english": "Presentation"
+  },
+  {
+    "kind": "html",
+    "raw": "Başka Bir Amaç",
+    "text": "Başka Bir Amaç",
+    "english": "Another Purpose"
+  },
+  {
+    "kind": "html",
+    "raw": "İngilizce konuşma seviyen hangisine daha yakın?",
+    "text": "İngilizce konuşma seviyen hangisine daha yakın?",
+    "english": "Which of these is closest to your English speaking level?"
+  },
+  {
+    "kind": "html",
+    "raw": "A2.1",
+    "text": "A2.1",
+    "english": "A2.1"
+  },
+  {
+    "kind": "html",
+    "raw": "A2.2",
+    "text": "A2.2",
+    "english": "A2.2"
+  },
+  {
+    "kind": "html",
+    "raw": "B1.1",
+    "text": "B1.1",
+    "english": "B1.1"
+  },
+  {
+    "kind": "html",
+    "raw": "B1.2",
+    "text": "B1.2",
+    "english": "B1.2"
+  },
+  {
+    "kind": "html",
+    "raw": "B2.1",
+    "text": "B2.1",
+    "english": "B2.1"
+  },
+  {
+    "kind": "html",
+    "raw": "B2.2",
+    "text": "B2.2",
+    "english": "B2.2"
+  },
+  {
+    "kind": "html",
+    "raw": "C1.1",
+    "text": "C1.1",
+    "english": "C1.1"
+  },
+  {
+    "kind": "html",
+    "raw": "Emin değilim",
+    "text": "Emin değilim",
+    "english": "I'm not sure"
+  },
+  {
+    "kind": "html",
+    "raw": "Emin değilsen sorun değil. Sana uygun bir başlangıç sorusu göstereceğiz.",
+    "text": "Emin değilsen sorun değil. Sana uygun bir başlangıç sorusu göstereceğiz.",
+    "english": "No problem if you're not sure. We'll show you a suitable starter question."
+  },
+  {
+    "kind": "html",
+    "raw": "Ne kadar konuşmak istersin?",
+    "text": "Ne kadar konuşmak istersin?",
+    "english": "How long would you like to speak?"
+  },
+  {
+    "kind": "html",
+    "raw": "45 sn",
+    "text": "45 sn",
+    "english": "45 sec"
+  },
+  {
+    "kind": "html",
+    "raw": "Kısa",
+    "text": "Kısa",
+    "english": "Short"
+  },
+  {
+    "kind": "html",
+    "raw": "60 sn",
+    "text": "60 sn",
+    "english": "60 sec"
+  },
+  {
+    "kind": "html",
+    "raw": "Önerilen",
+    "text": "Önerilen",
+    "english": "Recommended"
+  },
+  {
+    "kind": "html",
+    "raw": "90 sn",
+    "text": "90 sn",
+    "english": "90 sec"
+  },
+  {
+    "kind": "html",
+    "raw": "Detaylı",
+    "text": "Detaylı",
+    "english": "Detailed"
+  },
+  {
+    "kind": "html",
+    "raw": "120 sn",
+    "text": "120 sn",
+    "english": "120 sec"
+  },
+  {
+    "kind": "html",
+    "raw": "Uzun",
+    "text": "Uzun",
+    "english": "Long"
+  },
+  {
+    "kind": "html",
+    "raw": "Seviyeni seçtiğinde uygun süreyi öneririz; istersen değiştirebilirsin.",
+    "text": "Seviyeni seçtiğinde uygun süreyi öneririz; istersen değiştirebilirsin.",
+    "english": "We'll recommend a suitable duration when you choose your level; you can change it if you'd like."
+  },
+  {
+    "kind": "html",
+    "raw": "Bugün İngilizce konuşurken nasıl hissediyorsun?",
+    "text": "Bugün İngilizce konuşurken nasıl hissediyorsun?",
+    "english": "How do you feel speaking English today?"
+  },
+  {
+    "kind": "html",
+    "raw": "Harika",
+    "text": "Harika",
+    "english": "Great"
+  },
+  {
+    "kind": "html",
+    "raw": "Kendime güveniyorum",
+    "text": "Kendime güveniyorum",
+    "english": "I feel confident"
+  },
+  {
+    "kind": "html",
+    "raw": "Sakinim",
+    "text": "Sakinim",
+    "english": "I'm calm"
+  },
+  {
+    "kind": "html",
+    "raw": "Gerginim",
+    "text": "Gerginim",
+    "english": "I'm nervous"
+  },
+  {
+    "kind": "html",
+    "raw": "Yorgunum",
+    "text": "Yorgunum",
+    "english": "I'm tired"
+  },
+  {
+    "kind": "html",
+    "raw": "Bu seçim yalnızca geri bildirimin tonunu kişiselleştirir; puanını etkilemez.",
+    "text": "Bu seçim yalnızca geri bildirimin tonunu kişiselleştirir; puanını etkilemez.",
+    "english": "This choice only personalizes the tone of your feedback; it does not affect your score."
+  },
+  {
+    "kind": "html",
+    "raw": "Hazırsan sana uygun soruyu gösterelim.",
+    "text": "Hazırsan sana uygun soruyu gösterelim.",
+    "english": "When you're ready, let's show you the right question for you."
+  },
+  {
+    "kind": "html",
+    "raw": "Sorunu Gör",
+    "text": "Sorunu Gör",
+    "english": "View Your Question"
+  },
+  {
+    "kind": "html",
+    "raw": "İLK CEVAP · 30–45 SANİYE",
+    "text": "İLK CEVAP · 30–45 SANİYE",
+    "english": "FIRST RESPONSE · 30–45 SECONDS"
+  },
+  {
+    "kind": "html",
+    "raw": "BU KEZ TEK ODAĞIN",
+    "text": "BU KEZ TEK ODAĞIN",
+    "english": "YOUR SOLE FOCUS THIS TIME"
+  },
+  {
+    "kind": "html",
+    "raw": "DÜŞÜNME İPUCU",
+    "text": "DÜŞÜNME İPUCU",
+    "english": "THINKING TIP"
+  },
+  {
+    "kind": "html",
+    "raw": "KAYIT KONTROLÜ",
+    "text": "KAYIT KONTROLÜ",
+    "english": "RECORDING CHECK"
+  },
+  {
+    "kind": "html",
+    "raw": "Kalan süre",
+    "text": "Kalan süre",
+    "english": "Time remaining"
+  },
+  {
+    "kind": "html",
+    "raw": "Kayıt durumu",
+    "text": "Kayıt durumu",
+    "english": "Recording status"
+  },
+  {
+    "kind": "html",
+    "raw": "Hazır",
+    "text": "Hazır",
+    "english": "Ready"
+  },
+  {
+    "kind": "html",
+    "raw": "İPUCU",
+    "text": "İPUCU",
+    "english": "TIP"
+  },
+  {
+    "kind": "html",
+    "raw": "Net, doğal ve kendin ol. Akıcılık, cümle uzunluğundan daha değerlidir.",
+    "text": "Net, doğal ve kendin ol. Akıcılık, cümle uzunluğundan daha değerlidir.",
+    "english": "Be clear, natural, and yourself. Fluency is more valuable than sentence length."
+  },
+  {
+    "kind": "html",
+    "raw": "Kayıt birazdan başlayacak",
+    "text": "Kayıt birazdan başlayacak",
+    "english": "Recording will begin shortly"
+  },
+  {
+    "kind": "html",
+    "raw": "Şimdi başla",
+    "text": "Şimdi başla",
+    "english": "Start now"
+  },
+  {
+    "kind": "html",
+    "raw": "İptal",
+    "text": "İptal",
+    "english": "Cancel"
+  },
+  {
+    "kind": "html",
+    "raw": "Kaydı Başlat",
+    "text": "Kaydı Başlat",
+    "english": "Start Recording"
+  },
+  {
+    "kind": "html",
+    "raw": "Hazır olduğunda başla. En fazla 45 saniye.",
+    "text": "Hazır olduğunda başla. En fazla 45 saniye.",
+    "english": "Start when you're ready. Up to 45 seconds."
+  },
+  {
+    "kind": "html",
+    "raw": "Tekrar Kaydet",
+    "text": "Tekrar Kaydet",
+    "english": "Record Again"
+  },
+  {
+    "kind": "html",
+    "raw": "Bu Kaydı Kullan",
+    "text": "Bu Kaydı Kullan",
+    "english": "Use This Recording"
+  },
+  {
+    "kind": "html",
+    "raw": "Gizliliğine saygılı",
+    "text": "Gizliliğine saygılı",
+    "english": "We respect your privacy"
+  },
+  {
+    "kind": "html",
+    "raw": "Anında analiz",
+    "text": "Anında analiz",
+    "english": "Instant analysis"
+  },
+  {
+    "kind": "html",
+    "raw": "Kişisel geri bildirim",
+    "text": "Kişisel geri bildirim",
+    "english": "Personalized feedback"
+  },
+  {
+    "kind": "html",
+    "raw": "CEVABIN İNCELENİYOR",
+    "text": "CEVABIN İNCELENİYOR",
+    "english": "YOUR ANSWER IS BEING REVIEWED"
+  },
+  {
+    "kind": "html",
+    "raw": "Kişisel düzeltmen hazırlanıyor.",
+    "text": "Kişisel düzeltmen hazırlanıyor.",
+    "english": "Your personal correction is being prepared."
+  },
+  {
+    "kind": "html",
+    "raw": "Konuşma örneğin yazıya dönüştürülüyor…",
+    "text": "Konuşma örneğin yazıya dönüştürülüyor…",
+    "english": "Your speech sample is being transcribed…"
+  },
+  {
+    "kind": "html",
+    "raw": "BU SIRADA BİLMEN GEREKEN",
+    "text": "BU SIRADA BİLMEN GEREKEN",
+    "english": "WHAT YOU NEED TO KNOW IN THE MEANTIME"
+  },
+  {
+    "kind": "html",
+    "raw": "Güçlü bir profesyonel cevap, karmaşık kelimelerden önce net bir ana fikirle başlar.",
+    "text": "Güçlü bir profesyonel cevap, karmaşık kelimelerden önce net bir ana fikirle başlar.",
+    "english": "A strong professional answer begins with a clear main idea before complex words."
+  },
+  {
+    "kind": "html",
+    "raw": "Ses",
+    "text": "Ses",
+    "english": "Voice"
+  },
+  {
+    "kind": "html",
+    "raw": "Yapı",
+    "text": "Yapı",
+    "english": "Structure"
+  },
+  {
+    "kind": "html",
+    "raw": "Netlik",
+    "text": "Netlik",
+    "english": "Clarity"
+  },
+  {
+    "kind": "html",
+    "raw": "Düzeltme",
+    "text": "Düzeltme",
+    "english": "Correction"
+  },
+  {
+    "kind": "html",
+    "raw": "Analizi Tekrar Dene",
+    "text": "Analizi Tekrar Dene",
+    "english": "Try the Analysis Again"
+  },
+  {
+    "kind": "html",
+    "raw": "3 · KİŞİSEL DÜZELTMEN",
+    "text": "3 · KİŞİSEL DÜZELTMEN",
+    "english": "3 · PERSONAL CORRECTION"
+  },
+  {
+    "kind": "html",
+    "raw": "Konuşmanı en çok yavaşlatan nokta",
+    "text": "Konuşmanı en çok yavaşlatan nokta",
+    "english": "The point that slows down your speech the most"
+  },
+  {
+    "kind": "html",
+    "raw": "GÜÇLÜ KISIM",
+    "text": "GÜÇLÜ KISIM",
+    "english": "STRONG POINT"
+  },
+  {
+    "kind": "html",
+    "raw": "TEK DÜZELTME",
+    "text": "TEK DÜZELTME",
+    "english": "SINGLE CORRECTION"
+  },
+  {
+    "kind": "html",
+    "raw": "CEVABINDA GÖRÜLEN İŞARET",
+    "text": "CEVABINDA GÖRÜLEN İŞARET",
+    "english": "SIGN OF THIS IN YOUR ANSWER"
+  },
+  {
+    "kind": "html",
+    "raw": "CEVABA BÖYLE BAŞLAYABİLİRSİN",
+    "text": "CEVABA BÖYLE BAŞLAYABİLİRSİN",
+    "english": "YOU COULD START YOUR ANSWER LIKE THIS"
+  },
+  {
+    "kind": "html",
+    "raw": "Aynı Soruyu Tekrar Dene",
+    "text": "Aynı Soruyu Tekrar Dene",
+    "english": "Try the Same Question Again"
+  },
+  {
+    "kind": "html",
+    "raw": "Bu kısa konuşma örneği resmi bir dil seviyesi ölçümü değildir.",
+    "text": "Bu kısa konuşma örneği resmi bir dil seviyesi ölçümü değildir.",
+    "english": "This short speech sample is not an official language-level assessment."
+  },
+  {
+    "kind": "html",
+    "raw": "KARİYER İNGİLİZCESİ ANALİZİN TAMAMLANDI",
+    "text": "KARİYER İNGİLİZCESİ ANALİZİN TAMAMLANDI",
+    "english": "YOUR CAREER ENGLISH ANALYSIS IS COMPLETE"
+  },
+  {
+    "kind": "html",
+    "raw": "Aynı cevabı, tek bir düzeltmeyle yeniden kurdun.",
+    "text": "Aynı cevabı, tek bir düzeltmeyle yeniden kurdun.",
+    "english": "You rebuilt the same answer with a single correction."
+  },
+  {
+    "kind": "html",
+    "raw": "İLK CEVAP",
+    "text": "İLK CEVAP",
+    "english": "FIRST ANSWER"
+  },
+  {
+    "kind": "html",
+    "raw": "TEKRAR DENEME",
+    "text": "TEKRAR DENEME",
+    "english": "RETRY"
+  },
+  {
+    "kind": "html",
+    "raw": "İLK CEVABINDAN",
+    "text": "İLK CEVABINDAN",
+    "english": "FROM YOUR FIRST ANSWER"
+  },
+  {
+    "kind": "html",
+    "raw": "TEKRAR DENEMENDEN",
+    "text": "TEKRAR DENEMENDEN",
+    "english": "FROM YOUR RETRY"
+  },
+  {
+    "kind": "html",
+    "raw": "ANA PROBLEM",
+    "text": "ANA PROBLEM",
+    "english": "MAIN PROBLEM"
+  },
+  {
+    "kind": "html",
+    "raw": "KİŞİSEL DÜZELTME",
+    "text": "KİŞİSEL DÜZELTME",
+    "english": "PERSONAL CORRECTION"
+  },
+  {
+    "kind": "html",
+    "raw": "SONRAKİ ODAK",
+    "text": "SONRAKİ ODAK",
+    "english": "NEXT FOCUS"
+  },
+  {
+    "kind": "html",
+    "raw": "SONRAKİ ADIM · İSTEĞE BAĞLI",
+    "text": "SONRAKİ ADIM · İSTEĞE BAĞLI",
+    "english": "NEXT STEP · OPTIONAL"
+  },
+  {
+    "kind": "html",
+    "raw": "Sonucunu bir Star Speaker uzmanıyla değerlendirmek ister misin?",
+    "text": "Sonucunu bir Star Speaker uzmanıyla değerlendirmek ister misin?",
+    "english": "Would you like to review your result with a Star Speaker expert?"
+  },
+  {
+    "kind": "html",
+    "raw": "Sonucun zaten hazır. Aşağıdaki iletişim bilgileri yalnızca görüşme planlamak istersen gereklidir.",
+    "text": "Sonucun zaten hazır. Aşağıdaki iletişim bilgileri yalnızca görüşme planlamak istersen gereklidir.",
+    "english": "Your result is ready. We only need your contact details if you would like to schedule a consultation."
+  },
+  {
+    "kind": "html",
+    "raw": "WhatsApp’tan Sor",
+    "text": "WhatsApp’tan Sor",
+    "english": "Ask on WhatsApp"
+  },
+  {
+    "kind": "html",
+    "raw": "Ücretsiz Görüşme Planla",
+    "text": "Ücretsiz Görüşme Planla",
+    "english": "Schedule a Free Consultation"
+  },
+  {
+    "kind": "html",
+    "raw": "1 / 4 · İletişim",
+    "text": "1 / 4 · İletişim",
+    "english": "1 / 4 · Contact"
+  },
+  {
+    "kind": "html",
+    "raw": "Adın ve soyadın",
+    "text": "Adın ve soyadın",
+    "english": "Your first and last name"
+  },
+  {
+    "kind": "html",
+    "raw": "WhatsApp numaran",
+    "text": "WhatsApp numaran",
+    "english": "Your WhatsApp number"
+  },
+  {
+    "kind": "html",
+    "raw": "E-posta",
+    "text": "E-posta",
+    "english": "Email"
+  },
+  {
+    "kind": "html",
+    "raw": "(isteğe bağlı)",
+    "text": "(isteğe bağlı)",
+    "english": "(optional)"
+  },
+  {
+    "kind": "html",
+    "raw": "Verilerimin talep ettiğim iletişimi sağlamak için kullanılmasını kabul ediyorum.",
+    "text": "Verilerimin talep ettiğim iletişimi sağlamak için kullanılmasını kabul ediyorum.",
+    "english": "I agree to my data being used to provide the communication I requested."
+  },
+  {
+    "kind": "html",
+    "raw": "Devam Et",
+    "text": "Devam Et",
+    "english": "Continue"
+  },
+  {
+    "kind": "html",
+    "raw": "2 / 4 · Bütçe",
+    "text": "2 / 4 · Bütçe",
+    "english": "2 / 4 · Budget"
+  },
+  {
+    "kind": "html",
+    "raw": "Gelişim programı için düşündüğün bütçe nedir?",
+    "text": "Gelişim programı için düşündüğün bütçe nedir?",
+    "english": "What budget are you considering for the development program?"
+  },
+  {
+    "kind": "html",
+    "raw": "5.000 TL altı",
+    "text": "5.000 TL altı",
+    "english": "Under 5,000 TL"
+  },
+  {
+    "kind": "html",
+    "raw": "5.000–10.000 TL",
+    "text": "5.000–10.000 TL",
+    "english": "5,000–10,000 TL"
+  },
+  {
+    "kind": "html",
+    "raw": "10.000–15.000 TL",
+    "text": "10.000–15.000 TL",
+    "english": "10,000–15,000 TL"
+  },
+  {
+    "kind": "html",
+    "raw": "15.000–25.000 TL",
+    "text": "15.000–25.000 TL",
+    "english": "15,000–25,000 TL"
+  },
+  {
+    "kind": "html",
+    "raw": "25.000 TL ve üzeri",
+    "text": "25.000 TL ve üzeri",
+    "english": "25,000 TL and above"
+  },
+  {
+    "kind": "html",
+    "raw": "← Geri",
+    "text": "← Geri",
+    "english": "← Back"
+  },
+  {
+    "kind": "html",
+    "raw": "3 / 4 · Zamanlama",
+    "text": "3 / 4 · Zamanlama",
+    "english": "3 / 4 · Timing"
+  },
+  {
+    "kind": "html",
+    "raw": "Ne zaman başlamak istiyorsun?",
+    "text": "Ne zaman başlamak istiyorsun?",
+    "english": "When would you like to start?"
+  },
+  {
+    "kind": "html",
+    "raw": "Hemen",
+    "text": "Hemen",
+    "english": "Immediately"
+  },
+  {
+    "kind": "html",
+    "raw": "1 ay içinde",
+    "text": "1 ay içinde",
+    "english": "Within 1 month"
+  },
+  {
+    "kind": "html",
+    "raw": "1–3 ay içinde",
+    "text": "1–3 ay içinde",
+    "english": "Within 1–3 months"
+  },
+  {
+    "kind": "html",
+    "raw": "Şimdilik araştırıyorum",
+    "text": "Şimdilik araştırıyorum",
+    "english": "I’m just exploring for now"
+  },
+  {
+    "kind": "html",
+    "raw": "ÜCRETSİZ KONUŞMA PERFORMANSI GÖRÜŞMESİ",
+    "text": "ÜCRETSİZ KONUŞMA PERFORMANSI GÖRÜŞMESİ",
+    "english": "FREE SPEAKING PERFORMANCE CONSULTATION"
+  },
+  {
+    "kind": "html",
+    "raw": "Ücretsiz Görüşmeni Planla",
+    "text": "Ücretsiz Görüşmeni Planla",
+    "english": "Schedule Your Free Consultation"
+  },
+  {
+    "kind": "html",
+    "raw": "Sonucunu bir uzmanla değerlendirmek ve sana uygun gelişim yolunu görmek için görüşmeni planla.",
+    "text": "Sonucunu bir uzmanla değerlendirmek ve sana uygun gelişim yolunu görmek için görüşmeni planla.",
+    "english": "Schedule your consultation to evaluate your results with an expert and discover the development path that’s right for you."
+  },
+  {
+    "kind": "html",
+    "raw": "15 dakika · Online · Türkiye saati",
+    "text": "15 dakika · Online · Türkiye saati",
+    "english": "15 minutes · Online · Turkey time"
+  },
+  {
+    "kind": "html",
+    "raw": "Uygun saatler yükleniyor…",
+    "text": "Uygun saatler yükleniyor…",
+    "english": "Loading available times…"
+  },
+  {
+    "kind": "html",
+    "raw": "4 / 4 · Tarih ve saat",
+    "text": "4 / 4 · Tarih ve saat",
+    "english": "4 / 4 · Date and time"
+  },
+  {
+    "kind": "html",
+    "raw": "← Zamanlamaya dön",
+    "text": "← Zamanlamaya dön",
+    "english": "← Back to scheduling"
+  },
+  {
+    "kind": "html",
+    "raw": "SEÇİMİN",
+    "text": "SEÇİMİN",
+    "english": "YOUR SELECTION"
+  },
+  {
+    "kind": "html",
+    "raw": "Randevuyu Onayla",
+    "text": "Randevuyu Onayla",
+    "english": "Confirm appointment"
+  },
+  {
+    "kind": "html",
+    "raw": "Görüşmen planlandı.",
+    "text": "Görüşmen planlandı.",
+    "english": "Your session has been scheduled."
+  },
+  {
+    "kind": "html",
+    "raw": "Seçtiğin tarih ve saatte ücretsiz Konuşma Performansı Görüşmesi gerçekleştireceğiz.",
+    "text": "Seçtiğin tarih ve saatte ücretsiz Konuşma Performansı Görüşmesi gerçekleştireceğiz.",
+    "english": "We’ll review your speaking performance in a free consultation at your selected date and time."
+  },
+  {
+    "kind": "html",
+    "raw": "Randevuyu WhatsApp’tan Onayla",
+    "text": "Randevuyu WhatsApp’tan Onayla",
+    "english": "Confirm appointment via WhatsApp"
+  },
+  {
+    "kind": "html",
+    "raw": "Randevuyu Değiştir",
+    "text": "Randevuyu Değiştir",
+    "english": "Change appointment"
+  },
+  {
+    "kind": "html",
+    "raw": "Randevuyu İptal Et",
+    "text": "Randevuyu İptal Et",
+    "english": "Cancel appointment"
+  },
+  {
+    "kind": "html",
+    "raw": "Uygun bir saat bulamadın mı?",
+    "text": "Uygun bir saat bulamadın mı?",
+    "english": "Couldn't find a suitable time?"
+  },
+  {
+    "kind": "html",
+    "raw": "WhatsApp’tan bize ulaş.",
+    "text": "WhatsApp’tan bize ulaş.",
+    "english": "Contact us via WhatsApp."
+  },
+  {
+    "kind": "html",
+    "raw": "← Star Speaker ana sayfasına dön",
+    "text": "← Star Speaker ana sayfasına dön",
+    "english": "← Back to the Star Speaker homepage"
+  },
+  {
+    "kind": "attribute",
+    "raw": "Ücretsiz Kariyer İngilizcesi analizi: sana uygun bir soruyu yanıtla, kişisel düzeltmeni al ve aynı soruyu daha güçlü biçimde tekrar dene.",
+    "text": "Ücretsiz Kariyer İngilizcesi analizi: sana uygun bir soruyu yanıtla, kişisel düzeltmeni al ve aynı soruyu daha güçlü biçimde tekrar dene.",
+    "english": "Free Career English analysis: answer a question tailored to you, receive personalized corrections, and try answering the same question again more powerfully."
+  },
+  {
+    "kind": "attribute",
+    "raw": "Analiz süresi",
+    "text": "Analiz süresi",
+    "english": "Analysis duration"
+  },
+  {
+    "kind": "attribute",
+    "raw": "Analizin üç adımı",
+    "text": "Analizin üç adımı",
+    "english": "The three steps of your analysis"
+  },
+  {
+    "kind": "attribute",
+    "raw": "Hazırlık seçimleri",
+    "text": "Hazırlık seçimleri",
+    "english": "Preparation choices"
+  },
+  {
+    "kind": "attribute",
+    "raw": "Kayıt kontrolü",
+    "text": "Kayıt kontrolü",
+    "english": "Recording check"
+  },
+  {
+    "kind": "attribute",
+    "raw": "Kayıt özellikleri",
+    "text": "Kayıt özellikleri",
+    "english": "Recording features"
+  },
+  {
+    "kind": "attribute",
+    "raw": "Analiz adımları",
+    "text": "Analiz adımları",
+    "english": "Analysis steps"
+  },
+  {
+    "kind": "attribute",
+    "raw": "Randevu günü",
+    "text": "Randevu günü",
+    "english": "Appointment day"
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Tekrar dene\"",
+    "text": "Tekrar dene",
+    "english": "Try again"
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Sesli cevap\"",
+    "text": "Sesli cevap",
+    "english": "Spoken answer"
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Analiz\"",
+    "text": "Analiz",
+    "english": "Analysis"
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"TEKRAR DENE\"",
+    "text": "TEKRAR DENE",
+    "english": "TRY AGAIN"
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Mikrofon izni gerekli\"",
+    "text": "Mikrofon izni gerekli",
+    "english": "Microphone permission needed"
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Analiz ediliyor\"",
+    "text": "Analiz ediliyor",
+    "english": "Analysing"
+  },
+  {
+    "kind": "StringLiteral",
+    "raw": "\"Randevuyu Onayla\"",
+    "text": "Randevuyu Onayla",
+    "english": "Confirm appointment"
+  },
+  {
+    "kind": "TemplateElement",
+    "raw": " saniye.",
+    "text": " saniye.",
+    "english": " seconds."
+  },
+  {
+    "kind": "TemplateElement",
+    "raw": " tarihinde saat ",
+    "text": " tarihinde saat ",
+    "english": " at "
+  },
+  {
+    "kind": "attribute",
+    "raw": "Star Speaker ana sayfa",
+    "text": "Star Speaker ana sayfa",
+    "english": "Star Speaker homepage"
+  },
+  {
+    "kind": "attribute",
+    "raw": "Analiz ilerlemesi",
+    "text": "Analiz ilerlemesi",
+    "english": "Analysis progress"
+  },
+  {
+    "kind": "attribute",
+    "raw": "Randevu saati",
+    "text": "Randevu saati",
+    "english": "Appointment time"
+  }
+]

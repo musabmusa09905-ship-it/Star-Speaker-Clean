@@ -841,6 +841,7 @@ input:focus-visible, .sprint-whatsapp-cta:focus-visible {
   .sprint-brand small { font-size: .43rem; }
   .sprint-header-status { font-size: 0; }
   .sprint-header-status::after { content: "kişisel"; font-size: .7rem; }
+  html[lang="en"] .sprint-header-status::after { content: "personal"; }
   #sprint-main { width: min(calc(100% - 1.2rem), var(--max)); }
   .sprint-screen { min-height: calc(100vh - 128px); padding: 2.6rem 0 3rem; }
   .sprint-progress-shell { width: calc(100% - 1.2rem); margin-top: 1.25rem; }

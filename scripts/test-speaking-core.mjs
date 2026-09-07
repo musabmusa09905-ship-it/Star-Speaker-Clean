@@ -1,104 +1,63 @@
 import assert from "node:assert/strict";
 import {
-  SpeakingRecorder,
+  releaseTracks,
   recordingMime,
-  microphoneError,
   timedFetch,
 } from "../src/scripts/speaking-core.js";
-let stopped = 0,
-  output,
-  failure;
-const tracks = [
-  {
-    stop() {
-      stopped++;
-    },
-    onended: null,
-  },
-];
-Object.defineProperty(globalThis, "navigator", {
-  configurable: true,
-  value: {
-    mediaDevices: { getUserMedia: async () => ({ getTracks: () => tracks }) },
-  },
+let stopped = 0;
+releaseTracks({
+  getTracks: () => [{ stop: () => stopped++ }, { stop: () => stopped++ }],
 });
-class Recorder {
-  static isTypeSupported(type) {
-    return type === "audio/mp4";
-  }
-  constructor() {
-    this.mimeType = "audio/mp4";
-    this.state = "inactive";
-  }
-  start() {
-    this.state = "recording";
-  }
-  stop() {
-    this.state = "inactive";
-    this.ondataavailable?.({ data: new Blob(["sample"]) });
-    this.onstop?.();
-  }
-}
-globalThis.MediaRecorder = Recorder;
-assert.equal(recordingMime(), "audio/mp4");
-assert.equal(recordingMime({ isTypeSupported: () => false }), "");
-for (const [name, code] of [
-  ["NotAllowedError", "permission_denied"],
-  ["NotFoundError", "device_unavailable"],
-  ["NotReadableError", "device_unavailable"],
-  ["Unknown", "start_failure"],
-])
-  assert.equal(microphoneError({ name }), code);
-const r = new SpeakingRecorder({
-  onTick() {},
-  onStop: (b) => (output = b),
-  onError: (c) => (failure = c),
-});
-await r.start();
-r.stop();
-assert.ok(output instanceof Blob);
-assert.equal(stopped, 1);
-assert.equal(r.stream, null);
-assert.equal(r.recorder, null);
-await r.start();
-r.cancel();
+releaseTracks(null);
 assert.equal(stopped, 2);
-assert.equal(r.stream, null);
-await r.start();
-r.recorder.onerror();
-assert.equal(stopped, 3);
-assert.equal(failure, "recorder_error");
-await r.start();
-tracks[0].onended();
-assert.equal(stopped, 4);
-assert.equal(failure, "interrupted");
-globalThis.MediaRecorder = class extends Recorder {
-  start() {
-    throw Error("start");
-  }
-};
-await assert.rejects(() => r.start(), /start_failure/);
-assert.equal(stopped, 5);
-let resolvePermission;
-navigator.mediaDevices.getUserMedia = () =>
-  new Promise((resolve) => {
-    resolvePermission = resolve;
-  });
-const pending = r.start();
-r.cancel();
-resolvePermission({ getTracks: () => tracks });
-await pending;
-assert.equal(stopped, 6);
-assert.equal(r.recorder, null);
-globalThis.fetch = (_url, { signal }) =>
-  new Promise((_resolve, reject) =>
+assert.equal(
+  recordingMime({ isTypeSupported: (t) => t === "audio/mp4" }),
+  "audio/mp4",
+);
+assert.equal(recordingMime({ isTypeSupported: () => false }), "");
+const original = globalThis.fetch;
+globalThis.fetch = async (url, { signal }) =>
+  new Promise((resolve, reject) =>
     signal.addEventListener("abort", () =>
-      reject(new DOMException("aborted", "AbortError")),
+      reject(new DOMException("Timed out", "AbortError")),
     ),
   );
-await assert.rejects(() => timedFetch("https://example.invalid", {}, 5), {
+await assert.rejects(timedFetch("http://localhost", {}, 5), {
   name: "AbortError",
 });
+globalThis.fetch = original;
+const values = new Map();
+globalThis.sessionStorage = {
+  getItem: (k) => values.get(k),
+  setItem: (k, v) => values.set(k, v),
+};
+let request;
+globalThis.fetch = async (url, options) => {
+  request = options;
+  return Response.json(
+    { error: "Türkçe hata", code: "question_invalid" },
+    { status: 400 },
+  );
+};
+try {
+  const { localizedFetch } = await import(
+    "../src/scripts/performance-english-transport.js"
+  );
+  let response = await localizedFetch("http://localhost", {
+    body: JSON.stringify({ action: "get_result" }),
+  });
+  assert.match((await response.json()).error, /question could not be verified/);
+  const identity = JSON.parse(request.body);
+  assert.equal(identity.locale, "en");
+  assert.match(identity.session_token, /^[a-f0-9]{64}$/);
+  const form = new FormData();
+  form.set("phase", "first");
+  await localizedFetch("http://localhost", { body: form });
+  assert.equal(request.body.get("locale"), "en");
+  assert.equal(request.body.get("session_token"), identity.session_token);
+} finally {
+  globalThis.fetch = original;
+}
 console.log(
-  "Shared recording: stop, cancel, error, interruption, start failure, late permission, MIME fallback and timeout passed.",
+  "PASS shared track cleanup, MIME fallback, timeout, English transport ownership and safe error copy. Recorder behavior is covered by canonical browser QA.",
 );
