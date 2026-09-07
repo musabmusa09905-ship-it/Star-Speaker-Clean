@@ -302,6 +302,15 @@ try {
             );
         }
       }
+      if (width === 390) {
+        const beforeReload = await page.locator("[data-screen=result]").innerText();
+        await page.reload();
+        await page.locator("[data-screen=result].is-active").waitFor();
+        assert.equal(await page.locator("[data-screen=result]").innerText(), beforeReload, "completed comparison survives reload");
+        await check("result");
+        await page.keyboard.press("Tab");
+        assert.equal(await page.evaluate(() => document.activeElement.tagName), "A", "keyboard reaches result action");
+      }
       await page.locator("[data-open-contact]").click();
       await check("contact");
       await page.locator("[name=fullName]").fill("Alex Tester");
