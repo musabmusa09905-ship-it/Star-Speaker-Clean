@@ -68,11 +68,11 @@ body.speaking-challenge-page { margin: 0; min-width: 320px; overflow-x: hidden; 
 .sc-section-heading h2 { margin: 0; font: 500 clamp(2.7rem, 5vw, 5rem)/.95 var(--sc-serif); letter-spacing: -.035em; }
 .sc-section-heading > p:last-child { max-width: 720px; margin: 1rem 0 0; color: var(--sc-muted); line-height: 1.65; }
 .sc-comparison { display: grid; grid-template-columns: 1fr 56px 1fr; align-items: stretch; }
-.sc-compare-card { display: grid; grid-template-columns: minmax(150px, .42fr) minmax(220px, .58fr); min-height: 390px; overflow: hidden; border: 1px solid rgba(9,26,41,.11); border-radius: 18px; background: rgba(255,255,255,.62); box-shadow: 0 20px 45px rgba(38,34,27,.08); }
-.sc-compare-card--after { grid-template-columns: minmax(220px, .58fr) minmax(150px, .42fr); background: #fff8eb; }
+.sc-compare-card { display: grid; grid-template-columns: minmax(170px, .45fr) minmax(220px, .55fr); min-height: 380px; overflow: hidden; border: 1px solid rgba(9,26,41,.11); border-radius: 18px; background: rgba(255,255,255,.62); box-shadow: 0 20px 45px rgba(38,34,27,.08); }
+.sc-compare-card--after { grid-template-columns: minmax(220px, .55fr) minmax(170px, .45fr); background: #fff8eb; }
 .sc-compare-card img { width: 100%; height: 100%; object-fit: cover; }
-.sc-compare-card--before img { object-position: 35% center; }
-.sc-compare-card--after img { object-position: 68% center; }
+.sc-compare-card--before img { object-position: 28% center; }
+.sc-compare-card--after img { object-position: 72% center; }
 .sc-compare-card > div { align-self: center; padding: clamp(1.4rem, 2.5vw, 2.5rem); }
 .sc-pill { display: inline-block; margin: 0 0 1.2rem; padding: .5rem .9rem; border-radius: 999px; background: #e9e0d3; color: #49423a; font-size: .64rem; font-weight: 900; letter-spacing: .12em; }
 .sc-compare-card--after .sc-pill { background: #f3d59f; color: #6b4319; }
@@ -177,7 +177,7 @@ body.speaking-challenge-page { margin: 0; min-width: 320px; overflow-x: hidden; 
   .sc-transformation, .sc-included, .sc-how, .sc-application { padding-left: 20px; padding-right: 20px; }
   .sc-section-heading h2 { font-size: clamp(2.65rem, 12vw, 4.2rem); }
   .sc-compare-card, .sc-compare-card--after { grid-template-columns: 1fr; }
-  .sc-compare-card img { height: 260px; }
+  .sc-compare-card img { height: auto; aspect-ratio: 4 / 3; }
   .sc-compare-card--after > div { order: 2; }
   .sc-compare-card--after img { order: 1; }
   .sc-feature-grid { grid-template-columns: 1fr; }
