@@ -347,8 +347,8 @@ body.speaking-challenge-page { margin: 0; min-width: 320px; overflow-x: hidden; 
 .sc-transformation .sc-comparison { grid-template-columns: minmax(0, 1fr) 28px minmax(0, 1fr); gap: 0; }
 .sc-transformation .sc-compare-card { grid-template-columns: 40% 60%; min-height: 292px; border-radius: 10px; border-color: rgba(105,85,57,.1); background: #fbf7f0; box-shadow: 0 8px 22px rgba(69,49,25,.045); }
 .sc-transformation .sc-compare-card--after { grid-template-columns: 60% 40%; background: linear-gradient(110deg, #f9e9ce, #fff5e4 65%); border-color: rgba(190,137,64,.18); }
-.sc-transformation .sc-compare-card--before img { object-position: 18% center; }
-.sc-transformation .sc-compare-card--after img { object-position: 88% center; }
+.sc-transformation .sc-compare-card--before img { object-position: 18% center; mask-image: linear-gradient(to right, #000 76%, rgba(0,0,0,.94) 82%, rgba(0,0,0,.65) 90%, transparent 100%); }
+.sc-transformation .sc-compare-card--after img { object-position: 88% center; mask-image: linear-gradient(to left, #000 76%, rgba(0,0,0,.94) 82%, rgba(0,0,0,.65) 90%, transparent 100%); }
 .sc-transformation .sc-compare-card > div { padding: 1.05rem 1.2rem; }
 .sc-transformation .sc-pill { margin-bottom: .85rem; padding: .45rem .85rem; background: #e5ddd1; color: #62594f; }
 .sc-transformation .sc-compare-card--after .sc-pill { background: #edc88d; color: #70461c; }
@@ -367,7 +367,7 @@ body.speaking-challenge-page { margin: 0; min-width: 320px; overflow-x: hidden; 
   .sc-transformation .sc-section-heading h2 { font-size: clamp(2.1rem, 9vw, 2.8rem); }
   .sc-transformation .sc-comparison { grid-template-columns: 1fr; }
   .sc-transformation .sc-compare-card, .sc-transformation .sc-compare-card--after { grid-template-columns: 1fr; min-height: 0; }
-  .sc-transformation .sc-compare-card img { height: auto; aspect-ratio: 4 / 3; object-position: center; }
+  .sc-transformation .sc-compare-card img { height: auto; aspect-ratio: 4 / 3; object-position: center; mask-image: linear-gradient(to bottom, #000 92%, rgba(0,0,0,.9) 95%, rgba(0,0,0,.55) 98%, transparent 100%); }
   .sc-transformation .sc-compare-card > div { padding: 1.05rem 1.1rem; }
   .sc-transformation .sc-compare-card li { font-size: .87rem; }
   .sc-transformation .sc-transition-arrow { width: 42px; height: 42px; transform: rotate(90deg); }
