@@ -338,6 +338,41 @@ body.speaking-challenge-page { margin: 0; min-width: 320px; overflow-x: hidden; 
   .sc-closing h2 { max-width: 430px; font-size: 2.4rem; }
 }
 
+/* Before / after: one compact editorial comparison. */
+.sc-transformation { padding-top: 2rem; padding-bottom: 2rem; background: radial-gradient(ellipse at 83% 72%, rgba(228,188,118,.13), transparent 55%), var(--sc-ivory); }
+.sc-transformation .sc-section-heading { margin-bottom: 1.1rem; }
+.sc-transformation .sc-eyebrow { margin-bottom: .4rem; }
+.sc-transformation .sc-section-heading h2 { font-size: clamp(2.4rem, 3.7vw, 3.5rem); line-height: 1.02; }
+.sc-transformation .sc-section-heading > p:last-child { margin-top: .45rem; line-height: 1.45; }
+.sc-transformation .sc-comparison { grid-template-columns: minmax(0, 1fr) 28px minmax(0, 1fr); gap: 0; }
+.sc-transformation .sc-compare-card { grid-template-columns: 40% 60%; min-height: 292px; border-radius: 10px; border-color: rgba(105,85,57,.1); background: #fbf7f0; box-shadow: 0 8px 22px rgba(69,49,25,.045); }
+.sc-transformation .sc-compare-card--after { grid-template-columns: 60% 40%; background: linear-gradient(110deg, #f9e9ce, #fff5e4 65%); border-color: rgba(190,137,64,.18); }
+.sc-transformation .sc-compare-card--before img { object-position: 18% center; }
+.sc-transformation .sc-compare-card--after img { object-position: 88% center; }
+.sc-transformation .sc-compare-card > div { padding: 1.05rem 1.2rem; }
+.sc-transformation .sc-pill { margin-bottom: .85rem; padding: .45rem .85rem; background: #e5ddd1; color: #62594f; }
+.sc-transformation .sc-compare-card--after .sc-pill { background: #edc88d; color: #70461c; }
+.sc-transformation .sc-compare-card ul { gap: .7rem; }
+.sc-transformation .sc-compare-card li { padding-left: 1.7rem; font-size: .84rem; line-height: 1.38; }
+.sc-transformation .sc-compare-card li::before { width: 18px; height: 18px; top: .02rem; background: #938577; font-size: .78rem; }
+.sc-transformation .sc-compare-card--after li::before { width: 19px; height: 19px; background: #bd8845; color: #fffdf7; box-shadow: 0 0 0 2px rgba(255,250,239,.7); font-weight: 800; }
+.sc-transformation .sc-transition-arrow { position: relative; z-index: 1; justify-self: center; width: 54px; height: 54px; font-size: 0; transform: none; opacity: 1; }
+.sc-transformation .sc-transition-arrow::before { content: ""; position: absolute; inset: 5px 0; background: linear-gradient(90deg, #dfbd85, #b77a32); clip-path: polygon(0 47%, 65% 41%, 49% 0, 100% 50%, 49% 100%, 65% 59%, 0 53%); }
+@media (min-width: 781px) and (max-width: 1120px) {
+  .sc-transformation .sc-compare-card > div { padding: .9rem; }
+  .sc-transformation .sc-compare-card li { font-size: .79rem; }
+}
+@media (max-width: 780px) {
+  .sc-transformation { padding: 1.7rem 20px; }
+  .sc-transformation .sc-section-heading h2 { font-size: clamp(2.1rem, 9vw, 2.8rem); }
+  .sc-transformation .sc-comparison { grid-template-columns: 1fr; }
+  .sc-transformation .sc-compare-card, .sc-transformation .sc-compare-card--after { grid-template-columns: 1fr; min-height: 0; }
+  .sc-transformation .sc-compare-card img { height: auto; aspect-ratio: 4 / 3; object-position: center; }
+  .sc-transformation .sc-compare-card > div { padding: 1.05rem 1.1rem; }
+  .sc-transformation .sc-compare-card li { font-size: .87rem; }
+  .sc-transformation .sc-transition-arrow { width: 42px; height: 42px; transform: rotate(90deg); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .sc-button { transition: none; }
